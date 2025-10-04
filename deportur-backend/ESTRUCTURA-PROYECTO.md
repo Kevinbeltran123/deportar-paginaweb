@@ -387,10 +387,14 @@ server.port=8080
 | Java | 17 | Lenguaje base |
 | Spring Boot | 3.1.4 | Framework principal |
 | Spring Data JPA | 3.1.4 | ORM y repositorios |
-| MySQL Connector | Latest | Driver BD |
-| Hibernate | 6.x | Implementación JPA |
+| Spring Security | 6.1.4 | Seguridad y autenticación |
+| OAuth2 Resource Server | Latest | Validación de JWT |
+| PostgreSQL Driver | 42.6.0 | Driver para Supabase |
+| Hibernate | 6.2.9 | Implementación JPA |
 | Bean Validation | 3.0 | Validaciones `@Valid` |
+| Auth0 SDK | 1.44.2 | Integración con Auth0 |
 | SpringDoc OpenAPI | 2.1.0 | Documentación API |
+| HikariCP | 5.0.1 | Connection pooling |
 
 ---
 
@@ -480,6 +484,8 @@ mvn clean install -DskipTests
 
 ## 📚 Documentación Adicional
 
+- [CONFIGURACION-SUPABASE.md](CONFIGURACION-SUPABASE.md) - Configuración de base de datos PostgreSQL
+- [CONFIGURACION-AUTH0.md](CONFIGURACION-AUTH0.md) - Configuración de autenticación con Google
 - [MIGRACION-COMPLETADA.md](../MIGRACION-COMPLETADA.md) - Resumen técnico completo
 - [INSTRUCCIONES-PRUEBA.md](../INSTRUCCIONES-PRUEBA.md) - Guía de pruebas con Postman
 - [checklist-deportur.md](../checklist-deportur.md) - Plan de desarrollo completo
@@ -488,8 +494,8 @@ mvn clean install -DskipTests
 
 **Proyecto:** DeporTur - Sistema de Alquiler de Equipos Deportivos
 **Arquitectura:** Microservicio REST con Spring Boot
-**Base de Datos:** MySQL en Railway
+**Base de Datos:** PostgreSQL en Supabase (en la nube)
 **Frontend:** React (separado)
-**Autenticación:** Auth0 (próximo paso)
+**Autenticación:** Auth0 con Google OAuth
 
-**Estado:** ✅ Backend 100% completo y funcional
+**Estado:** ✅ Backend 100% completo y funcional con autenticación
