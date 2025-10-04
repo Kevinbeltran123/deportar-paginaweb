@@ -1,0 +1,25 @@
+# Java
+*.class
+*.jar
+*.war
+*.ear
+target/
+
+# Maven
+.settings/
+.mvn/
+.mvnw
+
+# Node
+node_modules/
+dist/
+.build/
+.env
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# OS
+.DS_Store
