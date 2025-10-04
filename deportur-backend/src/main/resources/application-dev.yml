@@ -3,7 +3,10 @@ server:
 
 spring:
   datasource:
-    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:deportur}
+    # You can set SPRING_DATASOURCE_URL to point to an external DB (e.g. Supabase Postgres)
+    # Example Supabase JDBC URL: jdbc:postgresql://db.hostname.supabase.co:5432/postgres
+    # If SPRING_DATASOURCE_URL is set, it will be used. Otherwise, the MySQL local defaults are used.
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:deportur}}
     username: ${DB_USER:root}
     password: ${DB_PASS:password}
   jpa:
