@@ -14,7 +14,17 @@ target/
 node_modules/
 dist/
 .build/
+
+# Environment variables - SENSITIVE DATA (DO NOT COMMIT)
 .env
+.env.local
+.env.*.local
+*.env
+!.env.example
+
+# Run scripts with credentials
+run.sh
+deportur-backend/run.sh
 
 # IDE
 .vscode/

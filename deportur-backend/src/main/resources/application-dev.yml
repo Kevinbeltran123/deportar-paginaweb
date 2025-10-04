@@ -3,16 +3,20 @@ server:
 
 spring:
   datasource:
-    # You can set SPRING_DATASOURCE_URL to point to an external DB (e.g. Supabase Postgres)
-    # Example Supabase JDBC URL: jdbc:postgresql://db.hostname.supabase.co:5432/postgres
-    # If SPRING_DATASOURCE_URL is set, it will be used. Otherwise, the MySQL local defaults are used.
-    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:deportur}}
-    username: ${DB_USER:root}
-    password: ${DB_PASS:password}
+    # Supabase PostgreSQL connection (using environment variables)
+    # Set these in your .env file or export them before running
+    url: jdbc:postgresql://${SUPABASE_DB_HOST}:${SUPABASE_DB_PORT:6543}/${SUPABASE_DB_NAME}?sslmode=require
+    username: ${SUPABASE_DB_USER}
+    password: ${SUPABASE_DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
 
 # OpenAPI
 springdoc:

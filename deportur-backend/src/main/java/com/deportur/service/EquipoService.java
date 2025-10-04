@@ -9,6 +9,7 @@ import com.deportur.repository.TipoEquipoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -49,7 +50,7 @@ public class EquipoService {
             throw new Exception("El estado del equipo es requerido");
         }
 
-        if (equipo.getPrecioAlquiler() == null || equipo.getPrecioAlquiler() <= 0) {
+        if (equipo.getPrecioAlquiler() == null || equipo.getPrecioAlquiler().compareTo(BigDecimal.ZERO) <= 0) {
             throw new Exception("El precio de alquiler debe ser mayor a cero");
         }
 
@@ -93,7 +94,7 @@ public class EquipoService {
             throw new Exception("El estado del equipo es requerido");
         }
 
-        if (equipo.getPrecioAlquiler() == null || equipo.getPrecioAlquiler() <= 0) {
+        if (equipo.getPrecioAlquiler() == null || equipo.getPrecioAlquiler().compareTo(BigDecimal.ZERO) <= 0) {
             throw new Exception("El precio de alquiler debe ser mayor a cero");
         }
 

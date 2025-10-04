@@ -4,6 +4,7 @@ import com.deportur.model.enums.EstadoEquipo;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public class CrearEquipoRequest {
@@ -22,7 +23,7 @@ public class CrearEquipoRequest {
 
     @NotNull(message = "El precio de alquiler es requerido")
     @Positive(message = "El precio debe ser mayor a cero")
-    private Double precioAlquiler;
+    private BigDecimal precioAlquiler;
 
     @NotNull(message = "La fecha de adquisición es requerida")
     private LocalDate fechaAdquisicion;
@@ -65,11 +66,11 @@ public class CrearEquipoRequest {
         this.estado = estado;
     }
 
-    public Double getPrecioAlquiler() {
+    public BigDecimal getPrecioAlquiler() {
         return precioAlquiler;
     }
 
-    public void setPrecioAlquiler(Double precioAlquiler) {
+    public void setPrecioAlquiler(BigDecimal precioAlquiler) {
         this.precioAlquiler = precioAlquiler;
     }
 

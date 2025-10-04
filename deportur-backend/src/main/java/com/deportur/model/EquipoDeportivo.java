@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
@@ -39,8 +40,8 @@ public class EquipoDeportivo {
 
     @NotNull(message = "El precio de alquiler es requerido")
     @Positive(message = "El precio de alquiler debe ser mayor a cero")
-    @Column(name = "precio_alquiler", nullable = false, precision = 10, scale = 2)
-    private Double precioAlquiler;
+    @Column(name = "precio_alquiler", nullable = false)
+    private BigDecimal precioAlquiler;
 
     @NotNull(message = "La fecha de adquisición es requerida")
     @Column(name = "fecha_adquisicion", nullable = false)
@@ -59,7 +60,7 @@ public class EquipoDeportivo {
     }
 
     public EquipoDeportivo(Long idEquipo, String nombre, TipoEquipo tipo, String marca,
-                           EstadoEquipo estado, Double precioAlquiler, LocalDate fechaAdquisicion,
+                           EstadoEquipo estado, BigDecimal precioAlquiler, LocalDate fechaAdquisicion,
                            DestinoTuristico destino, Boolean disponible) {
         this.idEquipo = idEquipo;
         this.nombre = nombre;
@@ -113,11 +114,11 @@ public class EquipoDeportivo {
         this.estado = estado;
     }
 
-    public Double getPrecioAlquiler() {
+    public BigDecimal getPrecioAlquiler() {
         return precioAlquiler;
     }
 
-    public void setPrecioAlquiler(Double precioAlquiler) {
+    public void setPrecioAlquiler(BigDecimal precioAlquiler) {
         this.precioAlquiler = precioAlquiler;
     }
 

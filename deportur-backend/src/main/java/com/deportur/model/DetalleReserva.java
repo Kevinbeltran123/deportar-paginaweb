@@ -3,6 +3,7 @@ package com.deportur.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "detalle_reserva")
@@ -25,14 +26,14 @@ public class DetalleReserva {
 
     @NotNull(message = "El precio unitario es requerido")
     @Positive(message = "El precio unitario debe ser mayor a cero")
-    @Column(name = "precio_unitario", nullable = false, precision = 10, scale = 2)
-    private Double precioUnitario;
+    @Column(name = "precio_unitario", nullable = false)
+    private BigDecimal precioUnitario;
 
     // Constructores
     public DetalleReserva() {
     }
 
-    public DetalleReserva(Long idDetalle, Reserva reserva, EquipoDeportivo equipo, Double precioUnitario) {
+    public DetalleReserva(Long idDetalle, Reserva reserva, EquipoDeportivo equipo, BigDecimal precioUnitario) {
         this.idDetalle = idDetalle;
         this.reserva = reserva;
         this.equipo = equipo;
@@ -64,11 +65,11 @@ public class DetalleReserva {
         this.equipo = equipo;
     }
 
-    public Double getPrecioUnitario() {
+    public BigDecimal getPrecioUnitario() {
         return precioUnitario;
     }
 
-    public void setPrecioUnitario(Double precioUnitario) {
+    public void setPrecioUnitario(BigDecimal precioUnitario) {
         this.precioUnitario = precioUnitario;
     }
 

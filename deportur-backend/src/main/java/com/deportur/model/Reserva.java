@@ -3,6 +3,7 @@ package com.deportur.model;
 import com.deportur.model.enums.EstadoReserva;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -147,10 +148,10 @@ public class Reserva {
         detalle.setReserva(null);
     }
 
-    public Double calcularTotal() {
-        double total = 0.0;
+    public BigDecimal calcularTotal() {
+        BigDecimal total = BigDecimal.ZERO;
         for (DetalleReserva detalle : detalles) {
-            total += detalle.getPrecioUnitario();
+            total = total.add(detalle.getPrecioUnitario());
         }
         return total;
     }
