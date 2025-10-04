@@ -33,7 +33,7 @@ public class Cliente {
 
     @NotNull(message = "El tipo de documento es requerido")
     @Enumerated(EnumType.STRING)
-    @Column(name = "tipo_documento", nullable = false, length = 20)
+    @Column(name = "tipo_documento", nullable = false, columnDefinition = "varchar(20)")
     private TipoDocumento tipoDocumento;
 
     @Size(max = 20, message = "El teléfono no puede exceder 20 caracteres")
