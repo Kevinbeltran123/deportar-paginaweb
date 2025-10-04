@@ -1,454 +1,470 @@
-# ✅ Checklist de Migración DeporTur a Web
+# ✅ Checklist DeporTur - Estado Actual del Proyecto
 
-**Proyecto:** DeporTur - Sistema de Alquiler de Equipos Deportivos  
-**Objetivo:** Migrar de Java Desktop a Web (Spring Boot + React)
-
----
-
-## 🎯 SEMANA 0: PREPARACIÓN (Días 1-4)
-
-### Día 1: Diseño y Planeación
-- [ ] Crear cuenta en Figma
-- [ ] Explorar plantillas de dashboards en Figma Community
-- [ ] Seleccionar paleta de colores (primario, secundario, estados)
-- [ ] Crear wireframes de:
-  - [ ] Pantalla de login
-  - [ ] Dashboard principal
-  - [ ] Lista de reservas
-  - [ ] Formulario de nueva reserva
-  - [ ] Lista de inventario
-  - [ ] Lista de clientes
-  - [ ] Lista de destinos
-  - [ ] Panel de usuarios (admin)
-- [ ] Definir flujos de navegación
-
-### Día 2: Completar Mockups
-- [ ] Convertir wireframes a alta fidelidad
-- [ ] Crear componentes reutilizables (botones, tarjetas, formularios, tablas, modales)
-- [ ] Diseñar versión móvil
-- [ ] Crear prototipo interactivo en Figma
-- [ ] Probar flujo con 2-3 personas
-- [ ] Hacer ajustes según feedback
-
-### Día 3: Configuración de Cuentas
-
-#### Auth0
-- [ ] Crear cuenta en Auth0
-- [ ] Crear aplicación "DeporTur Frontend" (SPA)
-- [ ] Copiar Domain y Client ID
-- [ ] Configurar URLs: Callback, Logout, Web Origins (`http://localhost:5173`)
-- [ ] Habilitar Google en Authentication → Social
-- [ ] Crear API "DeporTur API" (identifier: `https://deportur-api.com`)
-- [ ] Agregar permisos: read/write para reservas, clientes, equipos, admin:all
-- [ ] Guardar todas las credenciales
-
-#### Railway
-- [ ] Crear cuenta en Railway
-- [ ] Crear proyecto "DeporTur Backend"
-- [ ] Agregar servicio MySQL
-- [ ] Copiar credenciales de BD (host, port, username, password, database, URL)
-
-#### Vercel
-- [ ] Crear cuenta en Vercel
-- [ ] Conectar cuenta de GitHub
-
-#### GitHub
-- [ ] Crear repositorio "deportur-web"
-- [ ] Crear README.md básico
-- [ ] Crear .gitignore para Java y React
-
-### Día 4: Entorno Local
-- [ ] Verificar Java 17+ instalado
-- [ ] Verificar Maven instalado
-- [ ] Instalar Node.js 18+
-- [ ] Instalar VS Code (o IDE preferido)
-- [ ] Instalar extensiones: ES7 React snippets, Tailwind IntelliSense, Spring Boot Tools
-- [ ] Instalar MySQL Workbench o DBeaver
-- [ ] Conectar a BD de Railway
-- [ ] Ejecutar script CreateDB en Railway
-- [ ] Verificar tablas y datos de prueba
-- [ ] Crear carpeta local `deportur-web` con subcarpetas `backend` y `frontend`
-- [ ] Crear documento privado con credenciales
+**Proyecto:** DeporTur - Sistema de Alquiler de Equipos Deportivos
+**Estado:** Backend completado y en producción ✅
+**Última actualización:** Octubre 2025
 
 ---
 
-## 🛠️ SEMANA 1-2: BACKEND (Días 5-19)
+## 🎯 ESTADO ACTUAL: BACKEND 100% COMPLETADO
 
-### Día 5: Crear Proyecto Spring Boot
-- [ ] Ir a start.spring.io
-- [ ] Configurar: Maven, Java 17, Spring Boot 3.2.x, Group: com.deportur, Artifact: backend
-- [ ] Agregar dependencias: Web, JPA, MySQL, Security, OAuth2 Resource Server, Validation, Lombok
-- [ ] Descargar y descomprimir en `deportur-backend`
-- [ ] Abrir con IDE
-- [ ] Ejecutar `mvn clean install` para verificar
+### ✅ Backend Spring Boot (COMPLETADO)
 
-### Día 6: Configuración Inicial
-- [ ] Crear `application.properties`
-- [ ] Crear `application-dev.properties`
-- [ ] Configurar conexión a BD con variables de entorno
-- [ ] Crear clase de configuración CORS
-- [ ] Verificar que la app inicia sin errores
-- [ ] Crear paquetes: model, repository, service, controller, dto, exception, config, security
-- [ ] Configurar Git
-- [ ] Primer commit: "Initial Spring Boot setup"
-- [ ] Subir a GitHub
+#### Configuración y Estructura
+- ✅ Proyecto Spring Boot 3.1.4 creado
+- ✅ Conexión a PostgreSQL en Supabase configurada
+- ✅ Variables de entorno con archivo `.env`
+- ✅ Script `run.sh` para ejecución
+- ✅ Estructura de paquetes completa (model, repository, service, controller, dto, exception, config)
+- ✅ Git configurado y código en GitHub
 
-### Día 7-8: Migrar Modelos a JPA
-- [ ] TipoEquipo (agregar @Entity, @Table, @Id, validaciones)
-- [ ] DestinoTuristico
-- [ ] Usuario
-- [ ] Cliente
-- [ ] EquipoDeportivo (con relaciones @ManyToOne)
-- [ ] Reserva (con relaciones)
-- [ ] DetalleReserva
-- [ ] Crear enums: EstadoReserva, EstadoEquipo, TipoDocumento, Rol
-- [ ] Commit después de cada entidad
-- [ ] Verificar que la app arranca
+#### Modelos y Entidades JPA
+- ✅ TipoEquipo
+- ✅ DestinoTuristico
+- ✅ Usuario
+- ✅ Cliente (con validaciones y enum TipoDocumento)
+- ✅ EquipoDeportivo (con relaciones @ManyToOne, cambio a BigDecimal)
+- ✅ Reserva (con método calcularTotal adaptado a BigDecimal)
+- ✅ DetalleReserva (con relaciones bidireccionales, BigDecimal)
+- ✅ Enums: EstadoReserva, EstadoEquipo, TipoDocumento, Rol
 
-### Día 9-10: Crear Repositories
-- [ ] TipoEquipoRepository (extends JpaRepository)
-- [ ] DestinoTuristicoRepository
-- [ ] UsuarioRepository
-- [ ] ClienteRepository (con findByDocumento)
-- [ ] EquipoDeportivoRepository (con findByDisponibleTrue)
-- [ ] ReservaRepository (con findByEstado)
-- [ ] DetalleReservaRepository
-- [ ] Commits frecuentes
+#### Base de Datos
+- ✅ Migración de MySQL a PostgreSQL (Supabase)
+- ✅ Script SQL ejecutado con tablas creadas
+- ✅ ENUMs convertidos a VARCHAR para compatibilidad JPA
+- ✅ Tipos de datos corregidos (BigDecimal para precios)
+- ✅ Connection pooling configurado (puerto 6543)
+- ✅ Prepared statements configurados (prepareThreshold=0)
 
-### Día 11-13: Crear DTOs y Mappers
-- [ ] ClienteDTO
-- [ ] ReservaDTO
-- [ ] EquipoDTO
-- [ ] DestinoDTO
-- [ ] TipoEquipoDTO
-- [ ] UsuarioDTO
-- [ ] CrearClienteRequest
-- [ ] CrearReservaRequest
-- [ ] ActualizarEquipoRequest
-- [ ] Crear mappers (Entity ↔ DTO)
-- [ ] Commits
+#### Repositories
+- ✅ TipoEquipoRepository
+- ✅ DestinoTuristicoRepository (con búsqueda por nombre/ubicación)
+- ✅ ClienteRepository (con búsqueda por documento y nombre)
+- ✅ UsuarioRepository (con búsqueda por email)
+- ✅ EquipoDeportivoRepository (query compleja disponibilidad)
+- ✅ ReservaRepository (búsqueda por cliente y destino)
+- ✅ DetalleReservaRepository (query validación fechas)
 
-### Día 14-15: Implementar Servicios
-- [ ] UsuarioService (interfaz + implementación)
-- [ ] ClienteService
-- [ ] DestinoService
-- [ ] TipoEquipoService
-- [ ] EquipoService
-- [ ] ReservaService
-- [ ] Agregar validaciones de negocio
-- [ ] Agregar manejo de excepciones
-- [ ] Usar @Transactional donde sea necesario
-- [ ] Commits por servicio
+#### Servicios con Lógica de Negocio
+- ✅ ReservaService (12 validaciones completas)
+- ✅ ClienteService (validación documento único)
+- ✅ EquipoService (7 validaciones, comparaciones BigDecimal)
+- ✅ TipoEquipoService (validación antes de eliminar)
+- ✅ DestinoService (validación antes de eliminar)
+- ✅ UsuarioService (adaptado para Auth0)
 
-### Día 16-17: Crear Controllers REST
-- [ ] ClienteController (GET, POST, PUT, DELETE)
-- [ ] DestinoController
-- [ ] TipoEquipoController
-- [ ] EquipoController
-- [ ] ReservaController
-- [ ] UsuarioController (solo admin)
-- [ ] Agregar @Valid para validaciones
-- [ ] Retornar ResponseEntity con códigos HTTP correctos
-- [ ] Probar cada endpoint con Postman
-- [ ] Commits
+#### Controllers REST (35+ endpoints)
+- ✅ ReservaController (7 endpoints)
+- ✅ ClienteController (7 endpoints)
+- ✅ EquipoController (8 endpoints)
+- ✅ DestinoController (6 endpoints)
+- ✅ TipoEquipoController (5 endpoints)
+- ✅ Manejo de excepciones con GlobalExceptionHandler
+- ✅ ResponseEntity con códigos HTTP correctos
 
-### Día 18: Configurar Seguridad Auth0
-- [ ] Agregar dependencia OAuth2 Resource Server
-- [ ] Crear SecurityConfig
-- [ ] Configurar validación de JWT de Auth0
-- [ ] Configurar reglas de autorización (public, protected, admin)
-- [ ] Crear filtro para extraer info del usuario del JWT
-- [ ] Probar con token de Auth0
+#### DTOs
+- ✅ CrearClienteRequest
+- ✅ CrearReservaRequest
+- ✅ CrearEquipoRequest (con BigDecimal)
 
-### Día 19: Testing Backend
-- [ ] Probar todos los endpoints sin token (debe fallar)
-- [ ] Probar todos los endpoints con token (debe funcionar)
-- [ ] Probar endpoints de admin con token de trabajador (debe fallar)
-- [ ] Verificar validaciones
-- [ ] Probar casos límite (fechas inválidas, IDs inexistentes, campos vacíos)
-- [ ] Documentar endpoints
-- [ ] Commit final backend funcional
+#### Seguridad y Autenticación
+- ✅ Auth0 configurado completamente
+- ✅ Google OAuth habilitado
+- ✅ SecurityConfig con validación JWT
+- ✅ AudienceValidator personalizado
+- ✅ CORS configurado
+- ✅ Endpoints públicos y protegidos definidos
+- ✅ Integración OAuth2 Resource Server
+
+#### Testing y Validación
+- ✅ Todos los endpoints probados con JWT
+- ✅ Validaciones de negocio funcionando
+- ✅ Query de disponibilidad de equipos funcionando
+- ✅ Integridad referencial preservada
+- ✅ Manejo de errores centralizado
+- ✅ Login con Google probado y funcionando
+
+#### Documentación Backend
+- ✅ [README.md](deportur-backend/README.md) - Documentación principal completa
+- ✅ [ESTRUCTURA-PROYECTO.md](deportur-backend/ESTRUCTURA-PROYECTO.md) - Arquitectura del código
+- ✅ [CONFIGURACION-SUPABASE.md](deportur-backend/CONFIGURACION-SUPABASE.md) - Guía completa Supabase
+- ✅ [CONFIGURACION-AUTH0.md](deportur-backend/CONFIGURACION-AUTH0.md) - Guía completa Auth0
+- ✅ Instrucciones de instalación
+- ✅ Ejemplos de uso con cURL
+- ✅ Troubleshooting común
 
 ---
 
-## 🎨 SEMANA 3-4: FRONTEND (Días 20-36)
+## 🎨 PENDIENTE: FRONTEND REACT
 
-### Día 20: Crear Proyecto React
+### Día 1-2: Configuración Inicial
 - [ ] Crear proyecto con Vite + React
-- [ ] Instalar dependencias: React Router, Auth0 React SDK, Axios, TanStack Query, Date-fns, React Hook Form, Lucide React
-- [ ] Instalar y configurar Tailwind CSS
-- [ ] Limpiar archivos de ejemplo
-- [ ] Ejecutar proyecto para verificar
-- [ ] Configurar Git
-- [ ] Primer commit
+- [ ] Instalar dependencias:
+  - [ ] React Router DOM
+  - [ ] Auth0 React SDK (@auth0/auth0-react)
+  - [ ] Axios
+  - [ ] TanStack Query (@tanstack/react-query)
+  - [ ] Date-fns
+  - [ ] React Hook Form
+  - [ ] Lucide React (iconos)
+  - [ ] Tailwind CSS
+- [ ] Configurar Tailwind CSS
+- [ ] Crear estructura de carpetas:
+  - [ ] components/
+  - [ ] pages/
+  - [ ] services/
+  - [ ] hooks/
+  - [ ] context/
+  - [ ] utils/
+  - [ ] constants/
+- [ ] Configurar .env.local con variables de Auth0 y API
+- [ ] Configurar Git y primer commit
 
-### Día 21: Estructura y Configuración
-- [ ] Crear carpetas: components, pages, services, hooks, context, utils, constants
-- [ ] Configurar Auth0
-- [ ] Configurar Axios
-- [ ] Crear archivo de constantes
-- [ ] Configurar .env.local con variables
-- [ ] Agregar .env.local a .gitignore
-- [ ] Crear .env.example
-- [ ] Commit
-
-### Día 22: Configurar Auth0
-- [ ] Envolver app con Auth0Provider en main.jsx
-- [ ] Crear hook useAuth
+### Día 3: Auth0 en React
+- [ ] Envolver app con Auth0Provider
+- [ ] Crear hook personalizado useAuth
+- [ ] Implementar flujo de login
 - [ ] Probar login con Google
-- [ ] Verificar redirección
-- [ ] Obtener info del usuario
-- [ ] Commit
+- [ ] Obtener y almacenar JWT token
+- [ ] Configurar redirecciones
 
-### Día 23: Componentes Base
-- [ ] Layout principal
-- [ ] Navbar/Header
-- [ ] Sidebar
+### Día 4-5: Componentes Base y Layout
+- [ ] Layout principal (con sidebar y header)
+- [ ] Navbar/Header (usuario, logout)
+- [ ] Sidebar (menú navegación)
 - [ ] Button (variantes: primary, secondary, danger)
 - [ ] Card
 - [ ] Modal
 - [ ] Table
 - [ ] Input
 - [ ] Select
+- [ ] DatePicker
 - [ ] LoadingSpinner
-- [ ] Alert/Toast
-- [ ] Aplicar estilos Tailwind según mockups
-- [ ] Commit
+- [ ] Alert/Toast para notificaciones
+- [ ] Badge (para estados)
 
-### Día 24: Configurar Routing
-- [ ] Crear páginas vacías: Login, Dashboard, Reservas, NuevaReserva, Clientes, Inventario, Destinos, Usuarios, NotFound
-- [ ] Configurar React Router en App.jsx
-- [ ] Crear rutas protegidas (requieren auth)
-- [ ] Crear rutas admin (requieren rol)
-- [ ] Probar navegación
-- [ ] Commit
+### Día 6: Routing y Navegación
+- [ ] Configurar React Router
+- [ ] Crear páginas básicas:
+  - [ ] Login.jsx
+  - [ ] Dashboard.jsx
+  - [ ] Reservas.jsx
+  - [ ] NuevaReserva.jsx
+  - [ ] Clientes.jsx
+  - [ ] Inventario.jsx
+  - [ ] Destinos.jsx
+  - [ ] TiposEquipo.jsx
+  - [ ] Usuarios.jsx (admin)
+  - [ ] NotFound.jsx
+- [ ] Rutas protegidas (requieren auth)
+- [ ] Rutas admin (requieren rol)
+- [ ] Navegación funcional
 
-### Día 25-26: Servicios de API
-- [ ] api.js (config base Axios con interceptores)
+### Día 7-8: Servicios de API
+- [ ] api.js (configuración Axios base)
+- [ ] Interceptor para agregar JWT automáticamente
+- [ ] Interceptor para manejo de errores
 - [ ] authService.js
-- [ ] clienteService.js (obtenerTodos, obtenerPorId, crear, actualizar, eliminar)
-- [ ] reservaService.js
-- [ ] equipoService.js
-- [ ] destinoService.js
-- [ ] usuarioService.js
-- [ ] Configurar interceptor para JWT automático
-- [ ] Configurar manejo de errores global
-- [ ] Commits
+- [ ] clienteService.js (CRUD completo)
+- [ ] reservaService.js (CRUD + validaciones)
+- [ ] equipoService.js (CRUD + disponibilidad)
+- [ ] destinoService.js (CRUD)
+- [ ] tipoEquipoService.js (CRUD)
+- [ ] usuarioService.js (admin)
 
-### Día 27: Página de Login
-- [ ] Diseñar según mockups
-- [ ] Agregar logo DeporTur
+### Día 9: Página de Login
+- [ ] Diseño responsive
+- [ ] Logo DeporTur
 - [ ] Botón "Continuar con Google"
-- [ ] Llamar función Auth0
-- [ ] Mostrar loading
-- [ ] Manejar errores
-- [ ] Redirigir a Dashboard
-- [ ] Probar flujo completo
-- [ ] Commit
+- [ ] Estados de loading
+- [ ] Manejo de errores
+- [ ] Redirección a Dashboard
 
-### Día 28: Dashboard
-- [ ] Crear layout
-- [ ] Tarjetas con estadísticas (reservas activas, equipos disponibles, reservas hoy)
-- [ ] Gráfico simple (opcional)
-- [ ] Últimas reservas
+### Día 10: Dashboard
+- [ ] Cards con estadísticas:
+  - [ ] Total reservas activas
+  - [ ] Equipos disponibles
+  - [ ] Reservas hoy
+  - [ ] Clientes registrados
+- [ ] Tabla de últimas reservas
 - [ ] Conectar con API
 - [ ] Loading states
-- [ ] Commit
+- [ ] Responsive
 
-### Día 29-30: Gestión de Clientes
-- [ ] Tabla de clientes
-- [ ] Búsqueda/filtro
+### Día 11-12: Gestión de Clientes
+- [ ] Tabla de clientes con paginación
+- [ ] Búsqueda/filtro por nombre, documento
 - [ ] Botón "Nuevo Cliente"
-- [ ] Acciones: ver, editar, eliminar
-- [ ] Conectar con API
-- [ ] Paginación (si hay muchos)
-- [ ] Modal con formulario (nombre, apellido, documento, tipo, teléfono, email)
-- [ ] Validaciones
+- [ ] Modal con formulario (nombre, apellido, documento, tipo, teléfono, email, dirección)
+- [ ] Validaciones frontend
+- [ ] Acciones: editar, eliminar
+- [ ] Confirmación antes de eliminar
 - [ ] Actualizar lista al crear/editar
-- [ ] Commits
+- [ ] Conectar con clienteService
 
-### Día 31-32: Gestión de Equipos
-- [ ] Tabla de equipos (nombre, tipo, marca, estado, precio, destino, disponibilidad)
-- [ ] Filtros (tipo, estado, destino)
+### Día 13-14: Gestión de Equipos
+- [ ] Tabla de equipos con paginación
+- [ ] Mostrar: nombre, tipo, marca, estado, precio, destino, disponibilidad
+- [ ] Filtros: tipo, estado, destino
+- [ ] Búsqueda por nombre
 - [ ] Botón "Nuevo Equipo"
-- [ ] Acciones: ver, editar, eliminar
 - [ ] Modal con formulario
-- [ ] Dropdowns (tipo, destino desde API)
+- [ ] Dropdown tipo (cargar desde API)
+- [ ] Dropdown destino (cargar desde API)
+- [ ] Select estado
+- [ ] Input precio (formateo moneda)
+- [ ] DatePicker fecha adquisición
 - [ ] Validaciones
-- [ ] Conectar con API
-- [ ] Commits
+- [ ] Acciones: editar, eliminar
+- [ ] Conectar con equipoService
 
-### Día 33-34: Gestión de Reservas
-- [ ] Tabla de reservas (ID, cliente, destino, fechas, estado)
-- [ ] Filtros (estado, fecha, destino)
+### Día 15-17: Gestión de Reservas (COMPLEJO)
+#### Lista de Reservas
+- [ ] Tabla con paginación
+- [ ] Mostrar: ID, cliente, destino, fecha inicio, fecha fin, estado, total
 - [ ] Badges de colores según estado
+- [ ] Filtros: estado, fecha, destino
+- [ ] Búsqueda por ID o cliente
 - [ ] Botón "Nueva Reserva"
 - [ ] Acciones: ver detalle, cambiar estado, editar, cancelar
-- [ ] Formulario paso a paso:
-  - [ ] Paso 1: Seleccionar cliente
-  - [ ] Paso 2: Seleccionar destino
-  - [ ] Paso 3: Seleccionar fechas
-  - [ ] Paso 4: Seleccionar equipos disponibles
-  - [ ] Paso 5: Revisar y confirmar
-- [ ] Mostrar resumen con precio
-- [ ] Validar disponibilidad
-- [ ] Conectar con API
-- [ ] Commits frecuentes
 
-### Día 35: Destinos y Tipos de Equipo
+#### Formulario Nueva Reserva (Wizard)
+- [ ] Paso 1: Seleccionar/Buscar cliente
+  - [ ] Autocomplete de clientes
+  - [ ] Opción "Crear nuevo cliente"
+- [ ] Paso 2: Seleccionar destino
+  - [ ] Dropdown con destinos activos
+- [ ] Paso 3: Seleccionar fechas
+  - [ ] DateRangePicker
+  - [ ] Validación fecha inicio < fin
+  - [ ] Validación no fechas pasadas
+- [ ] Paso 4: Seleccionar equipos
+  - [ ] Llamar API equipos disponibles con destino y fechas
+  - [ ] Mostrar cards con equipos disponibles
+  - [ ] Checkbox para seleccionar múltiples
+  - [ ] Mostrar precio de cada equipo
+- [ ] Paso 5: Resumen y confirmar
+  - [ ] Mostrar todos los datos seleccionados
+  - [ ] Calcular total
+  - [ ] Botón "Confirmar Reserva"
+- [ ] Navegación entre pasos (Siguiente, Anterior)
+- [ ] Validaciones en cada paso
+- [ ] Loading al crear
+- [ ] Redirección a lista al completar
+
+#### Detalle de Reserva
+- [ ] Modal con información completa
+- [ ] Datos del cliente
+- [ ] Datos del destino
+- [ ] Lista de equipos reservados con precios
+- [ ] Total calculado
+- [ ] Estado actual
+- [ ] Fechas
+- [ ] Acciones según estado
+
+### Día 18: Gestión de Destinos
 - [ ] Tabla de destinos
-- [ ] CRUD básico destinos
-- [ ] Formulario destinos (nombre, ubicación, descripción)
+- [ ] Botón "Nuevo Destino"
+- [ ] Modal formulario (nombre, ubicación, descripción)
+- [ ] Validaciones
+- [ ] Acciones: editar, eliminar
+- [ ] Confirmación si tiene equipos asociados
+- [ ] Conectar con destinoService
+
+### Día 19: Gestión de Tipos de Equipo
 - [ ] Tabla de tipos de equipo
-- [ ] CRUD básico tipos
-- [ ] Formulario tipos (nombre, descripción)
-- [ ] Commits
+- [ ] Botón "Nuevo Tipo"
+- [ ] Modal formulario (nombre, descripción)
+- [ ] Validaciones
+- [ ] Acciones: editar, eliminar
+- [ ] Confirmación si tiene equipos asociados
+- [ ] Conectar con tipoEquipoService
 
-### Día 36: Gestión de Usuarios
-- [ ] Verificar rol admin
-- [ ] Tabla de usuarios (nombre, email, rol, estado)
+### Día 20: Gestión de Usuarios (Admin)
+- [ ] Verificar rol admin antes de mostrar
+- [ ] Tabla de usuarios
+- [ ] Mostrar: nombre, email, rol, estado
 - [ ] Formulario crear usuario
-- [ ] Cambiar estado (activo/inactivo)
+- [ ] Cambiar rol (Admin/Trabajador)
+- [ ] Cambiar estado (Activo/Inactivo)
 - [ ] NO permitir eliminar usuario actual
-- [ ] Commit
+- [ ] Validación: debe quedar al menos 1 admin
+- [ ] Conectar con usuarioService
 
----
-
-## 🚀 SEMANA 5: DESPLIEGUE (Días 37-45)
-
-### Día 37: Preparar Backend
-- [ ] Revisar configuraciones
-- [ ] Crear application-prod.properties
-- [ ] Configurar variables de entorno
-- [ ] Remover datos hardcoded
-- [ ] Agregar health check endpoint
-- [ ] Crear railway.json
-- [ ] Commit final backend
-
-### Día 38: Desplegar Backend en Railway
-- [ ] Agregar servicio en Railway
-- [ ] Conectar con GitHub
-- [ ] Seleccionar carpeta backend
-- [ ] Configurar variables de entorno (DB_URL, Auth0, JWT, FRONTEND_URL)
-- [ ] Deploy
-- [ ] Ver logs
-- [ ] Probar health check
-- [ ] Copiar URL backend
-
-### Día 39: Actualizar Auth0
-- [ ] Agregar URLs de producción en Auth0 (Callback, Logout, Web Origins)
-- [ ] Guardar cambios
-
-### Día 40: Preparar Frontend
-- [ ] Actualizar variables de entorno (API_URL, Auth0)
-- [ ] Crear vercel.json (si necesario)
-- [ ] Probar build local: `npm run build`
-- [ ] Verificar sin errores
-- [ ] Commit
-
-### Día 41: Desplegar Frontend en Vercel
-- [ ] Importar proyecto desde GitHub en Vercel
-- [ ] Seleccionar carpeta frontend
-- [ ] Configurar variables de entorno (VITE_API_URL, VITE_AUTH0_*)
-- [ ] Deploy
-- [ ] Copiar URL frontend
-
-### Día 42: Actualizar Backend
-- [ ] Actualizar FRONTEND_URL en Railway con URL de Vercel
-- [ ] Esperar redeploy
-
-### Día 43: Testing Producción
-- [ ] Abrir app en Vercel
-- [ ] Probar login con Google
-- [ ] Crear cliente
-- [ ] Crear equipo
-- [ ] Crear reserva completa
-- [ ] Editar entidades
-- [ ] Cambiar estados
-- [ ] Filtros y búsquedas
-- [ ] Navegación
-- [ ] Probar en desktop, tablet, móvil
-- [ ] Probar en Chrome, Firefox, Safari
-- [ ] Anotar bugs
-- [ ] Priorizar
-
-### Día 44-45: Corrección de Bugs
-- [ ] Corregir bugs críticos
-- [ ] Mejorar UX
-- [ ] Agregar loaders faltantes
-- [ ] Mejorar mensajes de error
-- [ ] Agregar confirmaciones para acciones destructivas
-- [ ] Optimizar rendimiento (lazy loading, imágenes, requests)
+### Día 21-22: Pulido y Optimización
+- [ ] Manejo global de errores
+- [ ] Toasts/notificaciones para todas las acciones
+- [ ] Loading states en todas las peticiones
+- [ ] Skeleton loaders
+- [ ] Confirmaciones para acciones destructivas
+- [ ] Validación de permisos por rol
+- [ ] Responsive en todas las pantallas
+- [ ] Dark mode (opcional)
 - [ ] Animaciones sutiles (opcional)
-- [ ] Commits y redeploys
+- [ ] Lazy loading de rutas
+- [ ] Optimizar bundle size
+
+### Día 23: Testing Frontend
+- [ ] Probar login/logout
+- [ ] Probar cada CRUD completo
+- [ ] Probar validaciones
+- [ ] Probar flujo completo de reserva
+- [ ] Probar filtros y búsquedas
+- [ ] Probar en Chrome, Firefox, Safari
+- [ ] Probar en desktop, tablet, móvil
+- [ ] Corregir bugs encontrados
 
 ---
 
-## 📚 SEMANA 6: DOCUMENTACIÓN (Días 46-50)
+## 🚀 DESPLIEGUE Y PRODUCCIÓN
 
-### Día 46: Documentar Proyecto
-- [ ] Actualizar README (descripción, tecnologías, screenshots, link producción, instrucciones locales, variables, autores)
-- [ ] Crear CONTRIBUTING.md (si aplica)
-- [ ] Crear documento de arquitectura
+### Backend en Railway (OPCIONAL - Ya funciona localmente)
+- [ ] Preparar backend para producción
+- [ ] Crear application-prod.properties
+- [ ] Configurar variables de entorno en Railway
+- [ ] Desplegar backend
+- [ ] Probar health check
+- [ ] Copiar URL del backend
 
-### Día 47: Documentar API
-- [ ] Documentar endpoints (método, URL, headers, body, respuesta)
-- [ ] Considerar Swagger/OpenAPI
-- [ ] Crear Postman Collection
+### Frontend en Vercel
+- [ ] Actualizar variables de entorno (URL backend Railway)
+- [ ] Probar build local: `npm run build`
+- [ ] Crear proyecto en Vercel
+- [ ] Conectar con GitHub
+- [ ] Configurar variables de entorno en Vercel
+- [ ] Desplegar frontend
+- [ ] Actualizar URLs en Auth0 (callbacks, logout, origins)
 
-### Día 48: Video y Presentación
-- [ ] Grabar video demo (login, navegación, reserva, inventario, admin)
-- [ ] Preparar presentación (arquitectura, stack, diseño, retos, aprendizajes)
-
-### Día 49: Testing Final
-- [ ] Testing completo usuario final
-- [ ] Pedir feedback de compañeros
-- [ ] Hacer ajustes finales
-- [ ] Verificar todo funciona
-
-### Día 50: Entrega
-- [ ] Verificar repositorio ordenado
-- [ ] Verificar documentación completa
-- [ ] Verificar app en producción funciona
-- [ ] Crear release/tag en GitHub
-- [ ] Preparar materiales (links repo, app, video, docs, credenciales)
-- [ ] ¡Entregar y celebrar! 🎉
+### Testing en Producción
+- [ ] Probar login con Google
+- [ ] Probar todas las funcionalidades
+- [ ] Verificar en diferentes dispositivos
+- [ ] Corregir bugs de producción
 
 ---
 
-## 📊 RESUMEN
+## 📚 DOCUMENTACIÓN PROYECTO COMPLETO
 
-| Fase | Días | Tareas Principales |
-|------|------|-------------------|
-| Preparación | 1-4 | Mockups, cuentas, entorno local |
-| Backend | 5-19 | Spring Boot, JPA, REST, Auth0 |
-| Frontend | 20-36 | React, componentes, páginas, servicios |
-| Despliegue | 37-45 | Railway, Vercel, testing producción |
-| Docs | 46-50 | README, API docs, video, entrega |
+### Documentación Técnica
+- [ ] README.md principal del repositorio
+- [ ] Capturas de pantalla del sistema
+- [ ] Diagrama de arquitectura
+- [ ] Documento de decisiones técnicas
+- [ ] Manual de usuario
+- [ ] Guía de contribución
 
-**Total: 50 días (~7-8 semanas a 6-8 horas/día)**
+### Documentación API (Opcional - Backend ya tiene Swagger)
+- [ ] Collection de Postman actualizada
+- [ ] Ejemplos de requests/responses
+- [ ] Guía de autenticación
 
----
-
-## 🎯 TECNOLOGÍAS
-
-**Backend:** Java 17, Spring Boot 3, JPA, Spring Security, OAuth2, MySQL, Maven  
-**Frontend:** React 18, Vite, Router, Auth0, Axios, TanStack Query, Tailwind, Lucide  
-**Servicios:** Auth0, Railway, Vercel, GitHub
-
----
-
-## ⚠️ RECORDATORIOS
-
-- ✅ Commits frecuentes con mensajes descriptivos
-- ✅ Probar antes de avanzar
-- ✅ No más de 2 horas en un bug (pedir ayuda)
-- ✅ Documentar decisiones importantes
-- ✅ Código limpio y comentado
-- ✅ Desplegar temprano y frecuente
+### Presentación
+- [ ] Video demo del sistema funcionando
+- [ ] Presentación técnica (arquitectura, stack, retos)
+- [ ] Documentación de aprendizajes
 
 ---
 
-**Proyecto:** DeporTur - Sistema de Alquiler de Equipos Deportivos  
-**Autores:** Juan Perea, Kevin Beltran  
-**Fecha:** Octubre 2025
+## 🎯 MEJORAS FUTURAS (Post-MVP)
+
+### Funcionalidades
+- [ ] Sistema de notificaciones por email
+- [ ] Recordatorios de reservas
+- [ ] Reportes y estadísticas avanzadas
+- [ ] Exportar reportes a PDF/Excel
+- [ ] Sistema de calificaciones de equipos
+- [ ] Historial de mantenimiento de equipos
+- [ ] Integración con pasarela de pagos
+- [ ] Chat de soporte
+- [ ] Multi-idioma (i18n)
+
+### Técnicas
+- [ ] Tests unitarios backend (JUnit)
+- [ ] Tests integración backend
+- [ ] Tests frontend (Jest, React Testing Library)
+- [ ] CI/CD con GitHub Actions
+- [ ] Monitoreo y logs (Sentry)
+- [ ] Cache con Redis
+- [ ] WebSockets para notificaciones en tiempo real
+- [ ] PWA (Progressive Web App)
+
+---
+
+## 📊 RESUMEN DE PROGRESO
+
+### Completado ✅
+- ✅ **Backend 100%** (35+ endpoints REST funcionando)
+- ✅ **Base de Datos** (PostgreSQL en Supabase)
+- ✅ **Autenticación** (Auth0 con Google OAuth)
+- ✅ **Documentación Backend** (4 archivos MD completos)
+
+### En Progreso 🔄
+- 🔄 **Frontend React** (0% - Por iniciar)
+
+### Pendiente ⏳
+- ⏳ **Despliegue Producción** (Railway + Vercel)
+- ⏳ **Documentación Proyecto Completo**
+- ⏳ **Video Demo**
+
+### Estimado de Tiempo Restante
+- Frontend: **20-25 días** (trabajando 6-8 horas/día)
+- Despliegue: **3-5 días**
+- Documentación: **3-5 días**
+- **Total restante: ~30-35 días (4-5 semanas)**
+
+---
+
+## 🎓 TECNOLOGÍAS DEL PROYECTO
+
+### Backend ✅
+- Java 17
+- Spring Boot 3.1.4
+- Spring Data JPA
+- Spring Security + OAuth2 Resource Server
+- PostgreSQL (Supabase)
+- Auth0
+- Maven
+
+### Frontend ⏳
+- React 18
+- Vite
+- React Router DOM
+- Auth0 React SDK
+- Axios
+- TanStack Query
+- React Hook Form
+- Tailwind CSS
+- Lucide React (iconos)
+- Date-fns
+
+### Servicios
+- Supabase (Base de Datos PostgreSQL)
+- Auth0 (Autenticación)
+- Railway (Despliegue Backend - opcional)
+- Vercel (Despliegue Frontend)
+- GitHub (Control de versiones)
+
+---
+
+## ⚠️ NOTAS IMPORTANTES
+
+### Backend
+- ✅ Usar puerto **6543** (Transaction Pooler) para Supabase
+- ✅ BigDecimal para campos de precio (no Double)
+- ✅ VARCHAR para ENUMs (no PostgreSQL native ENUMs)
+- ✅ prepareThreshold=0 en JDBC URL
+- ✅ Archivo `.env` nunca debe subirse a Git
+
+### Frontend (Próximos Pasos)
+- Usar variables de entorno con prefijo `VITE_`
+- Implementar manejo de errores global
+- Usar TanStack Query para cache de datos
+- Implementar loading states en todas las peticiones
+- Validaciones tanto frontend como backend
+- Responsive design desde el inicio
+
+---
+
+**Última actualización:** Octubre 2025
+**Autores:** Juan Perea, Kevin Beltran
+**Estado:** Backend Completo ✅ | Frontend Pendiente ⏳
