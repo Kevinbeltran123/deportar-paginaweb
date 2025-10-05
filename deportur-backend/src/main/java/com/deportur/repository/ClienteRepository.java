@@ -13,5 +13,5 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
     Optional<Cliente> findByDocumento(String documento);
 
     // Migrado de ClienteDAO.buscarPorNombreOApellido()
-    List<Cliente> findByNombreContainingOrApellidoContaining(String nombre, String apellido);
+    List<Cliente> findByNombreContainingIgnoreCaseOrApellidoContainingIgnoreCase(String nombre, String apellido);
 }
