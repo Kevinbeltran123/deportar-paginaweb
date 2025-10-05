@@ -22,7 +22,9 @@ export const SelectorEquipos = ({ destinoId, onEquiposChange, equiposSeleccionad
       const data = await listarEquipos();
       // Filtrar equipos del destino seleccionado y que estén disponibles
       const equiposFiltrados = data.filter(
-        e => e.destino?.idDestino === destinoId && e.estado === 'DISPONIBLE' && e.activo
+        e => e.destino?.idDestino === destinoId &&
+             e.disponible &&
+             e.estado !== 'FUERA_DE_SERVICIO'
       );
       setEquiposDisponibles(equiposFiltrados);
     } catch (error) {
@@ -38,7 +40,7 @@ export const SelectorEquipos = ({ destinoId, onEquiposChange, equiposSeleccionad
       const nuevoEquipo = {
         equipo,
         cantidad: 1,
-        precioPorDia: equipo.precioPorDia
+        precioPorDia: equipo.precioAlquiler
       };
       onEquiposChange([...equiposSeleccionados, nuevoEquipo]);
     }
@@ -93,7 +95,7 @@ export const SelectorEquipos = ({ destinoId, onEquiposChange, equiposSeleccionad
                     <div>
                       <p className="font-medium text-gray-900">{equipo.nombre}</p>
                       <p className="text-sm text-gray-500">
-                        {equipo.tipo?.nombre} - ${equipo.precioPorDia}/día
+                        {equipo.tipo?.nombre} - ${equipo.precioAlquiler}/día
                       </p>
                     </div>
                   </div>
