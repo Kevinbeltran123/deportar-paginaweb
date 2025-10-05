@@ -41,7 +41,7 @@ export const obtenerClientePorId = async (id) => {
 export const buscarClientes = async (nombre) => {
   try {
     const response = await api.get('/clientes/buscar', {
-      params: { nombre }
+      params: { q: nombre }
     });
     return response.data;
   } catch (error) {
