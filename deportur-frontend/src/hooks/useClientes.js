@@ -153,7 +153,8 @@ export const useClientes = () => {
         setClienteActual(null);
       }
     } catch (err) {
-      const errorMsg = err.response?.data?.message || err.message;
+      // El backend devuelve el mensaje de error como string directo
+      const errorMsg = err.response?.data || err.message;
       setError(errorMsg);
       throw err;
     } finally {

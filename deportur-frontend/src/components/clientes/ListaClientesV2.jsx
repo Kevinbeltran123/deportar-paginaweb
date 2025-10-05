@@ -93,8 +93,12 @@ export const ListaClientesV2 = () => {
         alert('Cliente no encontrado');
       } else if (err.response?.status === 403) {
         alert('No tienes permisos para eliminar clientes');
+      } else if (err.response?.status === 400) {
+        // El backend devuelve el mensaje de error como string directo
+        const mensaje = err.response?.data || 'Error al eliminar cliente';
+        alert(mensaje);
       } else {
-        alert('Error al eliminar cliente: ' + (err.response?.data?.message || err.message));
+        alert('Error al eliminar cliente: ' + (err.response?.data || err.message));
       }
     }
   };
