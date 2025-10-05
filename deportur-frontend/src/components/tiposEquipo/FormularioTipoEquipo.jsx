@@ -20,29 +20,30 @@ export const FormularioTipoEquipo = ({ tipoEquipoId = null, onSuccess, onCancel 
 
   const [validationErrors, setValidationErrors] = useState({});
 
+  // Cargar datos cuando se edita un tipo existente
   useEffect(() => {
-    if (isAuthenticated && tipoEquipoId) {
-      cargarTipoEquipo();
-    }
+    const cargarDatos = async () => {
+      if (isAuthenticated && tipoEquipoId) {
+        setIsLoading(true);
+        setError(null);
+
+        try {
+          const tipo = await obtenerTipoEquipoPorId(tipoEquipoId);
+          setFormData({
+            nombre: tipo.nombre || '',
+            descripcion: tipo.descripcion || '',
+            activo: tipo.activo ?? true
+          });
+        } catch (err) {
+          setError('Error al cargar tipo de equipo: ' + (err.response?.data?.message || err.message));
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    cargarDatos();
   }, [isAuthenticated, tipoEquipoId]);
-
-  const cargarTipoEquipo = async () => {
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const tipo = await obtenerTipoEquipoPorId(tipoEquipoId);
-      setFormData({
-        nombre: tipo.nombre || '',
-        descripcion: tipo.descripcion || '',
-        activo: tipo.activo ?? true
-      });
-    } catch (err) {
-      setError('Error al cargar tipo de equipo: ' + (err.response?.data?.message || err.message));
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;

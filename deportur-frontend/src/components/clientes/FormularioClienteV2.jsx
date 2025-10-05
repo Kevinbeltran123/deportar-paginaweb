@@ -16,7 +16,7 @@ export const FormularioClienteV2 = ({ clienteId = null, onSuccess, onCancel }) =
     nombre: '',
     apellido: '',
     documento: '',
-    tipoDocumento: 'CEDULA',
+    tipoDocumento: 'CC',
     telefono: '',
     email: '',
     direccion: ''
@@ -40,7 +40,7 @@ export const FormularioClienteV2 = ({ clienteId = null, onSuccess, onCancel }) =
         nombre: cliente.nombre || '',
         apellido: cliente.apellido || '',
         documento: cliente.documento || '',
-        tipoDocumento: cliente.tipoDocumento || 'CEDULA',
+        tipoDocumento: cliente.tipoDocumento || 'CC',
         telefono: cliente.telefono || '',
         email: cliente.email || '',
         direccion: cliente.direccion || ''
@@ -115,11 +115,22 @@ export const FormularioClienteV2 = ({ clienteId = null, onSuccess, onCancel }) =
     setIsSaving(true);
     setError(null);
 
+    // Preparar datos: eliminar campos opcionales vacíos
+    const dataToSend = {
+      nombre: formData.nombre.trim(),
+      apellido: formData.apellido.trim(),
+      documento: formData.documento.trim(),
+      tipoDocumento: formData.tipoDocumento,
+      ...(formData.telefono?.trim() && { telefono: formData.telefono.trim() }),
+      ...(formData.email?.trim() && { email: formData.email.trim() }),
+      ...(formData.direccion?.trim() && { direccion: formData.direccion.trim() })
+    };
+
     try {
       if (clienteId) {
-        await actualizarCliente(clienteId, formData);
+        await actualizarCliente(clienteId, dataToSend);
       } else {
-        await crearCliente(formData);
+        await crearCliente(dataToSend);
       }
 
       if (onSuccess) {
@@ -153,9 +164,9 @@ export const FormularioClienteV2 = ({ clienteId = null, onSuccess, onCancel }) =
   }
 
   const tipoDocumentoOptions = [
-    { value: 'CEDULA', label: 'Cédula' },
-    { value: 'PASAPORTE', label: 'Pasaporte' },
-    { value: 'TARJETA_IDENTIDAD', label: 'Tarjeta de Identidad' }
+    { value: 'CC', label: 'Cédula de Ciudadanía' },
+    { value: 'CE', label: 'Cédula de Extranjería' },
+    { value: 'PASAPORTE', label: 'Pasaporte' }
   ];
 
   return (

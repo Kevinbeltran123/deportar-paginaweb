@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useAuth } from '../../hooks/useAuth';
 import { buscarClientes } from '../../services';
 import { Search, X } from 'lucide-react';
 import { Button, Badge, Spinner } from '../ui';
@@ -8,21 +9,24 @@ import { Button, Badge, Spinner } from '../ui';
  * Usado en formularios de reserva
  */
 export const BuscarCliente = ({ onSelect, selectedCliente }) => {
+  const { isAuthenticated } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
   const [clientes, setClientes] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   const [showResults, setShowResults] = useState(false);
 
   useEffect(() => {
-    if (searchTerm.length >= 2) {
+    if (isAuthenticated && searchTerm.length >= 2) {
       buscarClientesDebounced();
     } else {
       setClientes([]);
       setShowResults(false);
     }
-  }, [searchTerm]);
+  }, [searchTerm, isAuthenticated]);
 
   const buscarClientesDebounced = async () => {
+    if (!isAuthenticated) return;
+
     setIsSearching(true);
     try {
       const resultados = await buscarClientes(searchTerm);

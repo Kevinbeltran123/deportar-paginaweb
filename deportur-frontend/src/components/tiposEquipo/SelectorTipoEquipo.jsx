@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useAuth } from '../../hooks/useAuth';
 import { listarTiposEquipo } from '../../services';
 import { Package } from 'lucide-react';
 
@@ -6,12 +7,15 @@ import { Package } from 'lucide-react';
  * Selector de tipo de equipo para formularios
  */
 export const SelectorTipoEquipo = ({ onSelect, selectedTipo, soloActivos = true }) => {
+  const { isAuthenticated } = useAuth();
   const [tipos, setTipos] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    cargarTipos();
-  }, []);
+    if (isAuthenticated) {
+      cargarTipos();
+    }
+  }, [isAuthenticated]);
 
   const cargarTipos = async () => {
     setIsLoading(true);
