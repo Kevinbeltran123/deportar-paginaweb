@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { listarTiposEquipo, eliminarTipoEquipo } from '../../services';
-import { Table, Button, Input, Modal, Spinner, Badge } from '../ui';
+import { Table, Button, Input, Modal, Spinner } from '../ui';
 import { Search, Plus, Edit, Trash2, RefreshCw, Package } from 'lucide-react';
 import { FormularioTipoEquipo } from './FormularioTipoEquipo';
 
@@ -16,7 +16,6 @@ export const ListaTiposEquipo = () => {
   const [error, setError] = useState(null);
 
   const [searchTerm, setSearchTerm] = useState('');
-  const [filtroActivo, setFiltroActivo] = useState('');
 
   const [modalCrear, setModalCrear] = useState(false);
   const [modalEditar, setModalEditar] = useState(false);
@@ -30,7 +29,7 @@ export const ListaTiposEquipo = () => {
 
   useEffect(() => {
     filtrarTipos();
-  }, [searchTerm, filtroActivo, tipos]);
+  }, [searchTerm, tipos]);
 
   const cargarTipos = async () => {
     setIsLoading(true);
@@ -58,11 +57,6 @@ export const ListaTiposEquipo = () => {
       );
     }
 
-    if (filtroActivo !== '') {
-      const activo = filtroActivo === 'true';
-      filtered = filtered.filter(tipo => tipo.activo === activo);
-    }
-
     setTiposFiltrados(filtered);
   };
 
@@ -76,7 +70,17 @@ export const ListaTiposEquipo = () => {
       setTipos(tipos.filter(t => t.idTipo !== tipo.idTipo));
       alert('Tipo eliminado exitosamente');
     } catch (err) {
-      alert('Error al eliminar tipo: ' + (err.response?.data?.message || err.message));
+      if (err.response?.status === 404) {
+        alert('Tipo de equipo no encontrado');
+      } else if (err.response?.status === 403) {
+        alert('No tienes permisos para eliminar tipos de equipo');
+      } else if (err.response?.status === 400) {
+        // El backend devuelve el mensaje de error como string directo
+        const mensaje = err.response?.data || 'Error al eliminar tipo';
+        alert(mensaje);
+      } else {
+        alert('Error al eliminar tipo: ' + (err.response?.data || err.message));
+      }
     }
   };
 
@@ -116,7 +120,7 @@ export const ListaTiposEquipo = () => {
   }
 
   const columns = [
-    { key: 'idTipoEquipo', label: 'ID' },
+    { key: 'idTipo', label: 'ID' },
     {
       key: 'nombre',
       label: 'Tipo de Equipo',
@@ -131,15 +135,6 @@ export const ListaTiposEquipo = () => {
       key: 'descripcion',
       label: 'Descripción',
       render: (tipo) => tipo.descripcion || '-'
-    },
-    {
-      key: 'activo',
-      label: 'Estado',
-      render: (tipo) => (
-        <Badge variant={tipo.activo ? 'success' : 'danger'}>
-          {tipo.activo ? 'Activo' : 'Inactivo'}
-        </Badge>
-      )
     }
   ];
 
@@ -160,27 +155,15 @@ export const ListaTiposEquipo = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-            <input
-              type="text"
-              placeholder="Buscar por nombre o descripción..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
-          <select
-            value={filtroActivo}
-            onChange={(e) => setFiltroActivo(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="">Todos los estados</option>
-            <option value="true">Activos</option>
-            <option value="false">Inactivos</option>
-          </select>
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+          <input
+            type="text"
+            placeholder="Buscar por nombre o descripción..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
         </div>
 
         <div className="mt-4 text-sm text-gray-600">
