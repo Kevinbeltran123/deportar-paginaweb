@@ -22,7 +22,7 @@ export const FormularioCliente = ({ clienteId = null, onSuccess, onCancel }) => 
     nombre: '',
     apellido: '',
     documento: '',
-    tipoDocumento: 'CEDULA',
+    tipoDocumento: 'CC',
     telefono: '',
     email: '',
     direccion: ''
@@ -53,7 +53,7 @@ export const FormularioCliente = ({ clienteId = null, onSuccess, onCancel }) => 
         nombre: cliente.nombre || '',
         apellido: cliente.apellido || '',
         documento: cliente.documento || '',
-        tipoDocumento: cliente.tipoDocumento || 'CEDULA',
+        tipoDocumento: cliente.tipoDocumento || 'CC',
         telefono: cliente.telefono || '',
         email: cliente.email || '',
         direccion: cliente.direccion || ''
@@ -243,9 +243,9 @@ export const FormularioCliente = ({ clienteId = null, onSuccess, onCancel }) => 
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               disabled={isSaving}
             >
-              <option value="CEDULA">Cédula</option>
+              <option value="CC">Cédula de Ciudadanía</option>
+              <option value="CE">Cédula de Extranjería</option>
               <option value="PASAPORTE">Pasaporte</option>
-              <option value="TARJETA_IDENTIDAD">Tarjeta de Identidad</option>
             </select>
           </div>
 

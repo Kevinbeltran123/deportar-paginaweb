@@ -133,3 +133,6 @@ export const cancelarReserva = async (id) => {
     throw error;
   }
 };
+
+// Alias para eliminarReserva
+export const eliminarReserva = cancelarReserva;

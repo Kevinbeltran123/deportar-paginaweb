@@ -52,7 +52,7 @@ export const Dashboard = () => {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
           <Link to="/clientes" className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow cursor-pointer">
             <div className="flex items-center">
               <div className="flex-shrink-0 bg-blue-100 rounded-md p-3">
@@ -109,6 +109,20 @@ export const Dashboard = () => {
               </div>
             </div>
           </Link>
+
+          <Link to="/reservas" className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow cursor-pointer">
+            <div className="flex items-center">
+              <div className="flex-shrink-0 bg-indigo-100 rounded-md p-3">
+                <svg className="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                </svg>
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-500">Reservas</p>
+                <p className="text-2xl font-semibold text-gray-900">-</p>
+              </div>
+            </div>
+          </Link>
         </div>
 
         {/* Next Steps */}
@@ -136,8 +150,12 @@ export const Dashboard = () => {
               <span>Implementar página de gestión de Clientes (CRUD completo)</span>
             </li>
             <li className="flex items-center space-x-2">
-              <span className="text-gray-400">○</span>
-              <span>Implementar páginas de Equipos, Destinos y Reservas</span>
+              <span className="text-green-500">✓</span>
+              <span>Implementar todas las páginas del sistema (Clientes, Equipos, Destinos, Reservas)</span>
+            </li>
+            <li className="flex items-center space-x-2">
+              <span className="text-green-500">✓</span>
+              <span>Sistema completo y funcional con CRUD de todas las entidades</span>
             </li>
           </ul>
         </div>
