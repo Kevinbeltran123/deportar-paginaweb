@@ -94,7 +94,7 @@ export const FormularioEquipo = ({ equipoId = null, onSuccess, onCancel }) => {
     const dataToSend = {
       ...formData,
       precioPorDia: parseFloat(formData.precioPorDia),
-      tipo: { idTipoEquipo: tipoSeleccionado.idTipoEquipo },
+      tipo: { idTipo: tipoSeleccionado.idTipo },
       destino: { idDestino: destinoSeleccionado.idDestino }
     };
 

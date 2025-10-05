@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useAuth } from '../../hooks/useAuth';
 import { listarDestinos } from '../../services';
 import { MapPin, X } from 'lucide-react';
 import { Badge } from '../ui';
@@ -7,19 +8,23 @@ import { Badge } from '../ui';
  * Selector de destino para formularios
  */
 export const SelectorDestino = ({ onSelect, selectedDestino, soloActivos = true }) => {
+  const { isAuthenticated } = useAuth();
   const [destinos, setDestinos] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    cargarDestinos();
-  }, []);
+    if (isAuthenticated) {
+      cargarDestinos();
+    }
+  }, [isAuthenticated]);
 
   const cargarDestinos = async () => {
     setIsLoading(true);
     try {
       const data = await listarDestinos();
-      const destinosFiltrados = soloActivos ? data.filter(d => d.activo) : data;
-      setDestinos(destinosFiltrados);
+      // Nota: El modelo DestinoTuristico del backend no tiene campo 'activo'
+      // por lo tanto mostramos todos los destinos sin filtrar
+      setDestinos(data);
     } catch (error) {
       console.error('Error al cargar destinos:', error);
     } finally {
@@ -48,7 +53,7 @@ export const SelectorDestino = ({ onSelect, selectedDestino, soloActivos = true 
               <p className="text-lg font-semibold text-purple-900">{selectedDestino.nombre}</p>
             </div>
             <p className="text-sm text-purple-700 mt-1">
-              {selectedDestino.ciudad}, {selectedDestino.departamento}
+              {selectedDestino.ubicacion}
             </p>
           </div>
           <button onClick={handleClear} className="text-purple-600 hover:text-purple-800">
@@ -73,7 +78,7 @@ export const SelectorDestino = ({ onSelect, selectedDestino, soloActivos = true 
         <option value="">Seleccionar destino...</option>
         {destinos.map((destino) => (
           <option key={destino.idDestino} value={destino.idDestino}>
-            {destino.nombre} - {destino.ciudad}, {destino.departamento}
+            {destino.nombre} - {destino.ubicacion}
           </option>
         ))}
       </select>
