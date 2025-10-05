@@ -22,7 +22,7 @@ export const FormularioCliente = ({ clienteId = null, onSuccess, onCancel }) => 
     nombre: '',
     apellido: '',
     documento: '',
-    tipoDocumento: 'DNI',
+    tipoDocumento: 'CEDULA',
     telefono: '',
     email: '',
     direccion: ''
@@ -53,7 +53,7 @@ export const FormularioCliente = ({ clienteId = null, onSuccess, onCancel }) => 
         nombre: cliente.nombre || '',
         apellido: cliente.apellido || '',
         documento: cliente.documento || '',
-        tipoDocumento: cliente.tipoDocumento || 'DNI',
+        tipoDocumento: cliente.tipoDocumento || 'CEDULA',
         telefono: cliente.telefono || '',
         email: cliente.email || '',
         direccion: cliente.direccion || ''
@@ -105,15 +105,12 @@ export const FormularioCliente = ({ clienteId = null, onSuccess, onCancel }) => 
       errors.documento = 'El documento es requerido';
     }
 
-    if (!formData.email.trim()) {
-      errors.email = 'El email es requerido';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+    // Email es opcional, pero si se proporciona debe ser válido
+    if (formData.email.trim() && !/\S+@\S+\.\S+/.test(formData.email)) {
       errors.email = 'Email inválido';
     }
 
-    if (!formData.telefono.trim()) {
-      errors.telefono = 'El teléfono es requerido';
-    }
+    // Teléfono es opcional según la especificación
 
     setValidationErrors(errors);
     return Object.keys(errors).length === 0;
@@ -246,9 +243,9 @@ export const FormularioCliente = ({ clienteId = null, onSuccess, onCancel }) => 
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               disabled={isSaving}
             >
-              <option value="DNI">DNI</option>
-              <option value="PASAPORTE">Pasaporte</option>
               <option value="CEDULA">Cédula</option>
+              <option value="PASAPORTE">Pasaporte</option>
+              <option value="TARJETA_IDENTIDAD">Tarjeta de Identidad</option>
             </select>
           </div>
 
@@ -275,7 +272,7 @@ export const FormularioCliente = ({ clienteId = null, onSuccess, onCancel }) => 
         {/* Email */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Email *
+            Email
           </label>
           <input
             type="email"
@@ -295,7 +292,7 @@ export const FormularioCliente = ({ clienteId = null, onSuccess, onCancel }) => 
         {/* Teléfono */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Teléfono *
+            Teléfono
           </label>
           <input
             type="tel"

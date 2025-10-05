@@ -4,6 +4,10 @@ import { useEffect } from 'react'
 import { Login } from './pages/Login'
 import { Dashboard } from './pages/Dashboard'
 import { PruebaAPIs } from './pages/PruebaAPIs'
+import { ClientesPage } from './pages/ClientesPage'
+import { DestinosPage } from './pages/DestinosPage'
+import { TiposEquipoPage } from './pages/TiposEquipoPage'
+import { EquiposPage } from './pages/EquiposPage'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { setTokenGetter } from './services/api'
 
@@ -47,8 +51,40 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="/" element={<Navigate to="/prueba" replace />} />
-        <Route path="*" element={<Navigate to="/prueba" replace />} />
+        <Route
+          path="/clientes"
+          element={
+            <ProtectedRoute>
+              <ClientesPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/destinos"
+          element={
+            <ProtectedRoute>
+              <DestinosPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/tipos-equipo"
+          element={
+            <ProtectedRoute>
+              <TiposEquipoPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/equipos"
+          element={
+            <ProtectedRoute>
+              <EquiposPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </BrowserRouter>
   )

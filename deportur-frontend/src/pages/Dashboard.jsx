@@ -1,4 +1,5 @@
 import { useAuth } from '../hooks/useAuth'
+import { Link } from 'react-router-dom'
 
 export const Dashboard = () => {
   const { user, logout } = useAuth()
@@ -52,10 +53,10 @@ export const Dashboard = () => {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-          <div className="bg-white rounded-lg shadow p-6">
+          <Link to="/clientes" className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow cursor-pointer">
             <div className="flex items-center">
-              <div className="flex-shrink-0 bg-primary-100 rounded-md p-3">
-                <svg className="h-6 w-6 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="flex-shrink-0 bg-blue-100 rounded-md p-3">
+                <svg className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                 </svg>
               </div>
@@ -64,9 +65,9 @@ export const Dashboard = () => {
                 <p className="text-2xl font-semibold text-gray-900">-</p>
               </div>
             </div>
-          </div>
+          </Link>
 
-          <div className="bg-white rounded-lg shadow p-6">
+          <Link to="/equipos" className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow cursor-pointer">
             <div className="flex items-center">
               <div className="flex-shrink-0 bg-green-100 rounded-md p-3">
                 <svg className="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -78,23 +79,23 @@ export const Dashboard = () => {
                 <p className="text-2xl font-semibold text-gray-900">-</p>
               </div>
             </div>
-          </div>
+          </Link>
 
-          <div className="bg-white rounded-lg shadow p-6">
+          <Link to="/tipos-equipo" className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow cursor-pointer">
             <div className="flex items-center">
-              <div className="flex-shrink-0 bg-blue-100 rounded-md p-3">
-                <svg className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="flex-shrink-0 bg-orange-100 rounded-md p-3">
+                <svg className="h-6 w-6 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                 </svg>
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-500">Reservas</p>
+                <p className="text-sm font-medium text-gray-500">Tipos Equipo</p>
                 <p className="text-2xl font-semibold text-gray-900">-</p>
               </div>
             </div>
-          </div>
+          </Link>
 
-          <div className="bg-white rounded-lg shadow p-6">
+          <Link to="/destinos" className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow cursor-pointer">
             <div className="flex items-center">
               <div className="flex-shrink-0 bg-purple-100 rounded-md p-3">
                 <svg className="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -107,7 +108,7 @@ export const Dashboard = () => {
                 <p className="text-2xl font-semibold text-gray-900">-</p>
               </div>
             </div>
-          </div>
+          </Link>
         </div>
 
         {/* Next Steps */}
@@ -119,20 +120,24 @@ export const Dashboard = () => {
               <span>Configurar Auth0 en React</span>
             </li>
             <li className="flex items-center space-x-2">
-              <span className="text-gray-400">○</span>
+              <span className="text-green-500">✓</span>
               <span>Crear componentes base (Button, Card, Modal, Table)</span>
             </li>
             <li className="flex items-center space-x-2">
-              <span className="text-gray-400">○</span>
+              <span className="text-green-500">✓</span>
               <span>Configurar React Router con rutas protegidas</span>
             </li>
             <li className="flex items-center space-x-2">
-              <span className="text-gray-400">○</span>
+              <span className="text-green-500">✓</span>
               <span>Crear servicios de API (Axios + interceptores)</span>
             </li>
             <li className="flex items-center space-x-2">
+              <span className="text-green-500">✓</span>
+              <span>Implementar página de gestión de Clientes (CRUD completo)</span>
+            </li>
+            <li className="flex items-center space-x-2">
               <span className="text-gray-400">○</span>
-              <span>Implementar páginas de gestión (Clientes, Equipos, Reservas)</span>
+              <span>Implementar páginas de Equipos, Destinos y Reservas</span>
             </li>
           </ul>
         </div>
