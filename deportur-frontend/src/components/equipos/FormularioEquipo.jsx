@@ -93,10 +93,14 @@ export const FormularioEquipo = ({ equipoId = null, onSuccess, onCancel }) => {
     setError(null);
 
     const dataToSend = {
-      ...formData,
+      nombre: formData.nombre,
+      marca: formData.marca,
+      fechaAdquisicion: formData.fechaAdquisicion,
       precioAlquiler: parseFloat(formData.precioAlquiler),
-      tipo: { idTipo: tipoSeleccionado.idTipo },
-      destino: { idDestino: destinoSeleccionado.idDestino }
+      estado: formData.estado,
+      disponible: formData.disponible,
+      idTipo: tipoSeleccionado.idTipo,
+      idDestino: destinoSeleccionado.idDestino
     };
 
     try {
