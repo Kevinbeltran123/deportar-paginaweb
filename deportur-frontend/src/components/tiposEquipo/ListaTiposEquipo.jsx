@@ -72,8 +72,8 @@ export const ListaTiposEquipo = () => {
     }
 
     try {
-      await eliminarTipoEquipo(tipo.idTipoEquipo);
-      setTipos(tipos.filter(t => t.idTipoEquipo !== tipo.idTipoEquipo));
+      await eliminarTipoEquipo(tipo.idTipo);
+      setTipos(tipos.filter(t => t.idTipo !== tipo.idTipo));
       alert('Tipo eliminado exitosamente');
     } catch (err) {
       alert('Error al eliminar tipo: ' + (err.response?.data?.message || err.message));
@@ -229,7 +229,7 @@ export const ListaTiposEquipo = () => {
         size="md"
       >
         <FormularioTipoEquipo
-          tipoEquipoId={tipoSeleccionado?.idTipoEquipo}
+          tipoEquipoId={tipoSeleccionado?.idTipo}
           onSuccess={handleEditarSuccess}
           onCancel={() => {
             setModalEditar(false);

@@ -14,8 +14,7 @@ export const FormularioTipoEquipo = ({ tipoEquipoId = null, onSuccess, onCancel 
 
   const [formData, setFormData] = useState({
     nombre: '',
-    descripcion: '',
-    activo: true
+    descripcion: ''
   });
 
   const [validationErrors, setValidationErrors] = useState({});
@@ -29,10 +28,10 @@ export const FormularioTipoEquipo = ({ tipoEquipoId = null, onSuccess, onCancel 
 
         try {
           const tipo = await obtenerTipoEquipoPorId(tipoEquipoId);
+          // Nota: El modelo TipoEquipo del backend no tiene campo 'activo'
           setFormData({
             nombre: tipo.nombre || '',
-            descripcion: tipo.descripcion || '',
-            activo: tipo.activo ?? true
+            descripcion: tipo.descripcion || ''
           });
         } catch (err) {
           setError('Error al cargar tipo de equipo: ' + (err.response?.data?.message || err.message));
@@ -156,21 +155,6 @@ export const FormularioTipoEquipo = ({ tipoEquipoId = null, onSuccess, onCancel 
           {validationErrors.descripcion && (
             <p className="mt-1 text-sm text-red-600">{validationErrors.descripcion}</p>
           )}
-        </div>
-
-        <div className="flex items-center">
-          <input
-            type="checkbox"
-            id="activo"
-            name="activo"
-            checked={formData.activo}
-            onChange={handleChange}
-            disabled={isSaving}
-            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-          />
-          <label htmlFor="activo" className="ml-2 block text-sm text-gray-700">
-            Tipo activo
-          </label>
         </div>
 
         <div className="flex gap-3 pt-4">
