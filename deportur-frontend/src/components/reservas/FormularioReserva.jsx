@@ -92,21 +92,12 @@ export const FormularioReserva = ({ onSuccess, onCancel }) => {
     setIsSaving(true);
     setError(null);
 
-    const dias = calcularDias();
-    const detalles = equipos.map(item => ({
-      equipo: { idEquipo: item.equipo.idEquipo },
-      cantidad: item.cantidad,
-      precioPorDia: item.precioPorDia,
-      valorTotal: item.cantidad * item.precioPorDia * dias
-    }));
-
     const reservaData = {
-      cliente: { idCliente: cliente.idCliente },
+      idCliente: cliente.idCliente,
       fechaInicio,
       fechaFin,
-      destino: { idDestino: destino.idDestino },
-      estado: 'PENDIENTE',
-      detalles
+      idDestino: destino.idDestino,
+      idsEquipos: equipos.map(item => item.equipo.idEquipo)
     };
 
     try {
