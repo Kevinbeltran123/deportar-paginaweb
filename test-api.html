@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prueba APIs DeporTur</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .endpoint {
+            background: #f5f5f5;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .response {
+            background: #e9ecef;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin: 10px 0;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Prueba de APIs DeporTur</h1>
+
+    <div class="endpoint">
+        <h3>Configuración</h3>
+        <label>Token JWT (obtenlo desde Auth0):</label>
+        <input type="text" id="token" placeholder="Pega tu token JWT aquí">
+    </div>
+
+    <div class="endpoint">
+        <h3>GET /api/clientes</h3>
+        <button onclick="testEndpoint('/api/clientes')">Probar</button>
+        <div id="response-clientes" class="response"></div>
+    </div>
+
+    <div class="endpoint">
+        <h3>GET /api/destinos</h3>
+        <button onclick="testEndpoint('/api/destinos')">Probar</button>
+        <div id="response-destinos" class="response"></div>
+    </div>
+
+    <div class="endpoint">
+        <h3>GET /api/equipos</h3>
+        <button onclick="testEndpoint('/api/equipos')">Probar</button>
+        <div id="response-equipos" class="response"></div>
+    </div>
+
+    <div class="endpoint">
+        <h3>GET /api/reservas</h3>
+        <button onclick="testEndpoint('/api/reservas')">Probar</button>
+        <div id="response-reservas" class="response"></div>
+    </div>
+
+    <div class="endpoint">
+        <h3>GET /api/tipos-equipo</h3>
+        <button onclick="testEndpoint('/api/tipos-equipo')">Probar</button>
+        <div id="response-tipos-equipo" class="response"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8080';
+
+        async function testEndpoint(endpoint) {
+            const token = document.getElementById('token').value.trim();
+            const responseId = 'response-' + endpoint.split('/').pop().replace('-', '-');
+            const responseDiv = document.getElementById(responseId);
+
+            try {
+                responseDiv.textContent = 'Cargando...';
+                responseDiv.className = 'response';
+
+                const headers = {
+                    'Content-Type': 'application/json'
+                };
+
+                if (token) {
+                    headers['Authorization'] = `Bearer ${token}`;
+                }
+
+                const response = await fetch(API_BASE + endpoint, {
+                    method: 'GET',
+                    headers: headers
+                });
+
+                const data = await response.json().catch(() => response.text());
+
+                if (response.ok) {
+                    responseDiv.className = 'response success';
+                    responseDiv.textContent = `Status: ${response.status} OK\n\n` +
+                        JSON.stringify(data, null, 2);
+                } else {
+                    responseDiv.className = 'response error';
+                    responseDiv.textContent = `Status: ${response.status}\n\n` +
+                        JSON.stringify(data, null, 2);
+                }
+            } catch (error) {
+                responseDiv.className = 'response error';
+                responseDiv.textContent = `Error: ${error.message}`;
+            }
+        }
+
+        // Instrucciones
+        window.onload = () => {
+            console.log('Para obtener el token JWT:');
+            console.log('1. Inicia sesión en tu app React (http://localhost:5173)');
+            console.log('2. Abre la consola del navegador');
+            console.log('3. Ejecuta: localStorage.getItem("@@auth0spajs@@::YOUR_CLIENT_ID::task-manager-api::openid profile email")');
+            console.log('4. Copia el "access_token" y pégalo arriba');
+        };
+    </script>
+</body>
+</html>
