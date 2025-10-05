@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
-import { listarReservas, eliminarReserva } from '../../services';
+import { listarReservas, eliminarReserva, confirmarReserva } from '../../services';
 import { Table, Button, Modal, Spinner, Badge } from '../ui';
-import { Plus, Edit, Trash2, Eye, RefreshCw, Calendar } from 'lucide-react';
+import { Plus, Edit, Trash2, Eye, RefreshCw, Calendar, CheckCircle } from 'lucide-react';
 import { FormularioReserva } from './FormularioReserva';
 import { DetalleReserva } from './DetalleReserva';
 
@@ -10,8 +10,9 @@ const getBadgeVariant = (estado) => {
   const variants = {
     PENDIENTE: 'warning',
     CONFIRMADA: 'info',
-    CANCELADA: 'danger',
-    COMPLETADA: 'success'
+    EN_PROGRESO: 'primary',
+    FINALIZADA: 'success',
+    CANCELADA: 'danger'
   };
   return variants[estado] || 'default';
 };
@@ -64,6 +65,17 @@ export const ListaReservas = () => {
       await eliminarReserva(reserva.idReserva);
       setReservas(reservas.filter(r => r.idReserva !== reserva.idReserva));
       alert('Reserva eliminada exitosamente');
+    } catch (err) {
+      alert('Error: ' + (err.response?.data?.message || err.message));
+    }
+  };
+
+  const handleConfirmar = async (reserva) => {
+    if (!window.confirm(`¿Confirmar reserva #${reserva.idReserva}?`)) return;
+    try {
+      await confirmarReserva(reserva.idReserva);
+      cargarReservas();
+      alert('Reserva confirmada exitosamente');
     } catch (err) {
       alert('Error: ' + (err.response?.data?.message || err.message));
     }
@@ -149,8 +161,9 @@ export const ListaReservas = () => {
             <option value="">Todos los estados</option>
             <option value="PENDIENTE">Pendiente</option>
             <option value="CONFIRMADA">Confirmada</option>
+            <option value="EN_PROGRESO">En Progreso</option>
+            <option value="FINALIZADA">Finalizada</option>
             <option value="CANCELADA">Cancelada</option>
-            <option value="COMPLETADA">Completada</option>
           </select>
         </div>
 
@@ -172,10 +185,24 @@ export const ListaReservas = () => {
                   setModalDetalle(true);
                 }}
                 className="text-blue-600 hover:text-blue-900"
+                title="Ver detalle"
               >
                 <Eye className="h-4 w-4" />
               </button>
-              <button onClick={() => handleEliminar(r)} className="text-red-600 hover:text-red-900">
+              {r.estado === 'PENDIENTE' && (
+                <button
+                  onClick={() => handleConfirmar(r)}
+                  className="text-green-600 hover:text-green-900"
+                  title="Confirmar reserva"
+                >
+                  <CheckCircle className="h-4 w-4" />
+                </button>
+              )}
+              <button
+                onClick={() => handleEliminar(r)}
+                className="text-red-600 hover:text-red-900"
+                title="Eliminar reserva"
+              >
                 <Trash2 className="h-4 w-4" />
               </button>
             </>

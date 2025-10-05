@@ -101,4 +101,14 @@ public class ReservaController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @PatchMapping("/{id}/confirmar")
+    public ResponseEntity<?> confirmarReserva(@PathVariable Long id) {
+        try {
+            Reserva reserva = reservaService.confirmarReserva(id);
+            return ResponseEntity.ok(reserva);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

@@ -4,6 +4,7 @@ import com.deportur.model.*;
 import com.deportur.model.enums.EstadoReserva;
 import com.deportur.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
@@ -240,5 +241,53 @@ public class ReservaService {
         }
 
         return !detalleReservaRepository.existsReservaEnFechas(idEquipo, fechaInicio, fechaFin);
+    }
+
+    /**
+     * Actualiza automáticamente los estados de las reservas basado en las fechas
+     * Se ejecuta cada hora (3600000 ms)
+     */
+    @Scheduled(fixedRate = 3600000)
+    @Transactional
+    public void actualizarEstadosAutomaticamente() {
+        LocalDate hoy = LocalDate.now();
+        List<Reserva> reservas = reservaRepository.findAll();
+
+        for (Reserva reserva : reservas) {
+            // Solo procesar reservas CONFIRMADAS o EN_PROGRESO
+            if (reserva.getEstado() == EstadoReserva.CONFIRMADA ||
+                reserva.getEstado() == EstadoReserva.EN_PROGRESO) {
+
+                // Si hoy es la fecha de inicio o posterior, cambiar a EN_PROGRESO
+                if (!hoy.isBefore(reserva.getFechaInicio()) && hoy.isBefore(reserva.getFechaFin())) {
+                    if (reserva.getEstado() == EstadoReserva.CONFIRMADA) {
+                        reserva.setEstado(EstadoReserva.EN_PROGRESO);
+                        reservaRepository.save(reserva);
+                    }
+                }
+
+                // Si hoy es igual o posterior a la fecha de fin, cambiar a FINALIZADA
+                if (!hoy.isBefore(reserva.getFechaFin())) {
+                    reserva.setEstado(EstadoReserva.FINALIZADA);
+                    reservaRepository.save(reserva);
+                }
+            }
+        }
+    }
+
+    /**
+     * Confirma manualmente una reserva
+     */
+    @Transactional
+    public Reserva confirmarReserva(Long idReserva) throws Exception {
+        Reserva reserva = reservaRepository.findById(idReserva)
+            .orElseThrow(() -> new Exception("La reserva no existe"));
+
+        if (reserva.getEstado() != EstadoReserva.PENDIENTE) {
+            throw new Exception("Solo se pueden confirmar reservas en estado PENDIENTE");
+        }
+
+        reserva.setEstado(EstadoReserva.CONFIRMADA);
+        return reservaRepository.save(reserva);
     }
 }

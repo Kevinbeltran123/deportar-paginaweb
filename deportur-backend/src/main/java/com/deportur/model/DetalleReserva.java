@@ -1,5 +1,6 @@
 package com.deportur.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -14,6 +15,7 @@ public class DetalleReserva {
     @Column(name = "id_detalle")
     private Long idDetalle;
 
+    @JsonBackReference
     @NotNull(message = "La reserva es requerida")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_reserva", nullable = false)

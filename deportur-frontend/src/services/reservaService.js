@@ -120,16 +120,31 @@ export const actualizarReserva = async (id, reservaData) => {
 };
 
 /**
- * Cancela/elimina una reserva
+ * Cancela una reserva
  * @param {number} id - ID de la reserva a cancelar
- * @returns {Promise<void>}
+ * @returns {Promise<Object>} Reserva cancelada
  */
 export const cancelarReserva = async (id) => {
   try {
-    const response = await api.delete(`/reservas/${id}`);
+    const response = await api.patch(`/reservas/${id}/cancelar`);
     return response.data;
   } catch (error) {
     console.error(`Error al cancelar reserva ${id}:`, error);
+    throw error;
+  }
+};
+
+/**
+ * Confirma una reserva pendiente
+ * @param {number} id - ID de la reserva a confirmar
+ * @returns {Promise<Object>} Reserva confirmada
+ */
+export const confirmarReserva = async (id) => {
+  try {
+    const response = await api.patch(`/reservas/${id}/confirmar`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error al confirmar reserva ${id}:`, error);
     throw error;
   }
 };

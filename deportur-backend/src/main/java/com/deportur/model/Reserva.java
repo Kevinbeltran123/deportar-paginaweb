@@ -1,6 +1,7 @@
 package com.deportur.model;
 
 import com.deportur.model.enums.EstadoReserva;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -44,6 +45,7 @@ public class Reserva {
     @Column(nullable = false, length = 20)
     private EstadoReserva estado;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "reserva", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<DetalleReserva> detalles = new ArrayList<>();
 
