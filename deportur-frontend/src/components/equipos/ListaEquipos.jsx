@@ -7,10 +7,11 @@ import { FormularioEquipo } from './FormularioEquipo';
 
 const getBadgeVariant = (estado) => {
   const variants = {
-    DISPONIBLE: 'success',
-    RESERVADO: 'warning',
+    NUEVO: 'success',
+    BUENO: 'success',
+    REGULAR: 'warning',
     MANTENIMIENTO: 'info',
-    FUERA_SERVICIO: 'danger'
+    FUERA_DE_SERVICIO: 'danger'
   };
   return variants[estado] || 'default';
 };
@@ -59,10 +60,10 @@ export const ListaEquipos = () => {
   const columns = [
     { key: 'idEquipo', label: 'ID' },
     { key: 'nombre', label: 'Nombre', render: (e) => <span className="font-medium">{e.nombre}</span> },
-    { key: 'codigo', label: 'Código' },
+    { key: 'marca', label: 'Marca' },
     { key: 'tipo', label: 'Tipo', render: (e) => e.tipo?.nombre || '-' },
     { key: 'destino', label: 'Destino', render: (e) => e.destino?.nombre || '-' },
-    { key: 'precio', label: 'Precio/Día', render: (e) => `$${e.precioPorDia?.toFixed(2)}` },
+    { key: 'precio', label: 'Precio/Día', render: (e) => `$${e.precioAlquiler?.toFixed(2)}` },
     { key: 'estado', label: 'Estado', render: (e) => <Badge variant={getBadgeVariant(e.estado)}>{e.estado}</Badge> }
   ];
 

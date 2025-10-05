@@ -6,10 +6,11 @@ import { SelectorTipoEquipo } from '../tiposEquipo';
 import { SelectorDestino } from '../destinos';
 
 const ESTADOS_EQUIPO = [
-  { value: 'DISPONIBLE', label: 'Disponible' },
-  { value: 'RESERVADO', label: 'Reservado' },
+  { value: 'NUEVO', label: 'Nuevo' },
+  { value: 'BUENO', label: 'Bueno' },
+  { value: 'REGULAR', label: 'Regular' },
   { value: 'MANTENIMIENTO', label: 'En Mantenimiento' },
-  { value: 'FUERA_SERVICIO', label: 'Fuera de Servicio' }
+  { value: 'FUERA_DE_SERVICIO', label: 'Fuera de Servicio' }
 ];
 
 export const FormularioEquipo = ({ equipoId = null, onSuccess, onCancel }) => {
@@ -23,7 +24,7 @@ export const FormularioEquipo = ({ equipoId = null, onSuccess, onCancel }) => {
     marca: '',
     precioAlquiler: '',
     fechaAdquisicion: '',
-    estado: 'DISPONIBLE',
+    estado: 'NUEVO',
     disponible: true
   });
 
@@ -46,7 +47,7 @@ export const FormularioEquipo = ({ equipoId = null, onSuccess, onCancel }) => {
         marca: equipo.marca || '',
         precioAlquiler: equipo.precioAlquiler || '',
         fechaAdquisicion: equipo.fechaAdquisicion || '',
-        estado: equipo.estado || 'DISPONIBLE',
+        estado: equipo.estado || 'NUEVO',
         disponible: equipo.disponible ?? true
       });
       setTipoSeleccionado(equipo.tipo);
