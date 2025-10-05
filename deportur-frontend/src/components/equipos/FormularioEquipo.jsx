@@ -20,11 +20,11 @@ export const FormularioEquipo = ({ equipoId = null, onSuccess, onCancel }) => {
 
   const [formData, setFormData] = useState({
     nombre: '',
-    codigo: '',
-    descripcion: '',
-    precioPorDia: '',
+    marca: '',
+    precioAlquiler: '',
+    fechaAdquisicion: '',
     estado: 'DISPONIBLE',
-    activo: true
+    disponible: true
   });
 
   const [tipoSeleccionado, setTipoSeleccionado] = useState(null);
@@ -43,11 +43,11 @@ export const FormularioEquipo = ({ equipoId = null, onSuccess, onCancel }) => {
       const equipo = await obtenerEquipoPorId(equipoId);
       setFormData({
         nombre: equipo.nombre || '',
-        codigo: equipo.codigo || '',
-        descripcion: equipo.descripcion || '',
-        precioPorDia: equipo.precioPorDia || '',
+        marca: equipo.marca || '',
+        precioAlquiler: equipo.precioAlquiler || '',
+        fechaAdquisicion: equipo.fechaAdquisicion || '',
         estado: equipo.estado || 'DISPONIBLE',
-        activo: equipo.activo ?? true
+        disponible: equipo.disponible ?? true
       });
       setTipoSeleccionado(equipo.tipo);
       setDestinoSeleccionado(equipo.destino);
@@ -73,9 +73,10 @@ export const FormularioEquipo = ({ equipoId = null, onSuccess, onCancel }) => {
     const errors = {};
 
     if (!formData.nombre.trim()) errors.nombre = 'El nombre es requerido';
-    if (!formData.codigo.trim()) errors.codigo = 'El código es requerido';
-    if (!formData.precioPorDia || formData.precioPorDia <= 0) {
-      errors.precioPorDia = 'El precio debe ser mayor a 0';
+    if (!formData.marca.trim()) errors.marca = 'La marca es requerida';
+    if (!formData.fechaAdquisicion) errors.fechaAdquisicion = 'La fecha de adquisición es requerida';
+    if (!formData.precioAlquiler || formData.precioAlquiler <= 0) {
+      errors.precioAlquiler = 'El precio debe ser mayor a 0';
     }
     if (!tipoSeleccionado) errors.tipo = 'Debe seleccionar un tipo de equipo';
     if (!destinoSeleccionado) errors.destino = 'Debe seleccionar un destino';
@@ -93,7 +94,7 @@ export const FormularioEquipo = ({ equipoId = null, onSuccess, onCancel }) => {
 
     const dataToSend = {
       ...formData,
-      precioPorDia: parseFloat(formData.precioPorDia),
+      precioAlquiler: parseFloat(formData.precioAlquiler),
       tipo: { idTipo: tipoSeleccionado.idTipo },
       destino: { idDestino: destinoSeleccionado.idDestino }
     };
@@ -139,24 +140,26 @@ export const FormularioEquipo = ({ equipoId = null, onSuccess, onCancel }) => {
             maxLength={100}
           />
           <Input
-            label="Código"
-            name="codigo"
-            value={formData.codigo}
+            label="Marca"
+            name="marca"
+            value={formData.marca}
             onChange={handleChange}
-            error={validationErrors.codigo}
+            error={validationErrors.marca}
             required
             disabled={isSaving}
-            maxLength={20}
+            maxLength={50}
           />
         </div>
 
         <Input
-          label="Descripción"
-          name="descripcion"
-          value={formData.descripcion}
+          label="Fecha de Adquisición"
+          name="fechaAdquisicion"
+          type="date"
+          value={formData.fechaAdquisicion}
           onChange={handleChange}
+          error={validationErrors.fechaAdquisicion}
+          required
           disabled={isSaving}
-          maxLength={300}
         />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -167,13 +170,13 @@ export const FormularioEquipo = ({ equipoId = null, onSuccess, onCancel }) => {
           {validationErrors.tipo && <p className="text-sm text-red-600">{validationErrors.tipo}</p>}
 
           <Input
-            label="Precio por Día"
-            name="precioPorDia"
+            label="Precio de Alquiler"
+            name="precioAlquiler"
             type="number"
             step="0.01"
-            value={formData.precioPorDia}
+            value={formData.precioAlquiler}
             onChange={handleChange}
-            error={validationErrors.precioPorDia}
+            error={validationErrors.precioAlquiler}
             required
             disabled={isSaving}
           />
@@ -198,14 +201,14 @@ export const FormularioEquipo = ({ equipoId = null, onSuccess, onCancel }) => {
         <div className="flex items-center">
           <input
             type="checkbox"
-            id="activo"
-            name="activo"
-            checked={formData.activo}
+            id="disponible"
+            name="disponible"
+            checked={formData.disponible}
             onChange={handleChange}
             disabled={isSaving}
             className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
           />
-          <label htmlFor="activo" className="ml-2 block text-sm text-gray-700">Equipo activo</label>
+          <label htmlFor="disponible" className="ml-2 block text-sm text-gray-700">Equipo disponible</label>
         </div>
 
         <div className="flex gap-3 pt-4">
