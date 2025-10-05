@@ -79,23 +79,41 @@ DeporTur/
 
 ## 🏃 Inicio Rápido
 
-### Configurar variables de entorno
-Crea el archivo `.env` en la raíz con las credenciales de Supabase y Auth0.
+### 1️⃣ Configurar variables de entorno
+Crea el archivo `.env` en la raíz del proyecto con las credenciales de Supabase y Auth0.
 
-### Backend
-```bash
-cd deportur-backend
-./run.sh
-```
-Disponible en: http://localhost:8080
-
-### Frontend
+### 2️⃣ Instalar dependencias del frontend
 ```bash
 cd deportur-frontend
 npm install
-npm run dev
+cd ..
 ```
-Disponible en: http://localhost:5173
+
+### 3️⃣ Iniciar el proyecto
+
+**Opción A: Iniciar todo el proyecto (recomendado)**
+```bash
+./start-all.sh
+```
+Este script:
+- ✅ Limpia puertos automáticamente
+- ✅ Carga las variables de entorno
+- ✅ Inicia backend y frontend simultáneamente
+- ✅ Se detiene todo con `Ctrl+C`
+
+**Opción B: Iniciar servicios individualmente**
+```bash
+# Solo backend
+./start-backend.sh
+
+# Solo frontend
+./start-frontend.sh
+```
+
+### 🌐 URLs
+- **Backend:** http://localhost:8080
+- **Frontend:** http://localhost:5173
+- **Swagger UI:** http://localhost:8080/swagger-ui.html
 
 ---
 

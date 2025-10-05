@@ -103,4 +103,4 @@ useEffect(() => {
 
 ---
 
-**Autores:** Juan Perea, Kevin Beltran, Carlos Rincon
+**Autores:** Juan Perea, Kevin Beltran
