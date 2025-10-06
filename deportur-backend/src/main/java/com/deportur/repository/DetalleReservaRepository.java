@@ -35,4 +35,11 @@ public interface DetalleReservaRepository extends JpaRepository<DetalleReserva, 
         @Param("fechaInicio") LocalDate fechaInicio,
         @Param("fechaFin") LocalDate fechaFin
     );
+
+    // Verificar si un equipo tiene reservas activas
+    @Query("SELECT COUNT(dr) > 0 FROM DetalleReserva dr " +
+           "JOIN dr.reserva r " +
+           "WHERE dr.equipo.idEquipo = :idEquipo " +
+           "AND r.estado IN ('PENDIENTE', 'CONFIRMADA', 'EN_PROGRESO')")
+    boolean existsReservasActivasPorEquipo(@Param("idEquipo") Long idEquipo);
 }
