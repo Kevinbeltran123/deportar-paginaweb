@@ -1,91 +1,44 @@
-package com.deportur.model;
+package com.deportur.dto.request;
 
 import com.deportur.model.enums.TipoDestino;
-import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "destino_turistico")
-public class DestinoTuristico {
+/**
+ * DTO para crear o actualizar destinos turísticos
+ */
+public class CrearDestinoRequest {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_destino")
-    private Long idDestino;
-
-    @NotBlank(message = "El nombre del destino es requerido")
+    @NotBlank(message = "El nombre es requerido")
     @Size(max = 100, message = "El nombre no puede exceder 100 caracteres")
-    @Column(nullable = false, length = 100)
     private String nombre;
 
-    @Column(columnDefinition = "TEXT")
+    @Size(max = 500, message = "La descripción no puede exceder 500 caracteres")
     private String descripcion;
 
-    // Campos de ubicación detallados
     @NotBlank(message = "El departamento es requerido")
     @Size(max = 50, message = "El departamento no puede exceder 50 caracteres")
-    @Column(nullable = false, length = 50)
     private String departamento;
 
     @NotBlank(message = "La ciudad es requerida")
     @Size(max = 50, message = "La ciudad no puede exceder 50 caracteres")
-    @Column(nullable = false, length = 50)
     private String ciudad;
 
     @Size(max = 200, message = "La dirección no puede exceder 200 caracteres")
-    @Column(length = 200)
     private String direccion;
 
-    // Coordenadas GPS
-    @Column(precision = 10, scale = 8)
     private BigDecimal latitud;
-
-    @Column(precision = 11, scale = 8)
     private BigDecimal longitud;
-
-    // Información adicional
-    @Column(name = "capacidad_maxima")
     private Integer capacidadMaxima;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "tipo_destino", length = 20)
     private TipoDestino tipoDestino;
-
-    @Column(nullable = false)
     private Boolean activo = true;
 
-    // Auditoría
-    @CreationTimestamp
-    @Column(name = "fecha_creacion", updatable = false)
-    private LocalDateTime fechaCreacion;
-
-    @UpdateTimestamp
-    @Column(name = "fecha_actualizacion")
-    private LocalDateTime fechaActualizacion;
-
-    // Campo legacy (mantener por compatibilidad temporal)
-    @Column(length = 100)
-    @Deprecated
-    private String ubicacion;
-
     // Constructores
-    public DestinoTuristico() {
+    public CrearDestinoRequest() {
     }
 
     // Getters y Setters
-    public Long getIdDestino() {
-        return idDestino;
-    }
-
-    public void setIdDestino(Long idDestino) {
-        this.idDestino = idDestino;
-    }
-
     public String getNombre() {
         return nombre;
     }
@@ -164,28 +117,5 @@ public class DestinoTuristico {
 
     public void setActivo(Boolean activo) {
         this.activo = activo;
-    }
-
-    public LocalDateTime getFechaCreacion() {
-        return fechaCreacion;
-    }
-
-    public LocalDateTime getFechaActualizacion() {
-        return fechaActualizacion;
-    }
-
-    @Deprecated
-    public String getUbicacion() {
-        return ubicacion;
-    }
-
-    @Deprecated
-    public void setUbicacion(String ubicacion) {
-        this.ubicacion = ubicacion;
-    }
-
-    @Override
-    public String toString() {
-        return nombre + " (" + ciudad + ", " + departamento + ")";
     }
 }

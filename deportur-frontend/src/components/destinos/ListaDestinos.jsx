@@ -18,6 +18,7 @@ export const ListaDestinos = () => {
 
   const [searchTerm, setSearchTerm] = useState('');
   const [filtroActivo, setFiltroActivo] = useState('');
+  const [filtroTipo, setFiltroTipo] = useState('');
 
   const [modalCrear, setModalCrear] = useState(false);
   const [modalEditar, setModalEditar] = useState(false);
@@ -32,7 +33,7 @@ export const ListaDestinos = () => {
 
   useEffect(() => {
     filtrarDestinos();
-  }, [searchTerm, filtroActivo, destinos]);
+  }, [searchTerm, filtroActivo, filtroTipo, destinos]);
 
   const cargarDestinos = async () => {
     setIsLoading(true);
@@ -64,6 +65,10 @@ export const ListaDestinos = () => {
     if (filtroActivo !== '') {
       const activo = filtroActivo === 'true';
       filtered = filtered.filter(destino => destino.activo === activo);
+    }
+
+    if (filtroTipo) {
+      filtered = filtered.filter(destino => destino.tipoDestino === filtroTipo);
     }
 
     setDestinosFiltrados(filtered);
@@ -118,6 +123,19 @@ export const ListaDestinos = () => {
     );
   }
 
+  const getTipoLabel = (tipo) => {
+    const tipos = {
+      'PLAYA': 'Playa',
+      'MONTAÑA': 'Montaña',
+      'CIUDAD': 'Ciudad',
+      'RURAL': 'Rural',
+      'AVENTURA': 'Aventura',
+      'CULTURAL': 'Cultural',
+      'ECOLOGICO': 'Ecológico'
+    };
+    return tipos[tipo] || tipo;
+  };
+
   const columns = [
     { key: 'idDestino', label: 'ID' },
     {
@@ -134,6 +152,13 @@ export const ListaDestinos = () => {
       key: 'ubicacion',
       label: 'Ubicación',
       render: (destino) => `${destino.ciudad}, ${destino.departamento}`
+    },
+    {
+      key: 'tipo',
+      label: 'Tipo',
+      render: (destino) => destino.tipoDestino ? (
+        <Badge variant="default">{getTipoLabel(destino.tipoDestino)}</Badge>
+      ) : '-'
     },
     {
       key: 'descripcion',
@@ -170,8 +195,8 @@ export const ListaDestinos = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="md:col-span-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="lg:col-span-2">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
               <input
@@ -183,6 +208,21 @@ export const ListaDestinos = () => {
               />
             </div>
           </div>
+
+          <select
+            value={filtroTipo}
+            onChange={(e) => setFiltroTipo(e.target.value)}
+            className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">Todos los tipos</option>
+            <option value="PLAYA">Playa</option>
+            <option value="MONTAÑA">Montaña</option>
+            <option value="CIUDAD">Ciudad</option>
+            <option value="RURAL">Rural</option>
+            <option value="AVENTURA">Aventura</option>
+            <option value="CULTURAL">Cultural</option>
+            <option value="ECOLOGICO">Ecológico</option>
+          </select>
 
           <select
             value={filtroActivo}

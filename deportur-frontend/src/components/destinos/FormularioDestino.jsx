@@ -18,7 +18,10 @@ export const FormularioDestino = ({ destinoId = null, onSuccess, onCancel }) => 
     departamento: '',
     ciudad: '',
     direccion: '',
-    coordenadas: '',
+    latitud: '',
+    longitud: '',
+    capacidadMaxima: '',
+    tipoDestino: '',
     activo: true
   });
 
@@ -42,7 +45,10 @@ export const FormularioDestino = ({ destinoId = null, onSuccess, onCancel }) => 
         departamento: destino.departamento || '',
         ciudad: destino.ciudad || '',
         direccion: destino.direccion || '',
-        coordenadas: destino.coordenadas || '',
+        latitud: destino.latitud || '',
+        longitud: destino.longitud || '',
+        capacidadMaxima: destino.capacidadMaxima || '',
+        tipoDestino: destino.tipoDestino || '',
         activo: destino.activo ?? true
       });
     } catch (err) {
@@ -92,8 +98,23 @@ export const FormularioDestino = ({ destinoId = null, onSuccess, onCancel }) => 
       errors.direccion = 'La dirección no puede exceder 200 caracteres';
     }
 
-    if (formData.coordenadas && !/^-?\d+\.?\d*,-?\d+\.?\d*$/.test(formData.coordenadas.trim())) {
-      errors.coordenadas = 'Formato inválido. Usar: latitud,longitud (ej: 4.6097,-74.0817)';
+    // Validar latitud y longitud
+    if (formData.latitud && (isNaN(formData.latitud) || formData.latitud < -90 || formData.latitud > 90)) {
+      errors.latitud = 'La latitud debe ser un número entre -90 y 90';
+    }
+
+    if (formData.longitud && (isNaN(formData.longitud) || formData.longitud < -180 || formData.longitud > 180)) {
+      errors.longitud = 'La longitud debe ser un número entre -180 y 180';
+    }
+
+    // Si se proporciona una, debe proporcionarse la otra
+    if ((formData.latitud && !formData.longitud) || (!formData.latitud && formData.longitud)) {
+      errors.latitud = 'Debe proporcionar tanto latitud como longitud';
+      errors.longitud = 'Debe proporcionar tanto latitud como longitud';
+    }
+
+    if (formData.capacidadMaxima && (isNaN(formData.capacidadMaxima) || formData.capacidadMaxima < 0)) {
+      errors.capacidadMaxima = 'La capacidad debe ser un número positivo';
     }
 
     setValidationErrors(errors);
@@ -111,17 +132,32 @@ export const FormularioDestino = ({ destinoId = null, onSuccess, onCancel }) => 
     setError(null);
 
     try {
+      // Preparar datos para el backend
+      const dataToSend = {
+        nombre: formData.nombre,
+        descripcion: formData.descripcion || null,
+        departamento: formData.departamento,
+        ciudad: formData.ciudad,
+        direccion: formData.direccion || null,
+        latitud: formData.latitud ? parseFloat(formData.latitud) : null,
+        longitud: formData.longitud ? parseFloat(formData.longitud) : null,
+        capacidadMaxima: formData.capacidadMaxima ? parseInt(formData.capacidadMaxima) : null,
+        tipoDestino: formData.tipoDestino || null,
+        activo: formData.activo
+      };
+
       if (destinoId) {
-        await actualizarDestino(destinoId, formData);
+        await actualizarDestino(destinoId, dataToSend);
       } else {
-        await crearDestino(formData);
+        await crearDestino(dataToSend);
       }
 
       if (onSuccess) {
         onSuccess();
       }
     } catch (err) {
-      setError('Error al guardar: ' + (err.response?.data?.message || err.message));
+      console.error('Error al guardar destino:', err);
+      setError('Error al guardar: ' + (err.response?.data?.message || err.response?.data || err.message));
     } finally {
       setIsSaving(false);
     }
@@ -218,15 +254,66 @@ export const FormularioDestino = ({ destinoId = null, onSuccess, onCancel }) => 
           placeholder="Dirección completa del destino"
         />
 
-        <Input
-          label="Coordenadas (lat,lng)"
-          name="coordenadas"
-          value={formData.coordenadas}
-          onChange={handleChange}
-          error={validationErrors.coordenadas}
-          disabled={isSaving}
-          placeholder="4.6097,-74.0817"
-        />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Input
+            label="Latitud"
+            name="latitud"
+            type="number"
+            step="0.000001"
+            value={formData.latitud}
+            onChange={handleChange}
+            error={validationErrors.latitud}
+            disabled={isSaving}
+            placeholder="4.6097"
+          />
+
+          <Input
+            label="Longitud"
+            name="longitud"
+            type="number"
+            step="0.000001"
+            value={formData.longitud}
+            onChange={handleChange}
+            error={validationErrors.longitud}
+            disabled={isSaving}
+            placeholder="-74.0817"
+          />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Input
+            label="Capacidad Máxima"
+            name="capacidadMaxima"
+            type="number"
+            value={formData.capacidadMaxima}
+            onChange={handleChange}
+            error={validationErrors.capacidadMaxima}
+            disabled={isSaving}
+            placeholder="0 (sin límite)"
+          />
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Tipo de Destino
+            </label>
+            <select
+              name="tipoDestino"
+              value={formData.tipoDestino}
+              onChange={handleChange}
+              disabled={isSaving}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">Seleccionar tipo...</option>
+              <option value="PLAYA">Playa</option>
+              <option value="MONTAÑA">Montaña</option>
+              <option value="CIUDAD">Ciudad</option>
+              <option value="RURAL">Rural</option>
+              <option value="AVENTURA">Aventura</option>
+              <option value="CULTURAL">Cultural</option>
+              <option value="ECOLOGICO">Ecológico</option>
+            </select>
+          </div>
+        </div>
 
         <div className="flex items-center">
           <input
