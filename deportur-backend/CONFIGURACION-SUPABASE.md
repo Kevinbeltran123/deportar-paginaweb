@@ -51,8 +51,18 @@ CREATE TABLE cliente (
 CREATE TABLE destino_turistico (
     id_destino BIGSERIAL PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
-    ubicacion VARCHAR(100) NOT NULL,
-    descripcion TEXT
+    ubicacion VARCHAR(200) NOT NULL,
+    descripcion TEXT,
+    departamento VARCHAR(100) NOT NULL,
+    ciudad VARCHAR(100) NOT NULL,
+    direccion VARCHAR(200),
+    latitud NUMERIC,
+    longitud NUMERIC,
+    capacidad_maxima INT4,
+    tipo_destino VARCHAR(50),
+    activo BOOLEAN DEFAULT TRUE NOT NULL,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 CREATE TABLE tipo_equipo (
@@ -161,6 +171,11 @@ URL: [https://supabase.com/dashboard](https://supabase.com/dashboard)
 ### **Migraciones de esquema:**
 - La tabla `equipo_deportivo` incluye `id_destino` (agregado posteriormente)
 - La tabla `reserva` incluye `id_destino` para asociar reservas con destinos
+- La tabla `destino_turistico` fue mejorada con campos adicionales:
+  - **Ubicación detallada**: `departamento`, `ciudad`, `direccion`
+  - **Geolocalización**: `latitud`, `longitud` para mapas
+  - **Gestión**: `capacidad_maxima`, `tipo_destino`, `activo`
+  - **Auditoría**: `fecha_creacion`, `fecha_actualizacion`
 
 ---
 
