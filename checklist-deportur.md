@@ -68,6 +68,7 @@
 - ✅ CrearClienteRequest
 - ✅ CrearReservaRequest
 - ✅ CrearEquipoRequest (con BigDecimal)
+- ✅ CrearDestinoRequest
 
 #### Seguridad y Autenticación
 - ✅ Auth0 configurado completamente
@@ -193,10 +194,10 @@
 - ✅ Conectado con clienteService
 - ✅ Eliminar cliente funciona correctamente (con validaciones de integridad referencial)
 
-### ✅ Gestión de Equipos (FUNCIONALMENTE COMPLETADO)
+### ✅ Gestión de Equipos (COMPLETADO)
 - ✅ Tabla de equipos funcional
 - ✅ Mostrar: nombre, tipo, marca, estado, precio, destino, disponibilidad
-- ✅ **Búsqueda implementada** (nombre, marca, tipo, destino, estado)
+- ✅ Búsqueda implementada (nombre, marca, tipo, destino, estado)
 - ✅ Botón "Nuevo Equipo"
 - ✅ Modal con formulario completo
 - ✅ Dropdown tipo (carga desde API)
@@ -205,9 +206,10 @@
 - ✅ Input precio con validación
 - ✅ DatePicker fecha adquisición
 - ✅ Validaciones completas
-- ✅ Acciones: crear, editar
+- ✅ Acciones: crear, editar, eliminar
+- ✅ Eliminar equipo funcionando (con validación de reservas activas)
+- ✅ Formulario de edición muestra datos existentes correctamente
 - ✅ Conectado con equipoService
-- ⚠️ **PENDIENTE**: Eliminar equipo (restricciones FK con reservas)
 
 ### ✅ Gestión de Reservas (COMPLETADO)
 #### ✅ Lista de Reservas
@@ -253,17 +255,17 @@
 - ✅ Acciones: crear, editar, ver detalle
 - ✅ Conectado con destinoService
 
-### ✅ Gestión de Tipos de Equipo (FUNCIONALMENTE COMPLETADO)
+### ✅ Gestión de Tipos de Equipo (COMPLETADO)
 - ✅ Tabla de tipos de equipo funcional
 - ✅ Botón "Nuevo Tipo"
 - ✅ Modal formulario (nombre, descripción)
 - ✅ Validaciones completas
-- ✅ Acciones: crear, editar
-- ✅ **Filtros innecesarios eliminados** (no existe campo estado en BD)
-- ✅ **Gráficas incorrectas eliminadas**
+- ✅ Acciones: crear, editar, eliminar
+- ✅ Filtros innecesarios eliminados (no existe campo estado en BD)
+- ✅ Gráficas incorrectas eliminadas
+- ✅ Eliminar tipo funcionando (con validación de equipos asociados)
+- ✅ Formulario de edición muestra datos existentes correctamente
 - ✅ Conectado con tipoEquipoService
-- ⚠️ **PENDIENTE**: Eliminar tipo (restricciones FK con equipos)
-- ⚠️ **PENDIENTE**: Formulario edición no muestra datos existentes
 
 ### Día 20: Gestión de Usuarios (Admin)
 - [ ] Verificar rol admin antes de mostrar
@@ -463,8 +465,11 @@
 - ⚠️ **Gestión de inventario**: Modelo 1:1 (1 registro = 1 equipo físico)
   - Funciona correctamente, pero no soporta "cantidades" por SKU
   - Mejora futura: Sistema de stock con cantidades
-- ⚠️ **Eliminaciones con FK**: Bloqueadas por integridad referencial (comportamiento correcto)
-  - Mejora futura: Implementar soft delete o cascada controlada
+- ✅ **Eliminaciones con FK**: Implementadas y funcionando correctamente
+  - Eliminación de equipos validada (bloquea si tiene reservas activas)
+  - Eliminación de tipos de equipo validada (bloquea si tiene equipos asociados)
+  - Eliminación de clientes validada (bloquea si tiene reservas asociadas)
+  - Comportamiento correcto de integridad referencial
 
 ### 🎨 Mejoras Recomendadas (Post-MVP)
 - 🎨 **UI/UX Premium**: Diseño visual más moderno y atractivo
