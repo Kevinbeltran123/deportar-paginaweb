@@ -30,6 +30,10 @@ lerna-debug.log*
 *.env
 !.env.example
 
+# Application properties with credentials
+application-local.properties
+**/application-local.properties
+
 # IDE
 .vscode/
 .idea/
