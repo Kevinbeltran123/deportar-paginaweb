@@ -28,6 +28,9 @@ public class EquipoService {
     @Autowired
     private DestinoTuristicoRepository destinoRepository;
 
+    @Autowired
+    private com.deportur.repository.DetalleReservaRepository detalleReservaRepository;
+
     /**
      * Migrado de GestionInventarioService.registrarEquipo()
      */
@@ -125,13 +128,20 @@ public class EquipoService {
 
     /**
      * Migrado de GestionInventarioService.eliminarEquipo()
+     * Verifica que el equipo no tenga reservas activas antes de eliminar
      */
     @Transactional
     public void eliminarEquipo(Long idEquipo) throws Exception {
         EquipoDeportivo equipo = equipoRepository.findById(idEquipo)
             .orElseThrow(() -> new Exception("El equipo que intenta eliminar no existe"));
 
-        // Aquí se podría verificar si está en reservas activas
+        // Verificar si el equipo tiene reservas activas (PENDIENTE, CONFIRMADA, EN_PROGRESO)
+        boolean tieneReservasActivas = detalleReservaRepository.existsReservasActivasPorEquipo(idEquipo);
+
+        if (tieneReservasActivas) {
+            throw new Exception("No se puede eliminar el equipo porque tiene reservas activas (pendientes, confirmadas o en progreso). Cancele las reservas asociadas primero.");
+        }
+
         equipoRepository.delete(equipo);
     }
 

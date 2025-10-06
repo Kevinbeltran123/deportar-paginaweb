@@ -1,90 +1,106 @@
 # DeporTur Frontend
 
-Aplicación web React para el sistema de gestión de alquiler de equipos deportivos.
+Aplicación web React para gestión de alquiler de equipos deportivos.
 
 ## 🚀 Tecnologías
 
-- **React 18**
-- **Vite** - Build tool y dev server
+- **React 18** con Vite
 - **Tailwind CSS** - Estilos
 - **React Router DOM** - Navegación
 - **Auth0 React SDK** - Autenticación
-- **Axios** - HTTP client
-- **TanStack Query** - Gestión de estado servidor
-- **React Hook Form** - Formularios
+- **Axios** - Cliente HTTP
 - **Lucide React** - Iconos
-- **date-fns** - Manejo de fechas
 
 ## 📋 Requisitos
 
 - Node.js 18+
-- npm o yarn
 
-## ⚙️ Instalación
+## ⚙️ Instalación y Ejecución
 
 ```bash
 # Instalar dependencias
 npm install
 
-# Copiar variables de entorno
-cp .env.example .env.local
-
-# Editar .env.local con tus credenciales de Auth0
-```
-
-## 🏃 Ejecutar en Desarrollo
-
-```bash
+# Ejecutar en desarrollo
 npm run dev
 ```
 
-La aplicación estará disponible en: http://localhost:5173
+Aplicación disponible en: **http://localhost:5173**
 
-## 🏗️ Build para Producción
+## 🏗️ Build
 
 ```bash
 npm run build
 ```
 
-Los archivos de producción se generan en la carpeta `dist/`
+Archivos generados en `dist/`
 
-## 📁 Estructura del Proyecto
+## 📁 Estructura
 
 ```
 src/
-├── components/      # Componentes reutilizables
-├── pages/          # Páginas/vistas de la aplicación
+├── components/      # Componentes reutilizables por entidad
+│   ├── clientes/
+│   ├── equipos/
+│   ├── reservas/
+│   ├── destinos/
+│   └── ui/         # Componentes UI genéricos
+├── pages/          # Páginas principales
 ├── services/       # Servicios de API
-├── hooks/          # Custom hooks
-├── context/        # Context API
-├── utils/          # Funciones utilitarias
-├── constants/      # Constantes de la aplicación
-├── App.jsx         # Componente principal
-├── main.jsx        # Punto de entrada
-└── index.css       # Estilos globales
+├── hooks/          # Custom hooks (useAuth)
+└── App.jsx         # Configuración de rutas y Auth0
 ```
 
-## 🔐 Configuración de Auth0
+### Componentes principales:
+- **Clientes** - Gestión de clientes
+- **Equipos** - Inventario de equipos deportivos
+- **Reservas** - Sistema de reservas con estados automáticos
+- **Destinos** - Destinos turísticos
+- **Tipos de Equipo** - Categorías de equipos
 
-1. Crear cuenta en [Auth0](https://auth0.com)
-2. Crear aplicación (Single Page Application)
-3. Configurar las URLs permitidas
-4. Copiar credenciales a `.env.local`
+## 🔐 Autenticación
 
-Ver documentación completa en: [deportur-backend/CONFIGURACION-AUTH0.md](../deportur-backend/CONFIGURACION-AUTH0.md)
+Usa **Auth0** con Google OAuth. La autenticación se configura automáticamente en [App.jsx](src/App.jsx).
 
-## 📚 Documentación
+**Token JWT:** Se agrega automáticamente a todas las peticiones mediante interceptores de Axios. No requiere manejo manual.
 
-- [Vite](https://vitejs.dev/)
-- [React](https://react.dev/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [Auth0 React SDK](https://auth0.com/docs/quickstart/spa/react)
-- [TanStack Query](https://tanstack.com/query/latest)
+Ver configuración completa: [deportur-backend/CONFIGURACION-AUTH0.md](../deportur-backend/CONFIGURACION-AUTH0.md)
 
-## 👨‍💻 Desarrollo
+## 🛠️ Consumo de APIs
 
-Este proyecto está en desarrollo activo. Ver [checklist-deportur.md](../checklist-deportur.md) para el estado actual.
+### Importar servicios:
+```javascript
+import { listarClientes, crearCliente } from '../services';
+```
+
+### Verificar autenticación:
+```javascript
+import { useAuth } from '../hooks/useAuth';
+const { isAuthenticated } = useAuth();
+
+useEffect(() => {
+  if (isAuthenticated) {
+    cargarDatos();
+  }
+}, [isAuthenticated]);
+```
+
+### Servicios disponibles:
+- **clienteService** - CRUD de clientes + búsqueda
+- **equipoService** - CRUD de equipos + disponibilidad
+- **reservaService** - CRUD de reservas + confirmar/cancelar
+- **destinoService** - CRUD de destinos + búsqueda
+- **tipoEquipoService** - CRUD de tipos de equipo
+
+## 🎯 Funcionalidades
+
+- Sistema de autenticación con Google
+- Gestión completa de entidades (CRUD)
+- Sistema de reservas con estados automáticos
+- Validación de disponibilidad de equipos
+- Búsqueda y filtrado de datos
+- UI responsiva con Tailwind CSS
 
 ---
 
-**Autores:** Juan Perea, Kevin Beltran, Carlos Rincon
+**Autores:** Juan Perea, Kevin Beltran

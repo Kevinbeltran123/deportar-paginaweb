@@ -1,70 +1,39 @@
 # 🏔️ DeporTur Backend
 
-**Sistema de Gestión de Alquiler de Equipos Deportivos para Destinos Turísticos**
-
-Backend RESTful desarrollado con Spring Boot 3.1.4, conectado a PostgreSQL en Supabase con autenticación Auth0 y Google OAuth.
-
----
+Sistema de gestión de alquiler de equipos deportivos para destinos turísticos. Backend RESTful con Spring Boot 3.1.4, PostgreSQL en Supabase y autenticación Auth0.
 
 ## 🚀 Tecnologías
 
 - **Java 17**
-- **Spring Boot 3.1.4**
-  - Spring Web
-  - Spring Data JPA
-  - Spring Security + OAuth2 Resource Server
-- **PostgreSQL** en Supabase (en la nube)
-- **Auth0** para autenticación con Google OAuth
-- **Maven** para gestión de dependencias
-- **Swagger/OpenAPI** para documentación de API
+- **Spring Boot 3.1.4** (Web, Data JPA, Security, OAuth2)
+- **PostgreSQL** en Supabase
+- **Auth0** con Google OAuth
+- **Swagger/OpenAPI** para documentación
 
----
+## 📋 Requisitos
 
-## 📋 Requisitos Previos
-
-- Java 17 o superior
-- Maven 3.6+
+- Java 17+
 - Cuenta en [Supabase](https://supabase.com)
 - Cuenta en [Auth0](https://auth0.com)
 
 ---
 
-## ⚙️ Configuración Inicial
+## ⚙️ Configuración
 
-### 1. Clonar el repositorio
+### 1. Configurar Supabase
 
-```bash
-git clone <repository-url>
-cd DeporTur/deportur-backend
-```
+Ver guía completa: [CONFIGURACION-SUPABASE.md](CONFIGURACION-SUPABASE.md)
 
-### 2. Configurar Supabase
+### 2. Configurar Auth0
 
-Sigue la guía completa en [CONFIGURACION-SUPABASE.md](CONFIGURACION-SUPABASE.md)
+Ver guía completa: [CONFIGURACION-AUTH0.md](CONFIGURACION-AUTH0.md)
 
-**Resumen:**
-- Crea una cuenta en Supabase
-- Crea un nuevo proyecto
-- Ejecuta el script SQL para crear las tablas (ver documentación)
-- Obtén las credenciales de conexión
+### 3. Archivo `.env`
 
-### 3. Configurar Auth0
-
-Sigue la guía completa en [CONFIGURACION-AUTH0.md](CONFIGURACION-AUTH0.md)
-
-**Resumen:**
-- Crea una cuenta en Auth0
-- Crea una aplicación (Regular Web Application)
-- Crea una API
-- Habilita Google como proveedor social
-- Obtén Domain, Client ID, Client Secret y Audience
-
-### 4. Crear archivo `.env`
-
-En la raíz del proyecto DeporTur (un nivel arriba de deportur-backend):
+Crea el archivo `.env` en la raíz del proyecto:
 
 ```bash
-# Supabase PostgreSQL
+# Supabase
 SUPABASE_DB_HOST=db.xxxxx.supabase.co
 SUPABASE_DB_PORT=6543
 SUPABASE_DB_NAME=postgres
@@ -72,266 +41,114 @@ SUPABASE_DB_USER=postgres
 SUPABASE_DB_PASSWORD=tu_password
 
 # Auth0
-AUTH0_DOMAIN=dev-xxxxx.us.auth0.com
-AUTH0_AUDIENCE=https://deportur-api.com
+AUTH0_DOMAIN=tu-dominio.auth0.com
+AUTH0_AUDIENCE=https://tu-api-identifier.com
 AUTH0_CLIENT_ID=tu_client_id
 AUTH0_CLIENT_SECRET=tu_client_secret
 ```
 
-**⚠️ IMPORTANTE:** El archivo `.env` está en `.gitignore` y nunca debe subirse a Git.
+⚠️ **Nunca subir el `.env` a Git**
 
 ---
 
-## 🏃 Ejecutar el Proyecto
-
-### Opción 1: Con script (recomendado)
+## 🏃 Ejecutar
 
 ```bash
-chmod +x run.sh
 ./run.sh
 ```
 
-### Opción 2: Con Maven directamente
+Servidor disponible en: **http://localhost:8080**
 
-```bash
-# Exportar variables de entorno primero
-export $(cat ../.env | grep -v '^#' | xargs)
-
-# Ejecutar
-mvn spring-boot:run
-```
-
-El servidor estará disponible en: **http://localhost:8080**
-
----
-
-## 📚 Documentación de API
-
-Una vez el servidor esté corriendo, accede a:
+## 📚 Documentación API
 
 - **Swagger UI**: http://localhost:8080/swagger-ui.html
-- **OpenAPI Spec**: http://localhost:8080/v3/api-docs
+- **OpenAPI**: http://localhost:8080/v3/api-docs
 
 ---
 
 ## 🔐 Autenticación
 
-El backend usa **Auth0** con **Google OAuth** para autenticación.
+Usa **Auth0** con **Google OAuth**.
 
-### Endpoints Públicos (sin autenticación):
-- `/swagger-ui/**` - Documentación
-- `/v3/api-docs/**` - OpenAPI spec
-- `/api/public/**` - Endpoints públicos personalizados
+**Endpoints públicos:**
+- `/swagger-ui/**`, `/v3/api-docs/**`
 
-### Endpoints Protegidos (requieren JWT):
-Todos los demás endpoints requieren un token JWT válido en el header:
-
+**Endpoints protegidos:** Requieren JWT en header
 ```
 Authorization: Bearer <token>
 ```
 
-### Obtener un Token
-
-Desde el dashboard de Auth0:
-1. **Applications** → **APIs** → Tu API
-2. **Test** tab
-3. Copia el **Access Token**
-
-O implementa el login en tu frontend (ver [CONFIGURACION-AUTH0.md](CONFIGURACION-AUTH0.md) sección 5).
-
 ---
 
-## 🗂️ Estructura del Proyecto
-
-Ver documentación completa en [ESTRUCTURA-PROYECTO.md](ESTRUCTURA-PROYECTO.md)
+## 🗂️ Estructura
 
 ```
-deportur-backend/
-├── src/main/java/com/deportur/
-│   ├── config/           # Configuración (Security, CORS)
-│   ├── controller/       # Controladores REST
-│   ├── dto/              # DTOs (Request/Response)
-│   ├── exception/        # Manejo de excepciones
-│   ├── model/            # Entidades JPA
-│   ├── repository/       # Repositorios Spring Data
-│   └── service/          # Lógica de negocio
-├── src/main/resources/
-│   ├── application.properties
-│   └── application-dev.yml
-├── pom.xml
-└── README.md
+src/main/java/com/deportur/
+├── config/           # Configuración (Security, CORS)
+├── controller/       # Controladores REST (5)
+├── service/          # Lógica de negocio (6)
+├── repository/       # Repositorios Spring Data (7)
+├── model/            # Entidades JPA (7) + enums (4)
+├── dto/request/      # DTOs de entrada (3)
+└── exception/        # Manejo global de errores
 ```
 
----
-
-## 🛠️ Endpoints Principales
-
-### Clientes
-- `GET /api/clientes` - Listar todos
-- `GET /api/clientes/{id}` - Obtener por ID
-- `POST /api/clientes` - Crear cliente
-- `PUT /api/clientes/{id}` - Actualizar cliente
-- `DELETE /api/clientes/{id}` - Eliminar cliente
-
-### Equipos Deportivos
-- `GET /api/equipos` - Listar todos
-- `GET /api/equipos/{id}` - Obtener por ID
-- `GET /api/equipos/disponibles` - Listar disponibles
-- `POST /api/equipos` - Crear equipo
-- `PUT /api/equipos/{id}` - Actualizar equipo
-- `DELETE /api/equipos/{id}` - Eliminar equipo
-
-### Reservas
-- `GET /api/reservas` - Listar todas
-- `GET /api/reservas/{id}` - Obtener por ID
-- `POST /api/reservas` - Crear reserva
-- `PUT /api/reservas/{id}` - Actualizar reserva
-- `DELETE /api/reservas/{id}` - Cancelar reserva
-- `GET /api/reservas/{id}/total` - Calcular total
-
-### Destinos Turísticos
-- `GET /api/destinos` - Listar todos
-- `GET /api/destinos/{id}` - Obtener por ID
-- `POST /api/destinos` - Crear destino
-- `PUT /api/destinos/{id}` - Actualizar destino
-- `DELETE /api/destinos/{id}` - Eliminar destino
-
-### Tipos de Equipo
-- `GET /api/tipos-equipo` - Listar todos
-- `GET /api/tipos-equipo/{id}` - Obtener por ID
-- `POST /api/tipos-equipo` - Crear tipo
-- `PUT /api/tipos-equipo/{id}` - Actualizar tipo
-- `DELETE /api/tipos-equipo/{id}` - Eliminar tipo
+### Entidades principales:
+- **Cliente** - Información de clientes
+- **DestinoTuristico** - Destinos disponibles
+- **TipoEquipo** - Categorías de equipos
+- **EquipoDeportivo** - Inventario (vinculado a tipo y destino)
+- **Reserva** - Reservas de clientes (vinculado a cliente y destino)
+- **DetalleReserva** - Equipos incluidos en reservas
+- **Usuario** - Usuarios del sistema
 
 ---
 
-## 🧪 Probar con cURL
+## 🛠️ Endpoints
 
-```bash
-# Obtener token de Auth0 (ver CONFIGURACION-AUTH0.md)
-TOKEN="tu_token_aqui"
+**Clientes:** `/api/clientes` - CRUD completo + búsqueda
 
-# Listar tipos de equipo
-curl http://localhost:8080/api/tipos-equipo \
-  -H "Authorization: Bearer $TOKEN"
+**Equipos:** `/api/equipos` - CRUD + disponibilidad por destino/fechas
 
-# Crear un cliente
-curl -X POST http://localhost:8080/api/clientes \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "nombre": "Juan",
-    "apellido": "Pérez",
-    "documento": "123456789",
-    "tipoDocumento": "CC",
-    "telefono": "3001234567",
-    "email": "juan@example.com",
-    "direccion": "Calle 123"
-  }'
-```
+**Reservas:** `/api/reservas` - CRUD + confirmar + cancelar
+
+**Destinos:** `/api/destinos` - CRUD + búsqueda
+
+**Tipos de Equipo:** `/api/tipos-equipo` - CRUD
+
+Total: **35+ endpoints** protegidos con JWT
 
 ---
 
-## 🔧 Troubleshooting
+## 🎯 Funcionalidades Clave
 
-### Error: Connection timeout
-- **Solución**: Verifica que estés usando puerto 6543 (Transaction Pooler)
+### Gestión de Reservas
+- Estados automáticos basados en fechas (PENDIENTE → CONFIRMADA → EN_PROGRESO → FINALIZADA)
+- Validación de disponibilidad de equipos
+- Prevención de solapamiento de reservas
+- Confirmación manual y cancelación
 
-### Error: max clients reached
-- **Solución**: Cambia a puerto 6543 en `.env`
+### Validaciones de Negocio
+- Unicidad de documentos de cliente
+- Verificación de disponibilidad de equipos por fechas y destino
+- Validación de integridad referencial
+- Control de estados de reserva
 
-### Error: 401 Unauthorized
-- **Solución**: Verifica que el token JWT sea válido y no haya expirado
-- Verifica que el `audience` coincida entre Auth0 y el backend
-
-### Error: prepared statement already exists
-- **Solución**: Ya está configurado `prepareThreshold=0` en la URL de conexión
-
-### Error: Invalid audience
-- **Solución**: El `AUTH0_AUDIENCE` debe coincidir con el API Identifier en Auth0
-
-Ver más soluciones en:
-- [CONFIGURACION-SUPABASE.md](CONFIGURACION-SUPABASE.md) sección 7
-- [CONFIGURACION-AUTH0.md](CONFIGURACION-AUTH0.md) sección 11
+### Características Técnicas
+- Autenticación JWT con Auth0
+- Manejo global de excepciones
+- Relaciones JPA optimizadas con anotaciones Jackson
+- Tarea programada para actualización automática de estados
 
 ---
 
-## 📖 Documentación Adicional
+## 📖 Documentación
 
-- [ESTRUCTURA-PROYECTO.md](ESTRUCTURA-PROYECTO.md) - Estructura completa del código
-- [CONFIGURACION-SUPABASE.md](CONFIGURACION-SUPABASE.md) - Guía completa de Supabase
-- [CONFIGURACION-AUTH0.md](CONFIGURACION-AUTH0.md) - Guía completa de Auth0 y Google OAuth
-
----
-
-## 📝 Estado del Proyecto
-
-✅ **Backend 100% completo y funcional**
-- Migración de MySQL a PostgreSQL (Supabase) completada
-- Autenticación con Auth0 y Google OAuth implementada
-- 35+ endpoints REST protegidos con JWT
-- Documentación completa con Swagger
-- Validaciones de negocio implementadas
-- Manejo de excepciones centralizado
-
----
-
-## 👨‍💻 Desarrollo
-
-### Compilar
-
-```bash
-mvn clean install
-```
-
-### Ejecutar tests
-
-```bash
-mvn test
-```
-
-### Generar JAR
-
-```bash
-mvn package
-```
-
-El JAR se genera en `target/deportur-backend-0.0.1-SNAPSHOT.jar`
-
----
-
-## 🚀 Próximos Pasos
-
-### Para Producción:
-1. Configurar dominio personalizado en Auth0
-2. Configurar Google OAuth con credenciales propias
-3. Habilitar MFA (Multi-Factor Authentication)
-4. Configurar roles y permisos (RBAC)
-5. Implementar rate limiting
-6. Configurar CI/CD
-
-### Características Futuras:
-- Implementación de roles (ADMIN, CLIENTE, etc.)
-- Sistema de notificaciones
-- Integración con pasarela de pagos
-- Dashboard de analytics
-- Sistema de puntos/recompensas
+- [CONFIGURACION-SUPABASE.md](CONFIGURACION-SUPABASE.md) - Configuración de base de datos
+- [CONFIGURACION-AUTH0.md](CONFIGURACION-AUTH0.md) - Configuración de autenticación
 
 ---
 
 ## 📄 Licencia
 
-Este proyecto es privado y de uso académico.
-
----
-
-## 🤝 Contribuir
-
-Este es un proyecto académico. Para contribuir, contacta al equipo de desarrollo.
-
----
-
-**Documentación oficial:**
-- Spring Boot: https://spring.io/projects/spring-boot
-- Supabase: https://supabase.com/docs
-- Auth0: https://auth0.com/docs
+Proyecto académico de uso privado.

@@ -1,11 +1,24 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { useAuth0 } from '@auth0/auth0-react'
+import { useEffect } from 'react'
 import { Login } from './pages/Login'
 import { Dashboard } from './pages/Dashboard'
+import { PruebaAPIs } from './pages/PruebaAPIs'
+import { ClientesPage } from './pages/ClientesPage'
+import { DestinosPage } from './pages/DestinosPage'
+import { TiposEquipoPage } from './pages/TiposEquipoPage'
+import { EquiposPage } from './pages/EquiposPage'
+import { ReservasPage } from './pages/ReservasPage'
 import { ProtectedRoute } from './components/ProtectedRoute'
+import { setTokenGetter } from './services/api'
 
 function App() {
-  const { isLoading, error } = useAuth0()
+  const { isLoading, error, getAccessTokenSilently } = useAuth0()
+
+  // Configurar el token getter para los interceptores de API
+  useEffect(() => {
+    setTokenGetter(getAccessTokenSilently)
+  }, [getAccessTokenSilently])
 
   if (isLoading) {
     return (
@@ -30,6 +43,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path="/prueba" element={<PruebaAPIs />} />
         <Route
           path="/dashboard"
           element={
@@ -38,8 +52,48 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="/" element={<Navigate to="/login" replace />} />
-        <Route path="*" element={<Navigate to="/login" replace />} />
+        <Route
+          path="/clientes"
+          element={
+            <ProtectedRoute>
+              <ClientesPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/destinos"
+          element={
+            <ProtectedRoute>
+              <DestinosPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/tipos-equipo"
+          element={
+            <ProtectedRoute>
+              <TiposEquipoPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/equipos"
+          element={
+            <ProtectedRoute>
+              <EquiposPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/reservas"
+          element={
+            <ProtectedRoute>
+              <ReservasPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </BrowserRouter>
   )

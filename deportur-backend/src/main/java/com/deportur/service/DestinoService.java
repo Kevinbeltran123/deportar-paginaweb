@@ -23,39 +23,115 @@ public class DestinoService {
 
     /**
      * Migrado de GestionInventarioService.registrarDestino()
+     * Mejorado con validaciones extendidas
      */
     @Transactional
     public DestinoTuristico registrarDestino(DestinoTuristico destino) throws Exception {
+        // Validaciones básicas
         if (destino.getNombre() == null || destino.getNombre().trim().isEmpty()) {
             throw new Exception("El nombre del destino turístico es requerido");
         }
 
-        if (destino.getUbicacion() == null || destino.getUbicacion().trim().isEmpty()) {
-            throw new Exception("La ubicación del destino turístico es requerida");
+        if (destino.getDepartamento() == null || destino.getDepartamento().trim().isEmpty()) {
+            throw new Exception("El departamento es requerido");
         }
+
+        if (destino.getCiudad() == null || destino.getCiudad().trim().isEmpty()) {
+            throw new Exception("La ciudad es requerida");
+        }
+
+        // Validar coordenadas GPS si se proporcionan
+        if (destino.getLatitud() != null || destino.getLongitud() != null) {
+            if (destino.getLatitud() == null || destino.getLongitud() == null) {
+                throw new Exception("Debe proporcionar tanto latitud como longitud");
+            }
+            // Validar rangos válidos
+            if (destino.getLatitud().compareTo(new java.math.BigDecimal("-90")) < 0 ||
+                destino.getLatitud().compareTo(new java.math.BigDecimal("90")) > 0) {
+                throw new Exception("La latitud debe estar entre -90 y 90");
+            }
+            if (destino.getLongitud().compareTo(new java.math.BigDecimal("-180")) < 0 ||
+                destino.getLongitud().compareTo(new java.math.BigDecimal("180")) > 0) {
+                throw new Exception("La longitud debe estar entre -180 y 180");
+            }
+        }
+
+        // Validar capacidad máxima
+        if (destino.getCapacidadMaxima() != null && destino.getCapacidadMaxima() < 0) {
+            throw new Exception("La capacidad máxima no puede ser negativa");
+        }
+
+        // Setear valores por defecto
+        if (destino.getActivo() == null) {
+            destino.setActivo(true);
+        }
+
+        if (destino.getTipoDestino() == null) {
+            destino.setTipoDestino(com.deportur.model.enums.TipoDestino.CIUDAD);
+        }
+
+        // Mantener compatibilidad con campo ubicacion legacy
+        destino.setUbicacion(destino.getCiudad() + ", " + destino.getDepartamento());
 
         return destinoRepository.save(destino);
     }
 
     /**
      * Migrado de GestionInventarioService.actualizarDestino()
+     * Mejorado con validaciones extendidas
      */
     @Transactional
     public DestinoTuristico actualizarDestino(Long idDestino, DestinoTuristico destino) throws Exception {
         DestinoTuristico destinoExistente = destinoRepository.findById(idDestino)
             .orElseThrow(() -> new Exception("El destino turístico que intenta actualizar no existe"));
 
+        // Validaciones básicas
         if (destino.getNombre() == null || destino.getNombre().trim().isEmpty()) {
             throw new Exception("El nombre del destino turístico es requerido");
         }
 
-        if (destino.getUbicacion() == null || destino.getUbicacion().trim().isEmpty()) {
-            throw new Exception("La ubicación del destino turístico es requerida");
+        if (destino.getDepartamento() == null || destino.getDepartamento().trim().isEmpty()) {
+            throw new Exception("El departamento es requerido");
         }
 
+        if (destino.getCiudad() == null || destino.getCiudad().trim().isEmpty()) {
+            throw new Exception("La ciudad es requerida");
+        }
+
+        // Validar coordenadas GPS si se proporcionan
+        if (destino.getLatitud() != null || destino.getLongitud() != null) {
+            if (destino.getLatitud() == null || destino.getLongitud() == null) {
+                throw new Exception("Debe proporcionar tanto latitud como longitud");
+            }
+            if (destino.getLatitud().compareTo(new java.math.BigDecimal("-90")) < 0 ||
+                destino.getLatitud().compareTo(new java.math.BigDecimal("90")) > 0) {
+                throw new Exception("La latitud debe estar entre -90 y 90");
+            }
+            if (destino.getLongitud().compareTo(new java.math.BigDecimal("-180")) < 0 ||
+                destino.getLongitud().compareTo(new java.math.BigDecimal("180")) > 0) {
+                throw new Exception("La longitud debe estar entre -180 y 180");
+            }
+        }
+
+        // Validar capacidad máxima
+        if (destino.getCapacidadMaxima() != null && destino.getCapacidadMaxima() < 0) {
+            throw new Exception("La capacidad máxima no puede ser negativa");
+        }
+
+        // Actualizar campos
         destinoExistente.setNombre(destino.getNombre());
-        destinoExistente.setUbicacion(destino.getUbicacion());
         destinoExistente.setDescripcion(destino.getDescripcion());
+        destinoExistente.setDepartamento(destino.getDepartamento());
+        destinoExistente.setCiudad(destino.getCiudad());
+        destinoExistente.setDireccion(destino.getDireccion());
+        destinoExistente.setLatitud(destino.getLatitud());
+        destinoExistente.setLongitud(destino.getLongitud());
+        destinoExistente.setCapacidadMaxima(destino.getCapacidadMaxima());
+        destinoExistente.setTipoDestino(destino.getTipoDestino());
+        destinoExistente.setActivo(destino.getActivo());
+
+        // Mantener compatibilidad con campo ubicacion legacy
+        destinoExistente.setUbicacion(destino.getCiudad() + ", " + destino.getDepartamento());
 
         return destinoRepository.save(destinoExistente);
     }

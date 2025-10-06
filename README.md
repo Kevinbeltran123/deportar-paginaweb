@@ -1,265 +1,145 @@
 # 🏔️ DeporTur
 
-**Sistema de Gestión de Alquiler de Equipos Deportivos para Destinos Turísticos**
-
-Plataforma web completa para gestionar el alquiler de equipos deportivos en destinos turísticos, con backend REST en Spring Boot y frontend en React.
-
----
+Sistema de gestión de alquiler de equipos deportivos para destinos turísticos. Aplicación web fullstack con Spring Boot y React.
 
 ## 🚀 Tecnologías
 
 ### Backend
-- **Java 17**
-- **Spring Boot 3.1.4**
-  - Spring Web
-  - Spring Data JPA
-  - Spring Security + OAuth2 Resource Server
-- **PostgreSQL** (Supabase)
-- **Auth0** para autenticación con Google OAuth
-- **Maven**
+- **Java 17** + **Spring Boot 3.1.4**
+- **PostgreSQL** en Supabase
+- **Auth0** con Google OAuth
+- Spring Data JPA, Security, OAuth2
 
-### Frontend (En desarrollo)
-- **React 18**
-- **Vite**
+### Frontend
+- **React 18** + **Vite**
 - **Tailwind CSS**
-- **React Router DOM**
 - **Auth0 React SDK**
-- **Axios**
-- **TanStack Query**
+- React Router, Axios
 
 ---
 
-## 📋 Características Principales
+## 📋 Características
 
-### Gestión de Clientes
-- Registro y administración de clientes
-- Búsqueda por documento o nombre
-- Validación de documentos únicos
-
-### Gestión de Equipos Deportivos
-- Inventario completo de equipos
-- Categorización por tipo y destino
-- Control de disponibilidad
-- Gestión de estados (Nuevo, Bueno, Regular, Mantenimiento, Fuera de Servicio)
-
-### Sistema de Reservas
-- Creación de reservas con validación de disponibilidad
-- Verificación automática de conflictos de fechas
-- Cálculo automático de precios
-- Estados de reserva (Pendiente, Confirmada, En Progreso, Finalizada, Cancelada)
-- Detalle de equipos por reserva
-
-### Gestión de Destinos Turísticos
-- Administración de destinos disponibles
-- Vinculación de equipos por destino
-
-### Autenticación y Seguridad
-- Login con Google OAuth
-- Tokens JWT para protección de endpoints
-- Roles de usuario (Admin, Trabajador)
+- **Gestión de Clientes** - CRUD completo con búsqueda y validación de documentos únicos
+- **Inventario de Equipos** - Control por tipo, destino y estado (Nuevo, Bueno, Regular, Mantenimiento, Fuera de Servicio)
+- **Sistema de Reservas** - Estados automáticos basados en fechas (Pendiente → Confirmada → En Progreso → Finalizada), validación de disponibilidad y prevención de conflictos
+- **Destinos Turísticos** - Gestión de ubicaciones con equipos asociados
+- **Autenticación** - Google OAuth con Auth0 y protección JWT en todos los endpoints
 
 ---
 
-## 🗂️ Estructura del Proyecto
+## 🗂️ Estructura
 
 ```
 DeporTur/
-├── deportur-backend/          # API REST Spring Boot
-│   ├── src/main/java/com/deportur/
-│   │   ├── config/           # Configuración (Security, CORS)
-│   │   ├── controller/       # Controladores REST
-│   │   ├── dto/              # DTOs (Request/Response)
-│   │   ├── exception/        # Manejo de excepciones
-│   │   ├── model/            # Entidades JPA
-│   │   ├── repository/       # Repositorios Spring Data
-│   │   └── service/          # Lógica de negocio
-│   ├── pom.xml
-│   └── README.md
-├── deportur-frontend/         # Aplicación React (En desarrollo)
-└── checklist-deportur.md      # Estado y plan del proyecto
+├── deportur-backend/      # API REST Spring Boot
+│   ├── config/           # Security, CORS
+│   ├── controller/       # REST endpoints (5)
+│   ├── service/          # Lógica de negocio (6)
+│   ├── repository/       # Spring Data JPA (7)
+│   ├── model/            # Entidades JPA (7) + enums (4)
+│   └── dto/              # Request/Response DTOs
+├── deportur-frontend/     # React App
+│   ├── components/       # Componentes por entidad
+│   ├── services/         # API services
+│   ├── hooks/            # useAuth
+│   └── pages/            # Vistas principales
+└── .env                  # Variables de entorno
 ```
 
 ---
 
-## 🛠️ API REST - Endpoints Principales
+## 🛠️ API REST
 
-### Clientes
-- `GET /api/clientes` - Listar todos
-- `GET /api/clientes/{id}` - Obtener por ID
-- `POST /api/clientes` - Crear cliente
-- `PUT /api/clientes/{id}` - Actualizar cliente
-- `DELETE /api/clientes/{id}` - Eliminar cliente
-- `GET /api/clientes/documento/{documento}` - Buscar por documento
+### Endpoints principales:
 
-### Equipos Deportivos
-- `GET /api/equipos` - Listar todos
-- `GET /api/equipos/{id}` - Obtener por ID
-- `GET /api/equipos/disponibles?destino={id}&inicio={fecha}&fin={fecha}` - Equipos disponibles por destino y fechas
-- `POST /api/equipos` - Crear equipo
-- `PUT /api/equipos/{id}` - Actualizar equipo
-- `DELETE /api/equipos/{id}` - Eliminar equipo
+**Clientes** - `/api/clientes` - CRUD + búsqueda por documento/nombre
 
-### Reservas
-- `GET /api/reservas` - Listar todas
-- `GET /api/reservas/{id}` - Obtener por ID
-- `POST /api/reservas` - Crear reserva
-- `PUT /api/reservas/{id}` - Actualizar reserva
-- `PATCH /api/reservas/{id}/cancelar` - Cancelar reserva
-- `GET /api/reservas/cliente/{idCliente}` - Reservas por cliente
-- `GET /api/reservas/destino/{idDestino}` - Reservas por destino
+**Equipos** - `/api/equipos` - CRUD + disponibilidad por destino/fechas
 
-### Destinos Turísticos
-- `GET /api/destinos` - Listar todos
-- `GET /api/destinos/{id}` - Obtener por ID
-- `POST /api/destinos` - Crear destino
-- `PUT /api/destinos/{id}` - Actualizar destino
-- `DELETE /api/destinos/{id}` - Eliminar destino
+**Reservas** - `/api/reservas` - CRUD + confirmar + cancelar + búsqueda por cliente/destino
 
-### Tipos de Equipo
-- `GET /api/tipos-equipo` - Listar todos
-- `GET /api/tipos-equipo/{id}` - Obtener por ID
-- `POST /api/tipos-equipo` - Crear tipo
-- `PUT /api/tipos-equipo/{id}` - Actualizar tipo
-- `DELETE /api/tipos-equipo/{id}` - Eliminar tipo
+**Destinos** - `/api/destinos` - CRUD + búsqueda
 
-**Total: 35+ endpoints REST**
+**Tipos de Equipo** - `/api/tipos-equipo` - CRUD
+
+**Total:** 35+ endpoints protegidos con JWT
 
 ---
 
 ## 📚 Documentación
 
-### Backend
-- [deportur-backend/README.md](deportur-backend/README.md) - Instalación y ejecución del backend
-- [deportur-backend/ESTRUCTURA-PROYECTO.md](deportur-backend/ESTRUCTURA-PROYECTO.md) - Arquitectura del código
-- **Swagger UI**: http://localhost:8080/swagger-ui.html (cuando el servidor esté corriendo)
-
-### Configuración (Para desarrollo)
-- [deportur-backend/CONFIGURACION-SUPABASE.md](deportur-backend/CONFIGURACION-SUPABASE.md) - Setup de base de datos
-- [deportur-backend/CONFIGURACION-AUTH0.md](deportur-backend/CONFIGURACION-AUTH0.md) - Setup de autenticación
-
-### Proyecto
-- [checklist-deportur.md](checklist-deportur.md) - Estado actual y roadmap
+- [Backend README](deportur-backend/README.md) - Guía completa del backend
+- [Frontend README](deportur-frontend/README.md) - Guía completa del frontend
+- [Configuración Supabase](deportur-backend/CONFIGURACION-SUPABASE.md) - Base de datos
+- [Configuración Auth0](deportur-backend/CONFIGURACION-AUTH0.md) - Autenticación
+- **Swagger UI**: http://localhost:8080/swagger-ui.html
 
 ---
 
 ## 🏃 Inicio Rápido
 
-### Backend
+### 1️⃣ Configurar variables de entorno
+Crea el archivo `.env` en la raíz del proyecto con las credenciales de Supabase y Auth0.
 
-1. **Requisitos previos**
-   - Java 17 o superior
-   - Maven 3.6+
-
-2. **Ejecutar el backend**
-   ```bash
-   cd deportur-backend
-   chmod +x run.sh
-   ./run.sh
-   ```
-
-3. **Acceder a la documentación**
-   - Swagger UI: http://localhost:8080/swagger-ui.html
-   - OpenAPI Spec: http://localhost:8080/v3/api-docs
-
-### Frontend
-*En desarrollo - Próximamente*
-
----
-
-## 📝 Estado del Proyecto
-
-### ✅ Completado
-- **Backend 100%** - API REST completa y funcional
-  - 35+ endpoints REST
-  - Autenticación con Auth0 y Google OAuth
-  - Validaciones de negocio completas
-  - Manejo de excepciones centralizado
-  - Documentación con Swagger
-- **Base de Datos** - PostgreSQL en Supabase configurada
-- **Documentación Backend** - Guías completas de instalación y uso
-
-### 🔄 En Desarrollo
-- **Frontend React** - Interfaz de usuario web
-
-### ⏳ Próximos Pasos
-- Completar frontend React con Vite y Tailwind CSS
-- Despliegue en producción (Railway + Vercel)
-- Sistema de notificaciones
-- Reportes y estadísticas
-
----
-
-## 👨‍💻 Desarrollo
-
-### Backend
+### 2️⃣ Instalar dependencias del frontend
 ```bash
-cd deportur-backend
-
-# Compilar
-mvn clean install
-
-# Ejecutar tests
-mvn test
-
-# Generar JAR
-mvn package
+cd deportur-frontend
+npm install
+cd ..
 ```
 
-### Frontend
-*Próximamente*
+### 3️⃣ Iniciar el proyecto
+
+**Opción A: Iniciar todo el proyecto (recomendado)**
+```bash
+./start-all.sh
+```
+Este script:
+- ✅ Limpia puertos automáticamente
+- ✅ Carga las variables de entorno
+- ✅ Inicia backend y frontend simultáneamente
+- ✅ Se detiene todo con `Ctrl+C`
+
+**Opción B: Iniciar servicios individualmente**
+```bash
+# Solo backend
+./start-backend.sh
+
+# Solo frontend
+./start-frontend.sh
+```
+
+### 🌐 URLs
+- **Backend:** http://localhost:8080
+- **Frontend:** http://localhost:5173
+- **Swagger UI:** http://localhost:8080/swagger-ui.html
 
 ---
 
-## 🎓 Características Técnicas Destacadas
+## 🎯 Características Técnicas
 
-### Backend
-- **Arquitectura REST** - Separación clara de capas (Controller → Service → Repository)
-- **JPA/Hibernate** - ORM con relaciones bidireccionales
-- **Bean Validation** - Validaciones declarativas en DTOs
-- **Spring Security** - OAuth2 Resource Server con validación JWT
-- **Manejo global de excepciones** - Respuestas de error consistentes
-- **BigDecimal** - Precisión en campos monetarios
+### Arquitectura
+- **Backend:** Arquitectura en capas (Controller → Service → Repository)
+- **Frontend:** Componentes React con hooks personalizados
+- **Base de Datos:** PostgreSQL con JPA/Hibernate
+- **Autenticación:** OAuth2 Resource Server con JWT
 
-### Lógica de Negocio
-- **Sistema de disponibilidad** - Query compleja que verifica solapamiento de fechas
-- **Validaciones de integridad** - No eliminar clientes con reservas activas
-- **Cálculo automático** - Precios y totales de reservas
-- **Estados de reserva** - Máquina de estados para gestión de reservas
-
----
-
-## 🔒 Seguridad
-
-- Autenticación mediante **Auth0** con Google OAuth
-- Todos los endpoints protegidos con **JWT**
-- Validación de **audience** personalizada
-- **CORS** configurado para frontend
-- Variables de entorno para credenciales sensibles
-
----
-
-## 📄 Licencia
-
-Este proyecto es de uso académico y privado.
+### Funcionalidades Clave
+- Sistema de reservas con estados automáticos basados en fechas
+- Validación de disponibilidad de equipos con prevención de conflictos
+- Autenticación centralizada con Auth0
+- Manejo global de excepciones
+- Relaciones JPA optimizadas con anotaciones Jackson
 
 ---
 
 ## 👥 Autores
 
-- **Juan Perea**
-- **Kevin Beltran**
-- **Carlos Rincon**
+**Juan Perea · Kevin Beltran**
 
-**Universidad de Ibagué**
-**Ingeniería de Software**
-**2025**
+Universidad de Ibagué - Ingeniería de Software II - 2025
 
 ---
 
-## 📞 Contacto
-
-Para más información sobre el proyecto, consulta la documentación en las carpetas `deportur-backend/` y `deportur-frontend/`.
-
----
-
-**Última actualización:** Octubre 2025
+📄 Proyecto académico de uso privado

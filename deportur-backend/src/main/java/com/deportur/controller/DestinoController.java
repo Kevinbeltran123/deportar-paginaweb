@@ -1,5 +1,6 @@
 package com.deportur.controller;
 
+import com.deportur.dto.request.CrearDestinoRequest;
 import com.deportur.model.DestinoTuristico;
 import com.deportur.service.DestinoService;
 import jakarta.validation.Valid;
@@ -18,8 +19,21 @@ public class DestinoController {
     private DestinoService destinoService;
 
     @PostMapping
-    public ResponseEntity<?> registrarDestino(@Valid @RequestBody DestinoTuristico destino) {
+    public ResponseEntity<?> registrarDestino(@Valid @RequestBody CrearDestinoRequest request) {
         try {
+            // Mapear DTO a entidad
+            DestinoTuristico destino = new DestinoTuristico();
+            destino.setNombre(request.getNombre());
+            destino.setDescripcion(request.getDescripcion());
+            destino.setDepartamento(request.getDepartamento());
+            destino.setCiudad(request.getCiudad());
+            destino.setDireccion(request.getDireccion());
+            destino.setLatitud(request.getLatitud());
+            destino.setLongitud(request.getLongitud());
+            destino.setCapacidadMaxima(request.getCapacidadMaxima());
+            destino.setTipoDestino(request.getTipoDestino());
+            destino.setActivo(request.getActivo());
+
             DestinoTuristico nuevoDestino = destinoService.registrarDestino(destino);
             return ResponseEntity.status(HttpStatus.CREATED).body(nuevoDestino);
         } catch (Exception e) {
@@ -59,8 +73,21 @@ public class DestinoController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> actualizarDestino(@PathVariable Long id,
-                                               @Valid @RequestBody DestinoTuristico destino) {
+                                               @Valid @RequestBody CrearDestinoRequest request) {
         try {
+            // Mapear DTO a entidad
+            DestinoTuristico destino = new DestinoTuristico();
+            destino.setNombre(request.getNombre());
+            destino.setDescripcion(request.getDescripcion());
+            destino.setDepartamento(request.getDepartamento());
+            destino.setCiudad(request.getCiudad());
+            destino.setDireccion(request.getDireccion());
+            destino.setLatitud(request.getLatitud());
+            destino.setLongitud(request.getLongitud());
+            destino.setCapacidadMaxima(request.getCapacidadMaxima());
+            destino.setTipoDestino(request.getTipoDestino());
+            destino.setActivo(request.getActivo());
+
             DestinoTuristico destinoActualizado = destinoService.actualizarDestino(id, destino);
             return ResponseEntity.ok(destinoActualizado);
         } catch (Exception e) {

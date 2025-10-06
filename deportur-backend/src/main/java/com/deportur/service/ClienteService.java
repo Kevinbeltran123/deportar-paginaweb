@@ -141,6 +141,6 @@ public class ClienteService {
      * Migrado de GestionReservasService.buscarClientesPorNombreOApellido()
      */
     public List<Cliente> buscarClientesPorNombreOApellido(String criterio) {
-        return clienteRepository.findByNombreContainingOrApellidoContaining(criterio, criterio);
+        return clienteRepository.findByNombreContainingIgnoreCaseOrApellidoContainingIgnoreCase(criterio, criterio);
     }
 }
