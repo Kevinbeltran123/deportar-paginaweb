@@ -1,165 +1,187 @@
-import { useAuth } from '../hooks/useAuth'
 import { Link } from 'react-router-dom'
+import {
+  ArrowUpRight,
+  CalendarDays,
+  LogOut,
+  MapPin,
+  Package,
+  Users,
+  Layers,
+} from 'lucide-react'
+import { useAuth } from '../hooks/useAuth'
 
 export const Dashboard = () => {
-  const { user, logout } = useAuth()
+  const { user, logout, isAuthenticated } = useAuth()
+
+  if (!isAuthenticated) {
+    return null
+  }
+
+  const navigationCards = [
+    {
+      title: 'Gestión de Equipos',
+      description: 'Administra el inventario completo de equipos deportivos.',
+      to: '/equipos',
+      icon: Package,
+      accent: 'bg-green-100 text-green-600',
+    },
+    {
+      title: 'Clientes',
+      description: 'Gestiona la información y el historial de tus clientes.',
+      to: '/clientes',
+      icon: Users,
+      accent: 'bg-blue-100 text-blue-600',
+    },
+    {
+      title: 'Tipos de Equipo',
+      description: 'Organiza las categorías y el catálogo de equipos.',
+      to: '/tipos-equipo',
+      icon: Layers,
+      accent: 'bg-orange-100 text-orange-600',
+    },
+    {
+      title: 'Destinos',
+      description: 'Administra ubicaciones y destinos disponibles.',
+      to: '/destinos',
+      icon: MapPin,
+      accent: 'bg-purple-100 text-purple-600',
+    },
+    {
+      title: 'Reservas',
+      description: 'Supervisa y gestiona las reservas de tus clientes.',
+      to: '/reservas',
+      icon: CalendarDays,
+      accent: 'bg-indigo-100 text-indigo-600',
+    },
+  ]
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-          <div>
-            <h1 className="text-2xl font-bold text-primary-600">🏔️ DeporTur</h1>
-          </div>
-          <div className="flex items-center space-x-4">
-            <div className="text-right">
-              <p className="text-sm font-medium text-gray-700">{user?.name}</p>
-              <p className="text-xs text-gray-500">{user?.email}</p>
+    <div className="flex min-h-screen w-full flex-col bg-[#F3F6FB] text-slate-900">
+      <header className="bg-gradient-to-br from-[#3B82F6] via-[#2563EB] to-[#1E40AF] text-white shadow-md">
+        <div className="flex items-center justify-between px-8 py-7 sm:px-10 lg:px-16">
+          <Link to="/dashboard" className="flex items-center gap-3">
+            <div className="flex gap-1">
+              <span className="h-2.5 w-2.5 rounded-full bg-white" />
+              <span className="h-2.5 w-2.5 rounded-full bg-blue-200" />
             </div>
-            {user?.picture && (
+            <div className="text-left">
+              <p className="text-xl font-semibold leading-tight">DeporTur</p>
+              <p className="text-[11px] uppercase tracking-[0.4em] text-blue-100">Sistema Administrador</p>
+            </div>
+          </Link>
+
+          <div className="flex items-center gap-4">
+            <div className="hidden text-right sm:block">
+              <p className="text-sm font-semibold">{user?.name}</p>
+              <p className="text-xs text-blue-100">{user?.email}</p>
+            </div>
+            {user?.picture ? (
               <img
                 src={user.picture}
                 alt={user.name}
-                className="h-10 w-10 rounded-full"
+                className="h-11 w-11 rounded-full border border-white/30 object-cover"
               />
+            ) : (
+              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-white/20 text-sm font-semibold">
+                {user?.name?.charAt(0) ?? '?'}
+              </div>
             )}
             <button
               onClick={logout}
-              className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+              className="inline-flex items-center gap-2 rounded-full border border-white/40 px-4 py-2 text-sm font-semibold text-white transition hover:border-white hover:bg-white/15"
             >
-              Cerrar Sesión
+              <LogOut className="h-4 w-4" />
+              Cerrar sesión
             </button>
           </div>
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-white rounded-lg shadow p-6 mb-6">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">
-            ¡Bienvenido, {user?.name?.split(' ')[0]}! 👋
-          </h2>
-          <p className="text-gray-600 mb-4">
-            Has iniciado sesión exitosamente en DeporTur.
-          </p>
-          <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-            <p className="text-green-800 font-medium">✅ Auth0 configurado correctamente</p>
-            <p className="text-green-700 text-sm mt-1">
-              La autenticación con Google OAuth está funcionando.
-            </p>
-          </div>
-        </div>
-
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
-          <Link to="/clientes" className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow cursor-pointer">
-            <div className="flex items-center">
-              <div className="flex-shrink-0 bg-blue-100 rounded-md p-3">
-                <svg className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                </svg>
+      <main className="flex flex-1 flex-col bg-[#F3F6FB] px-6 py-12 sm:px-10 lg:px-16 xl:px-20">
+        <div className="flex flex-1 flex-col gap-12">
+          <section className="w-full rounded-[2.4rem] bg-white px-8 py-14 shadow-[0_28px_60px_-30px_rgba(30,64,175,0.35)] sm:px-12 lg:px-18 lg:py-18">
+            <div className="flex flex-col items-center gap-12 text-center lg:flex-row lg:items-center lg:justify-between lg:text-left">
+              <div className="space-y-6">
+                <span className="text-xs font-semibold uppercase tracking-[0.45em] text-blue-500">
+                  Panel principal
+                </span>
+                <h1 className="text-4xl font-semibold text-slate-900 sm:text-5xl">
+                  Hola, {user?.name?.split(' ')[0] ?? 'Usuario'} 👋
+                </h1>
+                <p className="mx-auto max-w-3xl text-lg leading-relaxed text-slate-600 lg:mx-0">
+                  Bienvenido al panel administrativo de DeporTur. Gestiona inventario, clientes, destinos y reservas
+                  desde un espacio centralizado diseñado para operadores turísticos profesionales.
+              </p>
               </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-500">Clientes</p>
-                <p className="text-2xl font-semibold text-gray-900">-</p>
+
+              <div className="flex items-center gap-5 rounded-[2rem] bg-blue-50 px-8 py-6 text-blue-700 shadow-inner">
+                {user?.picture ? (
+                  <img
+                    src={user.picture}
+                    alt={user.name}
+                    className="h-16 w-16 rounded-full border border-blue-100 object-cover"
+                  />
+                ) : (
+                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-blue-100 text-blue-600">
+                    <span className="text-2xl font-semibold">DT</span>
+                  </div>
+                )}
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.4em] text-blue-600">DeporTur Suite</p>
+                  <p className="text-sm text-blue-500">Gestión integral para operadores turísticos</p>
+                </div>
               </div>
             </div>
-          </Link>
+          </section>
 
-          <Link to="/equipos" className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow cursor-pointer">
-            <div className="flex items-center">
-              <div className="flex-shrink-0 bg-green-100 rounded-md p-3">
-                <svg className="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                </svg>
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-500">Equipos</p>
-                <p className="text-2xl font-semibold text-gray-900">-</p>
-              </div>
+          <section className="w-full">
+            <div className="grid w-full grid-cols-1 gap-10 md:grid-cols-2 xl:grid-cols-3 xl:grid-rows-2 xl:auto-rows-[minmax(260px,1fr)]">
+              {navigationCards.map(({ title, description, to, icon: Icon, accent }) => (
+                <Link
+                  key={title}
+                  to={to}
+                  className="group relative flex h-full flex-col justify-between overflow-hidden rounded-[2rem] bg-white px-10 py-12 shadow-[0_26px_55px_-30px_rgba(30,64,175,0.3)] transition-transform duration-200 hover:-translate-y-1 hover:shadow-[0_38px_75px_-25px_rgba(30,64,175,0.42)]"
+                >
+                  <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-200 via-transparent to-blue-100 opacity-0 transition-opacity group-hover:opacity-100" />
+                  <div className="flex items-center gap-4">
+                  <span className={`flex h-14 w-14 items-center justify-center rounded-2xl ${accent}`}>
+                    <Icon className="h-6 w-6" />
+                    </span>
+                    <div>
+                      <h2 className="text-xl font-semibold text-slate-900">{title}</h2>
+                      <p className="mt-2 text-sm text-slate-500">{description}</p>
+                    </div>
+                  </div>
+                  <span className="mt-10 inline-flex items-center gap-2 text-sm font-semibold text-blue-600">
+                    Entrar al módulo
+                    <ArrowUpRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1 group-hover:-translate-y-1" />
+                  </span>
+                </Link>
+              ))}
             </div>
-          </Link>
-
-          <Link to="/tipos-equipo" className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow cursor-pointer">
-            <div className="flex items-center">
-              <div className="flex-shrink-0 bg-orange-100 rounded-md p-3">
-                <svg className="h-6 w-6 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                </svg>
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-500">Tipos Equipo</p>
-                <p className="text-2xl font-semibold text-gray-900">-</p>
-              </div>
-            </div>
-          </Link>
-
-          <Link to="/destinos" className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow cursor-pointer">
-            <div className="flex items-center">
-              <div className="flex-shrink-0 bg-purple-100 rounded-md p-3">
-                <svg className="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-500">Destinos</p>
-                <p className="text-2xl font-semibold text-gray-900">-</p>
-              </div>
-            </div>
-          </Link>
-
-          <Link to="/reservas" className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow cursor-pointer">
-            <div className="flex items-center">
-              <div className="flex-shrink-0 bg-indigo-100 rounded-md p-3">
-                <svg className="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-                </svg>
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-500">Reservas</p>
-                <p className="text-2xl font-semibold text-gray-900">-</p>
-              </div>
-            </div>
-          </Link>
-        </div>
-
-        {/* Next Steps */}
-        <div className="bg-white rounded-lg shadow p-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">📝 Próximos pasos</h3>
-          <ul className="space-y-2 text-gray-600">
-            <li className="flex items-center space-x-2">
-              <span className="text-green-500">✓</span>
-              <span>Configurar Auth0 en React</span>
-            </li>
-            <li className="flex items-center space-x-2">
-              <span className="text-green-500">✓</span>
-              <span>Crear componentes base (Button, Card, Modal, Table)</span>
-            </li>
-            <li className="flex items-center space-x-2">
-              <span className="text-green-500">✓</span>
-              <span>Configurar React Router con rutas protegidas</span>
-            </li>
-            <li className="flex items-center space-x-2">
-              <span className="text-green-500">✓</span>
-              <span>Crear servicios de API (Axios + interceptores)</span>
-            </li>
-            <li className="flex items-center space-x-2">
-              <span className="text-green-500">✓</span>
-              <span>Implementar página de gestión de Clientes (CRUD completo)</span>
-            </li>
-            <li className="flex items-center space-x-2">
-              <span className="text-green-500">✓</span>
-              <span>Implementar todas las páginas del sistema (Clientes, Equipos, Destinos, Reservas)</span>
-            </li>
-            <li className="flex items-center space-x-2">
-              <span className="text-green-500">✓</span>
-              <span>Sistema completo y funcional con CRUD de todas las entidades</span>
-            </li>
-          </ul>
+          </section>
         </div>
       </main>
+      <footer className="bg-gradient-to-br from-[#1E40AF] via-[#2563EB] to-[#3B82F6] text-white shadow-inner">
+        <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-8 py-6 sm:flex-row sm:items-center sm:justify-between sm:px-10 lg:px-16">
+          <div>
+            <p className="text-sm font-semibold">© 2024 DeporTur. Todos los derechos reservados.</p>
+            <p className="text-xs text-blue-100">Soluciones tecnológicas para operadores turísticos.</p>
+          </div>
+          <div className="flex items-center gap-3 text-sm text-blue-100">
+            <span className="flex h-2 w-2 items-center justify-center rounded-full bg-emerald-400" />
+            Estado del sistema: Operativo
+            <span className="ml-3 text-xs uppercase tracking-[0.3em] text-blue-200">v1.0.0</span>
+          </div>
+          <div className="text-sm text-blue-100">
+            Soporte:
+            {' '}
+            <a href="mailto:soporte@deportur.com" className="font-semibold text-white hover:underline">
+              soporte@deportur.com
+            </a>
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }
