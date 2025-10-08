@@ -95,6 +95,22 @@ export const ListaTiposEquipo = () => {
     cargarTipos();
   };
 
+  const handleAbrirModalEditar = () => {
+    if (!tipoSeleccionado) {
+      alert('Selecciona un tipo de equipo para modificar.');
+      return;
+    }
+    setModalEditar(true);
+  };
+
+  const handleEliminarSeleccionado = () => {
+    if (!tipoSeleccionado) {
+      alert('Selecciona un tipo de equipo para eliminar.');
+      return;
+    }
+    handleEliminar(tipoSeleccionado);
+  };
+
   if (!isAuthenticated) {
     return (
       <div className="p-6 bg-yellow-50 rounded-lg">
@@ -123,10 +139,9 @@ export const ListaTiposEquipo = () => {
     { key: 'idTipo', label: 'ID' },
     {
       key: 'nombre',
-      label: 'Tipo de Equipo',
+      label: 'Nombre',
       render: (tipo) => (
         <div className="flex items-center gap-2">
-          <Package className="h-4 w-4 text-green-600" />
           <span className="font-medium">{tipo.nombre}</span>
         </div>
       )
@@ -139,63 +154,107 @@ export const ListaTiposEquipo = () => {
   ];
 
   return (
-    <div className="space-y-6">
-      <div className="bg-white p-6 rounded-lg shadow">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold text-gray-900">Tipos de Equipo</h2>
-          <div className="flex gap-2">
-            <Button variant="outline" size="md" onClick={cargarTipos}>
-              <RefreshCw className="h-4 w-4 mr-2" />
-              Recargar
-            </Button>
-            <Button variant="primary" size="md" onClick={() => setModalCrear(true)}>
-              <Plus className="h-4 w-4 mr-2" />
-              Nuevo Tipo
-            </Button>
+    <div className="w-full">
+      {/* Full-Width Header Section */}
+      <div className="w-full bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 shadow-xl">
+        <div className="w-full px-6 py-6">
+          <div className="flex flex-wrap items-center justify-between gap-6">
+            <div className="space-y-1">
+              <p className="text-xs uppercase tracking-[0.4em] font-semibold text-blue-100">
+                Gestión de inventario
+              </p>
+              <h1 className="text-4xl md:text-5xl font-bold text-white tracking-tight">
+                Tipos de Equipo
+              </h1>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              <Button
+                className="bg-green-600 text-white font-semibold hover:bg-green-700 shadow-md px-6 py-2.5 text-base"
+                onClick={() => setModalCrear(true)}
+              >
+                <Plus className="mr-2 h-5 w-5" />Agregar
+              </Button>
+              <Button
+                className="bg-blue-600 text-white font-semibold hover:bg-blue-700 shadow-md px-6 py-2.5 text-base"
+                onClick={handleAbrirModalEditar}
+              >
+                <Edit className="mr-2 h-5 w-5" />Modificar
+              </Button>
+              <Button
+                className="bg-red-600 text-white font-semibold hover:bg-red-700 shadow-md px-6 py-2.5 text-base"
+                onClick={handleEliminarSeleccionado}
+              >
+                <Trash2 className="mr-2 h-5 w-5" />Eliminar
+              </Button>
+              <Button
+                className="bg-gray-600 text-white font-semibold hover:bg-gray-700 shadow-md px-6 py-2.5 text-base"
+                onClick={cargarTipos}
+              >
+                <RefreshCw className="mr-2 h-5 w-5" />Refrescar
+              </Button>
+            </div>
           </div>
-        </div>
-
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-          <input
-            type="text"
-            placeholder="Buscar por nombre o descripción..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-
-        <div className="mt-4 text-sm text-gray-600">
-          Mostrando {tiposFiltrados.length} de {tipos.length} tipos
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow">
-        <Table
-          columns={columns}
-          data={tiposFiltrados}
-          emptyMessage="No se encontraron tipos de equipo"
-          actions={(tipo) => (
-            <>
-              <button
-                onClick={() => {
-                  setTipoSeleccionado(tipo);
-                  setModalEditar(true);
-                }}
-                className="text-green-600 hover:text-green-900"
-              >
-                <Edit className="h-4 w-4" />
-              </button>
-              <button
-                onClick={() => handleEliminar(tipo)}
-                className="text-red-600 hover:text-red-900"
-              >
-                <Trash2 className="h-4 w-4" />
-              </button>
-            </>
-          )}
-        />
+      {/* Content Section - Full Width */}
+      <div className="w-full px-6 py-6 space-y-6">
+        {/* Search Panel */}
+        <div className="rounded-2xl bg-white/95 p-6 shadow">
+          <div className="mb-4 flex items-center gap-2 text-blue-700">
+            <Search className="h-5 w-5" />
+            <h3 className="text-base font-semibold tracking-tight">Búsqueda</h3>
+          </div>
+
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+            <input
+              type="text"
+              placeholder="Buscar tipos de equipo..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+            />
+          </div>
+
+          <div className="mt-4 text-xs text-slate-500">
+            Mostrando {tiposFiltrados.length} de {tipos.length} tipos
+          </div>
+        </div>
+
+        {/* Professional Table */}
+        <div className="bg-white rounded-lg shadow overflow-hidden">
+          <Table
+            columns={columns}
+            data={tiposFiltrados}
+            emptyMessage="No se encontraron tipos de equipo"
+            onRowClick={(tipo) => setTipoSeleccionado(tipo)}
+            selectedRow={tipoSeleccionado}
+            actions={(tipo) => (
+              <>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setTipoSeleccionado(tipo);
+                    setModalEditar(true);
+                  }}
+                  className="text-green-600 hover:text-green-900 transition-colors"
+                >
+                  <Edit className="h-4 w-4" />
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleEliminar(tipo);
+                  }}
+                  className="text-red-600 hover:text-red-900 transition-colors"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </>
+            )}
+          />
+        </div>
       </div>
 
       <Modal isOpen={modalCrear} onClose={() => setModalCrear(false)} title="Nuevo Tipo de Equipo" size="md">
