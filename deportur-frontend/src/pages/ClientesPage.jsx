@@ -5,7 +5,7 @@ import { ListaClientesV2 } from '../components/clientes/ListaClientesV2';
  */
 export const ClientesPage = () => {
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="w-full">
       <ListaClientesV2 />
     </div>
   );

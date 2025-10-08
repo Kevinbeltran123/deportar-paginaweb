@@ -125,103 +125,149 @@ export const FormularioEquipo = ({ equipoId = null, onSuccess, onCancel }) => {
   if (isLoading) return <Spinner size="lg" className="p-12" />;
 
   return (
-    <div>
+    <div className="px-1">
       {error && (
-        <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded">
-          <p className="text-red-800">{error}</p>
+        <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-r-lg shadow-sm">
+          <div className="flex items-start">
+            <div className="flex-shrink-0">
+              <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <p className="ml-3 text-sm font-medium text-red-800">{error}</p>
+          </div>
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Input
-            label="Nombre del Equipo"
-            name="nombre"
-            value={formData.nombre}
-            onChange={handleChange}
-            error={validationErrors.nombre}
-            required
-            disabled={isSaving}
-            maxLength={100}
-          />
-          <Input
-            label="Marca"
-            name="marca"
-            value={formData.marca}
-            onChange={handleChange}
-            error={validationErrors.marca}
-            required
-            disabled={isSaving}
-            maxLength={50}
-          />
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Basic Information Section */}
+        <div className="space-y-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <Input
+              label="Nombre del Equipo"
+              name="nombre"
+              value={formData.nombre}
+              onChange={handleChange}
+              error={validationErrors.nombre}
+              required
+              disabled={isSaving}
+              maxLength={100}
+              placeholder="Ej: Bicicleta de Montaña"
+            />
+            <Input
+              label="Marca"
+              name="marca"
+              value={formData.marca}
+              onChange={handleChange}
+              error={validationErrors.marca}
+              required
+              disabled={isSaving}
+              maxLength={50}
+              placeholder="Ej: Specialized"
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <Input
+              label="Fecha de Adquisición"
+              name="fechaAdquisicion"
+              type="date"
+              value={formData.fechaAdquisicion}
+              onChange={handleChange}
+              error={validationErrors.fechaAdquisicion}
+              required
+              disabled={isSaving}
+            />
+            <Input
+              label="Precio de Alquiler (por día)"
+              name="precioAlquiler"
+              type="number"
+              step="0.01"
+              value={formData.precioAlquiler}
+              onChange={handleChange}
+              error={validationErrors.precioAlquiler}
+              required
+              disabled={isSaving}
+              placeholder="0.00"
+            />
+          </div>
         </div>
 
-        <Input
-          label="Fecha de Adquisición"
-          name="fechaAdquisicion"
-          type="date"
-          value={formData.fechaAdquisicion}
-          onChange={handleChange}
-          error={validationErrors.fechaAdquisicion}
-          required
-          disabled={isSaving}
-        />
+        {/* Equipment Type Section */}
+        <div className="space-y-2">
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-100">
+            <SelectorTipoEquipo
+              onSelect={setTipoSeleccionado}
+              selectedTipo={tipoSeleccionado}
+            />
+            {validationErrors.tipo && (
+              <p className="mt-2 text-sm text-red-600 font-medium">{validationErrors.tipo}</p>
+            )}
+          </div>
+        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <SelectorTipoEquipo
-            onSelect={setTipoSeleccionado}
-            selectedTipo={tipoSeleccionado}
-          />
-          {validationErrors.tipo && <p className="text-sm text-red-600">{validationErrors.tipo}</p>}
+        {/* Destination Section */}
+        <div className="space-y-2">
+          <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg p-4 border border-purple-100">
+            <SelectorDestino
+              onSelect={setDestinoSeleccionado}
+              selectedDestino={destinoSeleccionado}
+            />
+            {validationErrors.destino && (
+              <p className="mt-2 text-sm text-red-600 font-medium">{validationErrors.destino}</p>
+            )}
+          </div>
+        </div>
 
-          <Input
-            label="Precio de Alquiler"
-            name="precioAlquiler"
-            type="number"
-            step="0.01"
-            value={formData.precioAlquiler}
+        {/* Status and Availability Section */}
+        <div className="space-y-5">
+          <Select
+            label="Estado del Equipo"
+            name="estado"
+            value={formData.estado}
             onChange={handleChange}
-            error={validationErrors.precioAlquiler}
+            options={ESTADOS_EQUIPO}
             required
             disabled={isSaving}
           />
+
+          <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+            <div className="flex items-center">
+              <input
+                type="checkbox"
+                id="disponible"
+                name="disponible"
+                checked={formData.disponible}
+                onChange={handleChange}
+                disabled={isSaving}
+                className="h-5 w-5 text-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 border-gray-300 rounded cursor-pointer transition-all"
+              />
+              <label htmlFor="disponible" className="ml-3 block text-sm font-medium text-gray-700 cursor-pointer select-none">
+                Equipo disponible para alquiler
+              </label>
+            </div>
+          </div>
         </div>
 
-        <SelectorDestino
-          onSelect={setDestinoSeleccionado}
-          selectedDestino={destinoSeleccionado}
-        />
-        {validationErrors.destino && <p className="text-sm text-red-600">{validationErrors.destino}</p>}
-
-        <Select
-          label="Estado"
-          name="estado"
-          value={formData.estado}
-          onChange={handleChange}
-          options={ESTADOS_EQUIPO}
-          required
-          disabled={isSaving}
-        />
-
-        <div className="flex items-center">
-          <input
-            type="checkbox"
-            id="disponible"
-            name="disponible"
-            checked={formData.disponible}
-            onChange={handleChange}
+        {/* Action Buttons */}
+        <div className="flex gap-3 pt-6 border-t border-gray-200">
+          <Button
+            type="submit"
+            variant="primary"
+            loading={isSaving}
             disabled={isSaving}
-            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-          />
-          <label htmlFor="disponible" className="ml-2 block text-sm text-gray-700">Equipo disponible</label>
-        </div>
-
-        <div className="flex gap-3 pt-4">
-          <Button type="submit" variant="primary" loading={isSaving} disabled={isSaving} className="flex-1">
-            {equipoId ? 'Actualizar Equipo' : 'Crear Equipo'}
+            className="flex-1 shadow-md hover:shadow-lg transition-shadow"
+          >
+            {equipoId ? '✓ Actualizar Equipo' : '+ Crear Equipo'}
           </Button>
           {onCancel && (
-            <Button type="button" variant="outline" onClick={onCancel} disabled={isSaving}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onCancel}
+              disabled={isSaving}
+              className="px-8 hover:bg-gray-100 transition-colors"
+            >
               Cancelar
             </Button>
           )}
