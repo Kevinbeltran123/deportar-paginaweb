@@ -1,0 +1,120 @@
+# ===================================
+# DeporTur Backend - Git Ignore Rules
+# ===================================
+
+# Compiled class files
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+
+# Maven
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# Gradle
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# Environment Variables - SENSITIVE DATA
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env
+!.env.example
+
+# Application Properties with Credentials
+application-local.properties
+application-dev.properties
+application-prod.properties
+**/application-local.properties
+**/application-dev.properties
+**/application-prod.properties
+
+# IDE - IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+.idea_modules/
+
+# IDE - Eclipse
+.settings/
+.project
+.classpath
+.factorypath
+.springBeans
+.sts4-cache
+
+# IDE - NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# IDE - VS Code
+.vscode/
+*.code-workspace
+
+# Logs
+*.log
+logs/
+spring.log
+/logs
+
+# OS Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*~
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*.swo
+*~.nib
+
+# Package Files
+*.tar.gz
+*.zip
+
+# Spring Boot
+/build/
+/out/
+
+# H2 Database (if used locally)
+*.db
+*.trace.db
+*.lock.db
+
+# Test Coverage Reports
+.jacoco/
+*.exec
+
+# Application specific
+/upload/
+/downloads/

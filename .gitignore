@@ -1,43 +1,198 @@
-# Java
+# ===================================
+# DeporTur Project - Git Ignore Rules
+# ===================================
+
+# ===================================
+# Java & Spring Boot
+# ===================================
 *.class
 *.jar
 *.war
 *.ear
+*.nar
 target/
+out/
+build/
 
+# ===================================
 # Maven
+# ===================================
 .settings/
 .mvn/
 .mvnw
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+dependency-reduced-pom.xml
 
-# Node
+# ===================================
+# Node & Frontend
+# ===================================
 node_modules/
 dist/
+dist-ssr/
 .build/
+.vite/
+.cache/
+coverage/
 
+# ===================================
 # Logs
+# ===================================
 *.log
 logs/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
+pnpm-debug.log*
 
-# Environment variables - SENSITIVE DATA (DO NOT COMMIT)
+# ===================================
+# Environment Variables - SENSITIVE DATA
+# NEVER COMMIT THESE FILES!
+# ===================================
 .env
 .env.local
+.env.development.local
+.env.test.local
+.env.production.local
 .env.*.local
 *.env
+
+# Whitelist example files
 !.env.example
+!**/.env.example
 
-# Application properties with credentials
+# ===================================
+# Application Properties with Credentials
+# ===================================
 application-local.properties
+application-dev.properties
+application-prod.properties
 **/application-local.properties
+**/application-dev.properties
+**/application-prod.properties
 
-# IDE
-.vscode/
+# ===================================
+# IDE - IntelliJ IDEA
+# ===================================
 .idea/
 *.iml
+*.iws
+*.ipr
+.idea_modules/
 
-# OS
+# ===================================
+# IDE - VS Code
+# ===================================
+.vscode/
+*.code-workspace
+.vscode-test
+
+# ===================================
+# IDE - Eclipse
+# ===================================
+.settings/
+.project
+.classpath
+.factorypath
+.springBeans
+.sts4-cache
+
+# ===================================
+# Operating System Files
+# ===================================
+# macOS
 .DS_Store
+.DS_Store?
+._*
+.AppleDouble
+.LSOverride
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.directory
+.Trash-*
+
+# ===================================
+# Temporary & Backup Files
+# ===================================
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*~.nib
+*.orig
+
+# ===================================
+# Database Files (if running locally)
+# ===================================
+*.db
+*.sqlite
+*.sqlite3
+*.trace.db
+*.lock.db
+
+# ===================================
+# Security & Secrets
+# ===================================
+secrets/
+*.key
+*.pem
+*.p12
+*.pfx
+*.crt
+*.cer
+credentials.json
+service-account.json
+
+# ===================================
+# Build & Deployment
+# ===================================
+.vercel
+.turbo
+.next/
+.nuxt/
+.output/
+.netlify/
+
+# ===================================
+# Test Coverage & Reports
+# ===================================
+coverage/
+.nyc_output/
+.jacoco/
+*.exec
+*.lcov
+htmlcov/
+.pytest_cache/
+
+# ===================================
+# Package Manager
+# ===================================
+.npm
+.yarn/
+.pnpm-debug.log
+yarn.lock
+package-lock.json
+pnpm-lock.yaml
+
+# ===================================
+# Application Specific
+# ===================================
+/upload/
+/downloads/
+/data/
+/backup/
