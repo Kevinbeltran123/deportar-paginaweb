@@ -429,7 +429,7 @@ SUPABASE_DB_HOST=aws-1-us-east-2.pooler.supabase.com
 SUPABASE_DB_PORT=6543
 SUPABASE_DB_NAME=postgres
 SUPABASE_DB_USER=postgres.nrgypeaovkqeyroacglj
-SUPABASE_DB_PASSWORD='Kevin123#/marT'
+SUPABASE_DB_PASSWORD='Ke'
 #                    ↑ Quotes needed for special characters
 
 # ===================================
@@ -438,7 +438,7 @@ SUPABASE_DB_PASSWORD='Kevin123#/marT'
 AUTH0_DOMAIN=dev-kevinb.us.auth0.com
 AUTH0_AUDIENCE=task-manager-api
 AUTH0_CLIENT_ID=1jniq1aH8NWiM4D3G8LiRa6WCzvuWtQj
-AUTH0_CLIENT_SECRET=8bZ43f_2rL_G-KFPeoYLRDSajP7AakROibskfMqqAVd4CD_jHWiCXU8d7QYuL6Ot
+AUTH0_CLIENT_SECRET=8bZ43f_2rL_G-
 #                   ↑ BACKEND ONLY - Never expose to frontend
 
 # ===================================
