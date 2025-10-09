@@ -154,6 +154,20 @@ FROM information_schema.columns
 WHERE table_name = 'cliente'
 AND column_name IN ('numero_reservas', 'destino_preferido_id', 'nivel_fidelizacion');
 
+-- Sincronizar numero_reservas con las reservas actuales (excluyendo canceladas)
+UPDATE cliente c
+SET numero_reservas = COALESCE(sub.total_reservas, 0)
+FROM (
+    SELECT id_cliente, COUNT(*) FILTER (WHERE estado <> 'CANCELADA') AS total_reservas
+    FROM reserva
+    GROUP BY id_cliente
+) AS sub
+WHERE c.id_cliente = sub.id_cliente;
+
+UPDATE cliente
+SET numero_reservas = 0
+WHERE numero_reservas IS NULL;
+
 -- Verificar nuevas columnas en reserva
 SELECT column_name, data_type, column_default
 FROM information_schema.columns

@@ -336,7 +336,7 @@ export const ListaClientesV2 = () => {
                           <div className="flex items-center gap-2">
                             <span className="font-medium text-gray-700">Reservas:</span>
                             <Badge variant="info" size="sm">
-                              {cliente.reservas?.length || 0}
+                              {cliente.numeroReservas ?? cliente.reservas?.length ?? 0}
                             </Badge>
                           </div>
                         </div>

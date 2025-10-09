@@ -3,8 +3,11 @@ package com.deportur.service;
 import com.deportur.model.Cliente;
 import com.deportur.model.DestinoTuristico;
 import com.deportur.model.Reserva;
+import com.deportur.model.enums.NivelFidelizacion;
 import com.deportur.repository.ClienteRepository;
 import com.deportur.repository.ReservaRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +22,8 @@ import java.util.stream.Collectors;
  */
 @Service
 public class ClienteService {
+
+    private static final Logger logger = LoggerFactory.getLogger(ClienteService.class);
 
     @Autowired
     private ClienteRepository clienteRepository;
@@ -123,8 +128,10 @@ public class ClienteService {
      */
     @Transactional(readOnly = true)
     public Cliente buscarClientePorId(Long idCliente) throws Exception {
-        return clienteRepository.findById(idCliente)
+        Cliente cliente = clienteRepository.findById(idCliente)
             .orElseThrow(() -> new Exception("El cliente no existe"));
+        actualizarConteoReservasCliente(cliente);
+        return cliente;
     }
 
     /**
@@ -132,8 +139,10 @@ public class ClienteService {
      */
     @Transactional(readOnly = true)
     public Cliente buscarClientePorDocumento(String documento) throws Exception {
-        return clienteRepository.findByDocumento(documento)
+        Cliente cliente = clienteRepository.findByDocumento(documento)
             .orElseThrow(() -> new Exception("No se encontró un cliente con ese documento"));
+        actualizarConteoReservasCliente(cliente);
+        return cliente;
     }
 
     /**
@@ -141,7 +150,15 @@ public class ClienteService {
      */
     @Transactional(readOnly = true)
     public List<Cliente> listarTodosLosClientes() {
-        return clienteRepository.findAll();
+        List<Cliente> clientes = clienteRepository.findAll();
+        logger.debug("Iniciando conteo dinámico de reservas para {} clientes", clientes.size());
+        aplicarConteoReservas(clientes);
+        if (logger.isDebugEnabled()) {
+            clientes.forEach(cliente ->
+                logger.debug("Cliente {} - numeroReservas calculado: {}", cliente.getIdCliente(), cliente.getNumeroReservas())
+            );
+        }
+        return clientes;
     }
 
     /**
@@ -149,7 +166,10 @@ public class ClienteService {
      */
     @Transactional(readOnly = true)
     public List<Cliente> buscarClientesPorNombreOApellido(String criterio) {
-        return clienteRepository.findByNombreContainingIgnoreCaseOrApellidoContainingIgnoreCase(criterio, criterio);
+        List<Cliente> clientes = clienteRepository
+            .findByNombreContainingIgnoreCaseOrApellidoContainingIgnoreCase(criterio, criterio);
+        aplicarConteoReservas(clientes);
+        return clientes;
     }
 
     /**
@@ -185,6 +205,7 @@ public class ClienteService {
     public Map<String, Object> obtenerEstadisticasCliente(Long idCliente) throws Exception {
         Cliente cliente = buscarClientePorId(idCliente);
         List<Reserva> reservas = reservaRepository.findByClienteOrderByFechaCreacionDesc(cliente);
+        actualizarConteoReservasCliente(cliente);
 
         Map<String, Object> estadisticas = new HashMap<>();
         estadisticas.put("cliente", cliente);
@@ -194,5 +215,41 @@ public class ClienteService {
         estadisticas.put("reservasRecientes", reservas.stream().limit(5).collect(Collectors.toList()));
 
         return estadisticas;
+    }
+
+    private void aplicarConteoReservas(List<Cliente> clientes) {
+        if (clientes == null || clientes.isEmpty()) {
+            return;
+        }
+
+        Map<Long, Long> conteoPorCliente = reservaRepository.obtenerConteoReservasPorCliente().stream()
+            .collect(Collectors.toMap(
+                ReservaRepository.ClienteReservaCount::getClienteId,
+                ReservaRepository.ClienteReservaCount::getTotal
+            ));
+        logger.debug("Conteo de reservas recuperado para {} clientes con reservas activas",
+            conteoPorCliente.size());
+
+        clientes.forEach(cliente ->
+            aplicarConteoReservas(cliente, conteoPorCliente.get(cliente.getIdCliente()))
+        );
+    }
+
+    private void actualizarConteoReservasCliente(Cliente cliente) {
+        if (cliente == null || cliente.getIdCliente() == null) {
+            return;
+        }
+        Long total = reservaRepository.contarReservasPorCliente(cliente.getIdCliente());
+        aplicarConteoReservas(cliente, total);
+        logger.debug("Cliente {} - total reservas recalculado: {}", cliente.getIdCliente(), cliente.getNumeroReservas());
+    }
+
+    private void aplicarConteoReservas(Cliente cliente, Long totalReservas) {
+        if (cliente == null) {
+            return;
+        }
+        int total = totalReservas != null ? totalReservas.intValue() : 0;
+        cliente.setNumeroReservas(total);
+        cliente.setNivelFidelizacion(NivelFidelizacion.calcularNivel(total));
     }
 }
