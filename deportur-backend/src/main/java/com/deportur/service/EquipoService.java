@@ -122,6 +122,7 @@ public class EquipoService {
         equipoExistente.setFechaAdquisicion(equipo.getFechaAdquisicion());
         equipoExistente.setDestino(equipo.getDestino());
         equipoExistente.setDisponible(equipo.getDisponible());
+        equipoExistente.setImagenUrl(equipo.getImagenUrl());
 
         return equipoRepository.save(equipoExistente);
     }
