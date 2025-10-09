@@ -1,53 +1,273 @@
 # 🤝 Contributing to DeporTur
 
-Thank you for your interest in contributing to DeporTur! This document provides guidelines and instructions for contributing to the project.
+> **We welcome contributions from developers of all skill levels!**
+
+This guide will help you contribute effectively to the DeporTur project.
 
 ---
 
-## 📋 Table of Contents
+## 🚀 Quick Start for Contributors
 
-- [Code of Conduct](#code-of-conduct)
-- [Getting Started](#getting-started)
-- [Development Workflow](#development-workflow)
-- [Coding Standards](#coding-standards)
-- [Commit Guidelines](#commit-guidelines)
-- [Pull Request Process](#pull-request-process)
-- [Testing Guidelines](#testing-guidelines)
-- [Documentation](#documentation)
+### 1. Setup Development Environment
+```bash
+# Fork and clone the repository
+git clone https://github.com/your-username/deportur-paginaweb.git
+cd DeporTur
 
----
+# Setup development environment
+./scripts/setup-project.sh
+```
 
-## 📜 Code of Conduct
-
-### Our Standards
-
-- **Be Respectful**: Treat everyone with respect and kindness
-- **Be Collaborative**: Work together and help each other
-- **Be Professional**: Maintain a professional and inclusive environment
-- **Be Constructive**: Provide helpful and constructive feedback
-
-### Unacceptable Behavior
-
-- Harassment or discrimination of any kind
-- Trolling, insulting, or derogatory comments
-- Publishing others' private information
-- Any conduct that would be inappropriate in a professional setting
+### 2. Choose Your Contribution
+- 🐛 **Bug fixes** - Check [Issues](https://github.com/Kevinbeltran123/deportur-paginaweb/issues) labeled `bug`
+- ✨ **New features** - Look for `enhancement` labels  
+- 📚 **Documentation** - Improve guides and code comments
+- 🧪 **Testing** - Add test coverage for existing features
+- 🎨 **UI/UX** - Improve user interface and experience
 
 ---
 
-## 🚀 Getting Started
+## 🛠️ Development Workflow
 
-### Prerequisites
+### Branch Strategy
+```bash
+# Create feature branch from main
+git checkout main
+git pull origin main
+git checkout -b feature/your-feature-name
 
-Before contributing, ensure you have:
+# Or for bug fixes
+git checkout -b fix/issue-description
+```
 
-- **Java 17** or higher
-- **Node.js 18** or higher
-- **Maven 3.8+**
-- **Git**
-- **PostgreSQL client** (for database testing)
-- A **Supabase account** (for database access)
-- An **Auth0 account** (for authentication)
+### Making Changes
+1. **Write code** following our [coding standards](#coding-standards)
+2. **Add tests** for new functionality
+3. **Update documentation** if needed
+4. **Test locally** - ensure all tests pass
+5. **Commit changes** using [conventional commits](#commit-guidelines)
+
+### Testing Your Changes
+```bash
+# Run all tests
+./scripts/run-tests.sh
+
+# Backend tests only
+cd deportur-backend && ./mvnw test
+
+# Frontend tests only  
+cd deportur-frontend && npm test
+```
+
+---
+
+## 📝 Coding Standards
+
+### **Backend (Java/Spring Boot)**
+- Follow **Spring Boot best practices**
+- Use **meaningful variable names**
+- Add **Javadoc** for public methods
+- Implement **proper exception handling**
+- Write **unit tests** for services
+- Use **DTOs** for API contracts
+
+**Example:**
+```java
+@Service
+@Transactional
+public class ReservaService {
+    
+    /**
+     * Creates a new reservation with validation
+     * @param reservaDto the reservation data
+     * @return the created reservation
+     * @throws ValidationException if data is invalid
+     */
+    public ReservaDto crearReserva(CrearReservaDto reservaDto) {
+        // Implementation
+    }
+}
+```
+
+### **Frontend (React/JavaScript)**
+- Use **functional components** with hooks
+- Follow **component composition** patterns
+- Implement **proper error boundaries**
+- Use **custom hooks** for logic reuse
+- Write **integration tests** for components
+
+**Example:**
+```jsx
+// Good: Functional component with custom hook
+export function ReservaForm({ onSubmit }) {
+  const { reserva, loading, error } = useReservaForm();
+  
+  if (error) return <ErrorMessage error={error} />;
+  
+  return (
+    <form onSubmit={onSubmit}>
+      {/* Form content */}
+    </form>
+  );
+}
+```
+
+---
+
+## 📋 Commit Guidelines
+
+We use [Conventional Commits](https://www.conventionalcommits.org/) for clear commit history:
+
+```bash
+# Format: type(scope): description
+feat(auth): add Google OAuth integration
+fix(reservas): resolve date validation bug  
+docs(api): update endpoint documentation
+test(services): add unit tests for ReservaService
+refactor(components): simplify form validation logic
+```
+
+**Types:**
+- `feat`: New feature
+- `fix`: Bug fix  
+- `docs`: Documentation changes
+- `test`: Adding tests
+- `refactor`: Code refactoring
+- `style`: Code style changes
+- `chore`: Build process or auxiliary tool changes
+
+---
+
+## 🔄 Pull Request Process
+
+### Before Submitting
+- ✅ All tests pass locally
+- ✅ Code follows style guidelines  
+- ✅ Documentation is updated
+- ✅ Commit messages follow conventions
+- ✅ Branch is up to date with main
+
+### PR Template
+```markdown
+## Description
+Brief description of changes
+
+## Type of Change
+- [ ] Bug fix
+- [ ] New feature  
+- [ ] Documentation update
+- [ ] Refactoring
+
+## Testing
+- [ ] Unit tests added/updated
+- [ ] Integration tests pass
+- [ ] Manual testing completed
+
+## Documentation
+- [ ] Code comments updated
+- [ ] README updated (if needed)
+- [ ] API docs updated (if needed)
+```
+
+### Review Process
+1. **Automated checks** must pass (CI/CD)
+2. **Code review** by maintainers
+3. **Testing** on staging environment
+4. **Approval** and merge to main
+
+---
+
+## 🧪 Testing Guidelines
+
+### **Backend Testing**
+```java
+@SpringBootTest
+class ReservaServiceTest {
+    
+    @Test
+    void shouldCreateReservaSuccessfully() {
+        // Given
+        CrearReservaDto dto = new CrearReservaDto(/* ... */);
+        
+        // When  
+        ReservaDto result = reservaService.crearReserva(dto);
+        
+        // Then
+        assertThat(result.getId()).isNotNull();
+        assertThat(result.getEstado()).isEqualTo(EstadoReserva.CONFIRMADA);
+    }
+}
+```
+
+### **Frontend Testing**
+```jsx
+describe('ReservaForm', () => {
+  test('submits form with valid data', async () => {
+    const mockSubmit = jest.fn();
+    render(<ReservaForm onSubmit={mockSubmit} />);
+    
+    // Fill form and submit
+    await user.click(screen.getByText('Submit'));
+    
+    expect(mockSubmit).toHaveBeenCalledWith(expectedData);
+  });
+});
+```
+
+---
+
+## � Documentation Standards
+
+### Code Comments
+- **Why** not just what
+- **Business context** for complex logic
+- **API contracts** for public methods
+- **Usage examples** for utilities
+
+### README Updates
+- Keep **setup instructions** current
+- Add **feature documentation**
+- Update **API examples**
+- Maintain **troubleshooting** sections
+
+---
+
+## 🎯 First-Time Contributors
+
+### Good First Issues
+Look for issues labeled:
+- `good first issue` - Beginner-friendly
+- `documentation` - Improve docs
+- `help wanted` - Community assistance needed
+
+### Learning Resources
+- [Spring Boot Documentation](https://spring.io/projects/spring-boot)
+- [React Documentation](https://reactjs.org/docs)
+- [Project Architecture](./docs/ARCHITECTURE.md)
+
+---
+
+## 💬 Getting Help
+
+- **💡 Questions**: [GitHub Discussions](https://github.com/Kevinbeltran123/deportur-paginaweb/discussions)
+- **🐛 Bug Reports**: [GitHub Issues](https://github.com/Kevinbeltran123/deportur-paginaweb/issues)
+- **📖 Documentation**: [docs/](./docs/) folder
+- **💬 Chat**: Project Discord/Slack (if available)
+
+---
+
+## 🏆 Recognition
+
+Contributors are recognized in:
+- **README.md** contributors section
+- **Release notes** for significant contributions  
+- **Hall of Fame** for major contributions
+
+---
+
+**Thank you for contributing to DeporTur! 🎉**
+
+*Every contribution, no matter how small, helps make DeporTur better for everyone.*
 
 ### Initial Setup
 

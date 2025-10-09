@@ -1,32 +1,129 @@
-# 🏔️ DeporTur Backend
+# ⚙️ DeporTur Backend
 
-Sistema de gestión de alquiler de equipos deportivos para destinos turísticos. Backend RESTful con Spring Boot 3.1.4, PostgreSQL en Supabase y autenticación Auth0.
+> **Spring Boot REST API for sports equipment rental management**
 
-## 🚀 Tecnologías
-
-- **Java 17**
-- **Spring Boot 3.1.4** (Web, Data JPA, Security, OAuth2)
-- **PostgreSQL** en Supabase
-- **Auth0** con Google OAuth
-- **Swagger/OpenAPI** para documentación
-
-## 📋 Requisitos
-
-- Java 17+
-- Cuenta en [Supabase](https://supabase.com)
-- Cuenta en [Auth0](https://auth0.com)
+RESTful backend service built with Spring Boot, PostgreSQL, and Auth0 authentication.
 
 ---
 
-## ⚙️ Configuración
+## 🚀 Quick Start
 
-### 1. Configurar Supabase
+```bash
+# Configure environment
+cp .env.example .env
+# Edit .env with your credentials
 
-Ver guía completa: [CONFIGURACION-SUPABASE.md](CONFIGURACION-SUPABASE.md)
+# Run the application
+./mvnw spring-boot:run
+```
 
-### 2. Configurar Auth0
+**API URL**: http://localhost:8080/api  
+**Documentation**: http://localhost:8080/swagger-ui.html
 
-Ver guía completa: [CONFIGURACION-AUTH0.md](CONFIGURACION-AUTH0.md)
+---
+
+## 🛠️ Technology Stack
+
+| Component | Technology | Version |
+|-----------|------------|---------|
+| **Runtime** | Java | 17 LTS |
+| **Framework** | Spring Boot | 3.1.4 |
+| **Database** | PostgreSQL | 15 |
+| **Authentication** | Auth0 + JWT | Latest |
+| **Documentation** | OpenAPI/Swagger | 3.x |
+| **Build Tool** | Maven | 3.8+ |
+
+---
+
+## 📁 Project Structure
+
+```
+src/main/java/com/deportur/
+├── config/          # Configuration classes
+├── controller/      # REST endpoints
+├── service/         # Business logic
+├── repository/      # Data access layer
+├── model/          # JPA entities
+├── dto/            # Data transfer objects
+├── exception/      # Custom exceptions
+└── util/           # Utility classes
+```
+
+---
+
+## � Key Features
+
+- **RESTful API** with comprehensive validation
+- **JWT Authentication** via Auth0
+- **JPA/Hibernate** for data persistence
+- **Dynamic Pricing** with business rules
+- **Real-time Validation** preventing conflicts
+- **Comprehensive Logging** for debugging
+- **OpenAPI Documentation** for API reference
+
+---
+
+## 📚 Documentation
+
+- [🏗️ Spring Boot Architecture](./docs/SPRING-BOOT.md)
+- [🔒 Security & Auth0](./docs/SECURITY-AUTH0.md)  
+- [🗄️ Database Design](./docs/DATABASE-DESIGN.md)
+- [📊 JPA & Hibernate](./docs/JPA-HIBERNATE.md)
+- [🔧 Business Logic](./docs/BUSINESS-LOGIC.md)
+
+---
+
+## 🧪 Development
+
+```bash
+# Run tests
+./mvnw test
+
+# Clean build
+./mvnw clean install
+
+# Run with dev profile
+./mvnw spring-boot:run -Dspring-boot.run.profiles=dev
+
+# View logs
+tail -f logs/backend.log
+```
+
+---
+
+## 🌐 API Endpoints
+
+| Module | Endpoint | Description |
+|--------|----------|-------------|
+| **Clients** | `/api/clientes` | Customer management |
+| **Equipment** | `/api/equipos` | Sports equipment inventory |
+| **Reservations** | `/api/reservas` | Booking and rental management |
+| **Destinations** | `/api/destinos` | Tourist destination management |
+| **Equipment Types** | `/api/tipos-equipo` | Equipment categorization |
+| **Pricing** | `/api/politicas-precio` | Dynamic pricing rules |
+
+**Full API Reference**: [Swagger UI](http://localhost:8080/swagger-ui.html)
+
+---
+
+## 🔧 Configuration
+
+**Required Environment Variables:**
+```env
+# Database
+SUPABASE_DB_HOST=your-host.supabase.co
+SUPABASE_DB_PASSWORD=your-password
+
+# Authentication  
+AUTH0_AUDIENCE=your-api-audience
+AUTH0_ISSUER_URI=https://your-tenant.auth0.com/
+```
+
+**Configuration Guide**: [Configuration Management](../docs/CONFIGURATION.md)
+
+---
+
+*For detailed setup instructions, see the [main project README](../README.md).*
 
 ### 3. Archivo `.env`
 

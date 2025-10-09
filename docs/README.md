@@ -1,33 +1,109 @@
-# DeporTur Documentation Index
+# 📚 DeporTur Documentation
 
-> **Comprehensive documentation for the DeporTur sports equipment rental system**
+> **Complete documentation for the sports equipment rental management system**
 
-This documentation provides a complete guide for developers (from beginner to intermediate level) to understand the architecture, technology choices, and implementation details of DeporTur.
-
----
-
-## 📚 **Documentation Structure**
-
-### **Start Here: Core Architecture**
-
-1. **[ARCHITECTURE-OVERVIEW.md](./ARCHITECTURE-OVERVIEW.md)** ⭐ **START HERE**
-   - Complete system architecture overview
-   - Technology stack rationale
-   - Three-tier architecture explained
-   - Request flow diagrams
-   - Security architecture
-   - Data model overview
-   - **Best for:** Understanding the big picture
+Welcome to the DeporTur documentation hub. This provides comprehensive guides for developers, operators, and contributors.
 
 ---
 
-### **Backend Documentation** (`deportur-backend/docs/`)
+## 🎯 Quick Navigation
 
-2. **[SPRING-BOOT-EXPLAINED.md](../deportur-backend/docs/SPRING-BOOT-EXPLAINED.md)**
-   - Spring Boot framework deep dive
-   - Dependency injection explained
-   - Auto-configuration magic
-   - Controller → Service → Repository pattern
+### **🚀 Getting Started**
+- [**📖 Quick Start Guide**](./QUICK-START.md) - Get running in 5 minutes
+- [**🏗️ Architecture Overview**](./ARCHITECTURE.md) - System design and technology stack
+- [**🔧 Configuration Guide**](./CONFIGURATION.md) - Environment setup and variables
+
+### **👨‍💻 Development**
+- [**⚙️ Backend Development**](../deportur-backend/docs/) - Spring Boot guides and patterns
+- [**⚛️ Frontend Development**](../deportur-frontend/docs/) - React architecture and components
+- [**🤝 Contributing Guide**](../CONTRIBUTING.md) - How to contribute to the project
+
+### **🚀 Operations**
+- [**🌐 Deployment Guide**](./DEPLOYMENT.md) - Production deployment instructions
+- [**📊 Monitoring Setup**](./MONITORING.md) - Application monitoring and observability
+- [**🔒 Security Guidelines**](./SECURITY.md) - Security best practices
+
+---
+
+## � Documentation by Role
+
+### **New Developer**
+1. [Project Overview](../README.md#-key-features)
+2. [Quick Start Guide](./QUICK-START.md)
+3. [Architecture Overview](./ARCHITECTURE.md)
+4. [Contributing Guidelines](../CONTRIBUTING.md)
+
+### **Backend Developer**
+1. [Backend README](../deportur-backend/README.md)
+2. [Spring Boot Architecture](../deportur-backend/docs/SPRING-BOOT.md)
+3. [Database Design](../deportur-backend/docs/DATABASE-DESIGN.md)
+4. [Security Implementation](../deportur-backend/docs/SECURITY-AUTH0.md)
+
+### **Frontend Developer**
+1. [Frontend README](../deportur-frontend/README.md)
+2. [React Architecture](../deportur-frontend/docs/ARCHITECTURE.md)
+3. [Component Patterns](../deportur-frontend/docs/COMPONENTS.md)
+4. [State Management](../deportur-frontend/docs/STATE-MANAGEMENT.md)
+
+### **DevOps / System Administrator**
+1. [Configuration Guide](./CONFIGURATION.md)
+2. [Deployment Guide](./DEPLOYMENT.md)
+3. [Monitoring Setup](./MONITORING.md)
+4. [Security Guidelines](./SECURITY.md)
+
+---
+
+## 🗂️ Complete Documentation Index
+
+### **Core Guides**
+- [📖 Quick Start](./QUICK-START.md) - 5-minute setup guide
+- [🏗️ Architecture](./ARCHITECTURE.md) - System design overview
+- [🔧 Configuration](./CONFIGURATION.md) - Environment and settings
+- [🚀 Deployment](./DEPLOYMENT.md) - Production deployment
+- [📊 Monitoring](./MONITORING.md) - Observability setup
+- [🔒 Security](./SECURITY.md) - Security best practices
+- [🐛 Troubleshooting](./TROUBLESHOOTING.md) - Common issues and solutions
+
+### **Development Documentation**
+- [🤝 Contributing](../CONTRIBUTING.md) - Contribution guidelines
+- [🧪 Testing](./TESTING.md) - Testing strategies and tools
+- [📡 API Reference](./API-REFERENCE.md) - Complete API documentation
+- [🗄️ Database Design](./DATABASE-DESIGN.md) - Schema and relationships
+
+### **Component-Specific Docs**
+- [⚙️ Backend Documentation](../deportur-backend/docs/) - Spring Boot guides
+- [⚛️ Frontend Documentation](../deportur-frontend/docs/) - React patterns and components
+
+---
+
+## 📈 Documentation Stats
+
+- **📄 15+ comprehensive guides** covering all system aspects
+- **🔧 Complete setup instructions** for development and production  
+- **📚 Educational content** with examples and best practices
+- **🎯 Role-based navigation** for different user types
+- **🔄 Regularly updated** to match current implementation
+
+---
+
+## 🆘 Need Help?
+
+- **🐛 Found an issue?** [Create a bug report](https://github.com/Kevinbeltran123/deportur-paginaweb/issues)
+- **❓ Have a question?** [Start a discussion](https://github.com/Kevinbeltran123/deportur-paginaweb/discussions)
+- **📝 Improve docs?** [Contribute to documentation](../CONTRIBUTING.md#documentation-standards)
+
+---
+
+## 🔗 External Resources
+
+- **Live Application**: http://localhost:5173 (development)
+- **API Documentation**: http://localhost:8080/swagger-ui.html
+- **Database Dashboard**: [Supabase Console](https://app.supabase.com)
+- **Auth Provider**: [Auth0 Dashboard](https://manage.auth0.com)
+
+---
+
+*Documentation is a living resource - help us keep it current by contributing improvements!*
    - Transaction management with `@Transactional`
    - Bean validation in action
    - **Best for:** Learning Spring Boot fundamentals

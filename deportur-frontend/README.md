@@ -1,33 +1,151 @@
-# DeporTur Frontend
+# ⚛️ DeporTur Frontend
 
-Aplicación web React para gestión de alquiler de equipos deportivos.
+> **Modern React SPA for sports equipment rental management**
 
-## 🚀 Tecnologías
+Professional web application built with React 18, Tailwind CSS, and Auth0 authentication.
 
-- **React 18** con Vite
-- **Tailwind CSS** - Estilos
-- **React Router DOM** - Navegación
-- **Auth0 React SDK** - Autenticación
-- **Axios** - Cliente HTTP
-- **Lucide React** - Iconos
+---
 
-## 📋 Requisitos
-
-- Node.js 18+
-
-## ⚙️ Instalación y Ejecución
+## 🚀 Quick Start
 
 ```bash
-# Instalar dependencias
+# Install dependencies
 npm install
 
-# Ejecutar en desarrollo
+# Configure environment
+cp .env.example .env
+# Edit .env with your Auth0 credentials
+
+# Start development server
 npm run dev
 ```
 
-Aplicación disponible en: **http://localhost:5173**
+**Application URL**: http://localhost:5173
 
-## 🏗️ Build
+---
+
+## �️ Technology Stack
+
+| Component | Technology | Version |
+|-----------|------------|---------|
+| **Framework** | React | 18.2.0 |
+| **Build Tool** | Vite | 5.0.0 |
+| **Styling** | Tailwind CSS | 4.1.14 |
+| **Routing** | React Router | 7.9.3 |
+| **State Management** | TanStack Query | 5.90.2 |
+| **Forms** | React Hook Form | 7.64.0 |
+| **Authentication** | Auth0 React SDK | 2.5.0 |
+| **HTTP Client** | Axios | 1.12.2 |
+| **Icons** | Lucide React | Latest |
+
+---
+
+## 📁 Project Structure
+
+```
+src/
+├── components/          # Reusable UI components
+│   ├── common/         # Shared components
+│   ├── clientes/       # Client management
+│   ├── reservas/       # Reservation management
+│   └── ui/            # Base UI components
+├── pages/              # Page-level components
+├── services/           # API service layer
+├── hooks/              # Custom React hooks
+├── constants/          # Application constants
+└── App.jsx            # Root application component
+```
+
+---
+
+## 🎨 Key Features
+
+- **Modern React Patterns** - Functional components with hooks
+- **Responsive Design** - Mobile-first with Tailwind CSS
+- **Real-time Data** - TanStack Query for server synchronization
+- **Form Validation** - React Hook Form with validation rules
+- **Protected Routes** - Auth0 integration with role-based access
+- **Component Library** - Reusable UI components
+- **Error Boundaries** - Graceful error handling
+- **Performance Optimized** - Code splitting and lazy loading
+
+---
+
+## � Documentation
+
+- [⚛️ React Architecture](./docs/ARCHITECTURE.md)
+- [🎨 Component Design Patterns](./docs/COMPONENTS.md)
+- [📡 API Service Layer](./docs/API-SERVICE.md)
+- [🔄 State Management](./docs/STATE-MANAGEMENT.md)
+- [📝 Form Components](./docs/FORMS.md)
+
+---
+
+## 🧪 Development
+
+```bash
+# Development server with hot reload
+npm run dev
+
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
+
+# Run tests
+npm run test
+
+# Lint code
+npm run lint
+```
+
+---
+
+## 🔧 Configuration
+
+**Required Environment Variables:**
+```env
+# Auth0 Configuration
+VITE_AUTH0_DOMAIN=your-tenant.auth0.com
+VITE_AUTH0_CLIENT_ID=your-client-id
+VITE_AUTH0_AUDIENCE=your-api-audience
+
+# API Configuration
+VITE_API_BASE_URL=http://localhost:8080/api
+```
+
+**Configuration Guide**: [Configuration Management](../docs/CONFIGURATION.md)
+
+---
+
+## 🎯 Available Scripts
+
+| Script | Description |
+|--------|-------------|
+| `npm run dev` | Start development server |
+| `npm run build` | Build for production |
+| `npm run preview` | Preview production build |
+| `npm run test` | Run unit tests |
+| `npm run lint` | Lint and fix code |
+| `npm run format` | Format code with Prettier |
+
+---
+
+## 🌐 Application Routes
+
+| Route | Component | Description |
+|-------|-----------|-------------|
+| `/` | Dashboard | Main application dashboard |
+| `/clientes` | ClientesPage | Customer management |
+| `/equipos` | EquiposPage | Equipment inventory |
+| `/reservas` | ReservasPage | Reservation management |
+| `/destinos` | DestinosPage | Destination management |
+| `/politicas` | PoliticasPage | Pricing policy management |
+
+---
+
+*For detailed setup instructions, see the [main project README](../README.md).*
 
 ```bash
 npm run build
