@@ -1,174 +1,145 @@
 # 🏔️ DeporTur
 
-> **Professional Sports Equipment Rental Management System**
+**Sports Equipment Rental & Destination Management Platform**
 
-A full-stack web application for managing sports equipment rentals across tourist destinations, built with Spring Boot and React.
+> A full-stack solution built with Spring Boot and React to manage inventory, pricing policies and reservations across tourist destinations.
 
-[![Java](https://img.shields.io/badge/Java-17-blue.svg)](https://openjdk.org/projects/jdk/17/)
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.1.4-brightgreen.svg)](https://spring.io/projects/spring-boot)
-[![React](https://img.shields.io/badge/React-18-blue.svg)](https://reactjs.org/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-blue.svg)](https://www.postgresql.org/)
+---
+
+## 📦 Tech Stack
+
+| Layer | Technology | Notes |
+|-------|------------|-------|
+| Frontend | React 18, Vite, Tailwind CSS | Auth0 integration, TanStack Query for server state |
+| Backend | Spring Boot 3.1.12, Java 21 | Compila con JDK 21; pruebas verificadas en JDK 23 |
+| Database | PostgreSQL (Supabase) | Enforced constraints and relational model |
+| Auth | Auth0 + Google OAuth | JWT-protected APIs |
+
+Additional tooling:
+- **Vitest + Testing Library + MSW** for frontend unit/integration tests.
+- **JUnit 5 + Mockito (mock-maker-inline) + JaCoCo 0.8.12 + Surefire 3.2.5** for backend unit and MockMvc tests.
 
 ---
 
 ## 🚀 Quick Start
 
 ```bash
-# Clone the repository
 git clone https://github.com/yourusername/deportur.git
-cd deportur
+cd DeporTur
 
-# Start the application
-./scripts/start-all.sh
+# Backend
+cd deportur-backend
+mvn spring-boot:run
+
+# Frontend (new terminal)
+cd ../deportur-frontend
+npm install
+npm run dev
 ```
 
-**Application URLs:**
+**Environment URLs**
 - Frontend: http://localhost:5173
-- Backend API: http://localhost:8080
-- API Documentation: http://localhost:8080/swagger-ui.html
+- REST API: http://localhost:8080
+- Swagger UI: http://localhost:8080/swagger-ui.html
 
-📖 **Need help?** See our [Complete Setup Guide](./docs/QUICK-START.md)
-
----
-
-## � Key Features
-
-### Business Management
-- **Multi-location Operations** - Manage equipment across multiple tourist destinations
-- **Dynamic Pricing** - Automated discounts, surcharges, and seasonal pricing
-- **Customer Loyalty** - Tier-based rewards and customer analytics
-- **Inventory Control** - Real-time availability and maintenance tracking
-
-### Technical Excellence
-- **Secure Authentication** - Auth0 integration with Google OAuth
-- **RESTful API** - Comprehensive validation with 12+ business rules
-- **Responsive UI** - Modern React with Tailwind CSS
-- **Data Integrity** - PostgreSQL with advanced constraints
+Refer to [`docs/QUICK-START.md`](./docs/QUICK-START.md) for full setup (Auth0, Supabase, seed data).
 
 ---
 
-## 🏗️ Architecture
+## 🧭 Features Overview
 
-```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   React SPA     │────│  Spring Boot    │────│   PostgreSQL    │
-│  (Frontend)     │    │    (Backend)    │    │  (Supabase)     │
-└─────────────┘    └─────────────┘    └─────────────┘
-         │                    │                     │
-         └────────────────────┴─────────────────────┘
-```
-
-## 🛠️ Technology Stack
-
-| Layer | Technology | Purpose |
-|-------|------------|---------|
-| **Frontend** | React 18 + Vite + Tailwind | Modern SPA with responsive design |
-| **Backend** | Spring Boot 3.1.4 + Java 17 | RESTful API with enterprise patterns |
-| **Database** | PostgreSQL on Supabase | ACID compliance and scalability |
-| **Authentication** | Auth0 + Google OAuth | Enterprise identity management |
-| **State Management** | TanStack Query | Server state caching and synchronization |
+- **Inventory & Destinations**
+  - CRUD for destinations, equipment and equipment types.
+  - Availability checks per destination, capacity validation and maintenance tracking.
+- **Reservations**
+  - Rich pricing engine applying duration, loyalty, seasonal policies, taxes and surcharges.
+  - Reservation lifecycle: pending → confirmed → in progress → finalized/cancelled, with audit log.
+- **Customers**
+  - Document-based uniqueness, loyalty tiers, statistics per customer.
+- **Operational Insights**
+  - Dashboard-ready DTOs for listings and reporting.
+- **Security**
+  - Auth0-protected APIs with role checks and CORS configuration for local dev.
 
 ---
 
-## 📁 Project Structure
+## 🗂️ Project Structure
 
 ```
 DeporTur/
-├── deportur-backend/          # Spring Boot API
-├── deportur-frontend/         # React Application  
-├── docs/                      # Documentation
-├── scripts/                   # Automation scripts
-└── README.md                  # This file
+├── deportur-backend/        # Spring Boot API
+├── deportur-frontend/       # React SPA
+├── docs/                    # Architecture, testing, deployment guides
+├── scripts/                 # Automation helpers (start-all, run-tests, etc.)
+└── README.md
 ```
 
 ---
 
-## ⚡ Development
+## 🧪 Testing
 
-### Prerequisites
-- Java 17+ ([Download](https://adoptium.net/))
-- Node.js 18+ ([Download](https://nodejs.org/))
+| Area | Tooling | Highlights |
+|------|---------|------------|
+| Backend services | JUnit 5 + Mockito | Extensive suites for cliente, reserva, destino, equipo, tipo equipo y políticas de precio. |
+| Backend controllers | MockMvc | Tests for `ClienteController` y `ReservaController` cubriendo respuestas 2xx/4xx. |
+| Frontend | Vitest + Testing Library + MSW | Component tests (`FormularioClienteV2`) y servicios HTTP (`clienteService`). |
+| Coverage | JaCoCo 0.8.12 | Compatible con JDK 23, mínimo objetivo 70% por paquete. |
 
-### Setup
+**Execution**
 ```bash
-# 1. Clone repository
-git clone https://github.com/Kevinbeltran123/deportur-paginaweb.git
-cd DeporTur
+# Backend
+cd deportur-backend
+mvn test
 
-# 2. Setup environment
-cp .env.example .env
-# Edit .env with your configuration
-
-# 3. Configure environment (see docs for details)
-# 4. Run database migrations
+# Frontend
+cd deportur-frontend
+npm test -- --run
 ```
 
-**URLs after setup:**
-- **Frontend**: http://localhost:5173  
-- **Backend API**: http://localhost:8080
-- **API Docs**: http://localhost:8080/swagger-ui.html
-
-� **Detailed setup instructions**: See [docs/QUICK-START.md](./docs/QUICK-START.md)
+Consult the detailed summaries in [`docs/testing/backend.md`](./docs/testing/backend.md) and [`docs/testing/frontend.md`](./docs/testing/frontend.md).
 
 ---
 
-## 📚 Documentation
+## 🔐 Security & Configuration
 
-### **Getting Started**
-- [📖 Quick Start Guide](./docs/QUICK-START.md) - 5-minute setup
-- [🏗️ Architecture Overview](./docs/ARCHITECTURE.md) - System design
-- [🔧 Development Setup](./docs/DEVELOPMENT-SETUP.md) - Full dev environment
-
-### **Development Guides**
-- [⚙️ Backend Development](./deportur-backend/docs/) - Spring Boot patterns  
-- [⚛️ Frontend Development](./deportur-frontend/docs/) - React architecture
-- [🔒 Security Implementation](./docs/SECURITY.md) - Auth0 & JWT
-
-### **Advanced Topics**
-- [🗄️ Database Design](./docs/DATABASE-DESIGN.md) - Schema and relationships
-- [📡 API Reference](./docs/API-REFERENCE.md) - Complete endpoint documentation
-- [🚀 Deployment Guide](./docs/DEPLOYMENT.md) - Production deployment
-
-📋 **Full documentation index**: [docs/DOCUMENTATION-INDEX.md](./docs/DOCUMENTATION-INDEX.md)
+- Auth0 domain, client ID, audience and redirect URI are injected via `VITE_` variables on the frontend and `application.yml` on the backend.
+- `TestConfiguration` provides a mock `JwtDecoder` for backend tests to bypass Auth0 during local runs.
+- CORS is open for localhost ports used in development; adjust `SecurityConfig` for production domains.
 
 ---
 
-## 🛠️ Development Commands
+## ⚙️ Development Notes
 
+- **Java**: target 21 (Spring Boot parent 3.1.12); pruebas verificadas con Temurin 23 (ajusta `JAVA_HOME` si necesitas ejecutar `mvn test` con esa versión).
+- **Node.js**: 18 LTS or newer.
+- **Database**: default profiles assume Supabase/PostgreSQL; H2 is wired for tests via `application-test.properties`.
+- **Environment**: duplicate `.env.example` to `.env` and configure Auth0 + API base URLs for frontend.
+
+Helpful scripts:
 ```bash
-# Start everything
-./scripts/start-all.sh
-
-# Backend only  
-cd deportur-backend && ./mvnw spring-boot:run
-
-# Frontend only
-cd deportur-frontend && npm run dev
-
-# Run tests
-./scripts/run-tests.sh
+./scripts/start-all.sh      # start backend + frontend
+./scripts/run-tests.sh      # run backend, frontend and e2e (Playwright) once configured
 ```
 
 ---
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)  
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push to branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for detailed guidelines.
+1. Fork & clone.
+2. Create a feature branch: `git checkout -b feature/awesome`.
+3. Commit with conventional messages.
+4. Ensure tests pass (`mvn test`, `npm test -- --run`).
+5. Open a Pull Request describing changes and checks performed.
 
 ---
 
-## � License
+## 📚 Documentation Index
 
-This project is licensed under the MIT License - see [LICENSE](./LICENSE) file for details.
+- [Architecture](./docs/ARCHITECTURE.md)
+- [API Reference](./docs/api/README.md)
+- [Backend Testing](./docs/testing/backend.md)
+- [Frontend Testing](./docs/testing/frontend.md)
+- [Integration & Strategy](./docs/testing/integration.md), [`strategy.md`](./docs/testing/strategy.md)
+- [Deployment](./docs/DEPLOYMENT.md)
 
----
-
-**Status**: ✅ Production Ready | 📚 Well Documented | 🔒 Secure
-
-*Need help?* Check our [documentation](./docs/) or create an [issue](https://github.com/Kevinbeltran123/deportur-paginaweb/issues).
+Have feedback or need assistance? Open an issue or reach the DeporTur maintainers. Enjoy building! 🚀
