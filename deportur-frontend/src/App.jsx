@@ -9,6 +9,7 @@ import { DestinosPage } from './pages/DestinosPage'
 import { TiposEquipoPage } from './pages/TiposEquipoPage'
 import { EquiposPage } from './pages/EquiposPage'
 import { ReservasPage } from './pages/ReservasPage'
+import { PoliticasPage } from './pages/PoliticasPage'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { setTokenGetter } from './services/api'
 
@@ -89,6 +90,14 @@ function App() {
           element={
             <ProtectedRoute>
               <ReservasPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/politicas-precio"
+          element={
+            <ProtectedRoute>
+              <PoliticasPage />
             </ProtectedRoute>
           }
         />

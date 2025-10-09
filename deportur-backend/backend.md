@@ -87,6 +87,11 @@ Tablas gestionadas: `cliente`, `destino_turistico`, `tipo_equipo`, `equipo_depor
 | `fecha_inicio` / `fecha_fin` | DATE, NOT NULL, `fecha_inicio <= fecha_fin` y `>= hoy` (`ReservaService`) |
 | `id_destino` | BIGINT, FK → `destino_turistico` |
 | `estado` | VARCHAR(20), default `PENDIENTE`, enum `EstadoReserva` |
+| `subtotal` | DECIMAL(10,2) | Suma de equipos antes de ajustes |
+| `descuentos` | DECIMAL(10,2), default 0 | Descuentos aplicados (duración, fidelización, temporada) |
+| `recargos` | DECIMAL(10,2), default 0 | Recargos (temporadas pico, políticas especiales) |
+| `impuestos` | DECIMAL(10,2), default 0 | Impuestos calculados |
+| `total` | DECIMAL(10,2) | `subtotal - descuentos + recargos + impuestos` |
 
 ### Tabla `detalle_reserva`
 | Columna | Tipo SQL | Restricciones |
@@ -118,7 +123,8 @@ Tablas gestionadas: `cliente`, `destino_turistico`, `tipo_equipo`, `equipo_depor
 - `ClienteService`: garantiza documento único, evita eliminar clientes con reservas vigentes (`ClienteService.eliminarCliente`).
 - `DestinoService`: valida coordenadas, capacidad y evita eliminar destinos con equipos asociados.
 - `EquipoService`: controla coherencia de fechas de adquisición, precio > 0 y prohíbe eliminar equipos con reservas activas (`DetalleReservaRepository.existsReservasActivasPorEquipo`).
-- `ReservaService`: verifica disponibilidad por fechas (`DetalleReservaRepository.existsReservaEnFechas`), estados válidos y gestiona confirmación/cancelación. Incluye `@Scheduled` cada hora para pasar reservas de `CONFIRMADA` → `EN_PROGRESO` → `FINALIZADA`.
+- `ReservaService`: verifica disponibilidad por fechas (`DetalleReservaRepository.existsReservaEnFechas`), aplica políticas de precios tanto al crear como al modificar, registra auditoría en `ReservaHistorial` e incluye `@Scheduled` cada hora para pasar reservas de `CONFIRMADA` → `EN_PROGRESO` → `FINALIZADA`.
+- `PoliticaPrecioService`: centraliza descuentos/impuestos leyendo políticas activas desde Supabase, admite rangos de días (`min_dias`/`max_dias`) y filtros por nivel de fidelización (`nivel_fidelizacion`).
 - `UsuarioService`: pensado para administración interna (roles `ADMIN`, `OPERADOR`), actualmente sin endpoints expuestos.
 
 ## API REST

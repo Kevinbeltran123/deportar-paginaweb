@@ -45,9 +45,9 @@ export const obtenerEquiposDisponibles = async ({ destinoId, fechaInicio, fechaF
   try {
     const response = await api.get('/equipos/disponibles', {
       params: {
-        destinoId,
-        fechaInicio,
-        fechaFin
+        destino: destinoId,
+        inicio: fechaInicio,
+        fin: fechaFin
       }
     });
     return response.data;
@@ -91,11 +91,13 @@ export const obtenerEquiposPorDestino = async (idDestino) => {
  * Crea un nuevo equipo
  * @param {Object} equipoData - Datos del equipo
  * @param {string} equipoData.nombre - Nombre del equipo
- * @param {string} equipoData.descripcion - Descripción del equipo
- * @param {number} equipoData.precioDia - Precio por día de alquiler
- * @param {number} equipoData.idTipoEquipo - ID del tipo de equipo
+ * @param {string} equipoData.marca - Marca del equipo
+ * @param {string} equipoData.fechaAdquisicion - Fecha de adquisición (YYYY-MM-DD)
+ * @param {number} equipoData.precioAlquiler - Precio por día de alquiler
+ * @param {number} equipoData.idTipo - ID del tipo de equipo
  * @param {number} equipoData.idDestino - ID del destino donde está disponible
- * @param {string} equipoData.estado - Estado del equipo (DISPONIBLE, MANTENIMIENTO, etc)
+ * @param {string} equipoData.estado - Estado del equipo (DISPONIBLE, EN_MANTENIMIENTO, etc)
+ * @param {string|null} equipoData.imagenUrl - URL opcional de la imagen
  * @returns {Promise<Object>} Equipo creado
  */
 export const crearEquipo = async (equipoData) => {
@@ -135,6 +137,30 @@ export const eliminarEquipo = async (id) => {
     return response.data;
   } catch (error) {
     console.error(`Error al eliminar equipo ${id}:`, error);
+    throw error;
+  }
+};
+
+/**
+ * Verifica disponibilidad detallada de equipos para un destino en fechas dadas
+ * @param {Object} payload
+ * @param {number} payload.destinoId
+ * @param {string} payload.fechaInicio
+ * @param {string} payload.fechaFin
+ * @returns {Promise<Object>} Resumen de disponibilidad
+ */
+export const verificarDisponibilidadEquipos = async ({ destinoId, fechaInicio, fechaFin }) => {
+  try {
+    const response = await api.get('/equipos/verificar-disponibilidad', {
+      params: {
+        destino: destinoId,
+        inicio: fechaInicio,
+        fin: fechaFin
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error al verificar disponibilidad de equipos:', error);
     throw error;
   }
 };

@@ -111,10 +111,13 @@ src/main/java/com/deportur/
 **Equipos:** `/api/equipos` - CRUD + disponibilidad por destino/fechas
 
 **Reservas:** `/api/reservas` - CRUD + confirmar + cancelar
+  - `/api/reservas/{id}/historial` - Historial de cambios
 
 **Destinos:** `/api/destinos` - CRUD + búsqueda
 
 **Tipos de Equipo:** `/api/tipos-equipo` - CRUD
+
+**Políticas de Precio:** `/api/politicas-precio` - CRUD + consulta de activas
 
 Total: **35+ endpoints** protegidos con JWT
 
@@ -127,12 +130,20 @@ Total: **35+ endpoints** protegidos con JWT
 - Validación de disponibilidad de equipos
 - Prevención de solapamiento de reservas
 - Confirmación manual y cancelación
+- Historial completo de cambios por reserva (fecha, usuario, observaciones)
+- Desglose económico calculado con descuentos, recargos e impuestos
 
 ### Validaciones de Negocio
 - Unicidad de documentos de cliente
 - Verificación de disponibilidad de equipos por fechas y destino
 - Validación de integridad referencial
 - Control de estados de reserva
+- Métricas de cliente (nivel de fidelización, destino preferido, conteo de reservas)
+
+### Precios Dinámicos
+- Políticas configurables (descuentos por duración/cliente, recargos de temporada, impuestos)
+- Integración automática con cada reserva mediante `PoliticaPrecioService`
+- Configuración centralizada en Supabase (`politica_precio`)
 
 ### Características Técnicas
 - Autenticación JWT con Auth0

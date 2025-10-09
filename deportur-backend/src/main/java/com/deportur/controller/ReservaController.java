@@ -1,6 +1,7 @@
 package com.deportur.controller;
 
 import com.deportur.dto.request.CrearReservaRequest;
+import com.deportur.dto.response.ReservaListResponse;
 import com.deportur.model.Reserva;
 import com.deportur.service.ReservaService;
 import jakarta.validation.Valid;
@@ -8,12 +9,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/reservas")
 @CrossOrigin(origins = "*")
 public class ReservaController {
+
+    private static final Logger logger = LoggerFactory.getLogger(ReservaController.class);
 
     @Autowired
     private ReservaService reservaService;
@@ -37,10 +42,16 @@ public class ReservaController {
     @GetMapping
     public ResponseEntity<?> listarTodas() {
         try {
-            List<Reserva> reservas = reservaService.listarTodasLasReservas();
+            logger.info("Iniciando listado de reservas");
+            List<ReservaListResponse> reservas = reservaService.obtenerReservasParaListado();
+            logger.info("Listado de reservas exitoso. Total registros: {}", reservas.size());
             return ResponseEntity.ok(reservas);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            logger.error("Error al listar reservas", e);
+            return ResponseEntity.badRequest().body(java.util.Map.of(
+                "message", e.getMessage() != null ? e.getMessage() : "Error procesando la solicitud",
+                "errorType", e.getClass().getSimpleName()
+            ));
         }
     }
 

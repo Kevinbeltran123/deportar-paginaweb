@@ -1,5 +1,6 @@
 package com.deportur.service;
 
+import com.deportur.dto.response.ReservaListResponse;
 import com.deportur.model.*;
 import com.deportur.model.enums.EstadoReserva;
 import com.deportur.repository.*;
@@ -9,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.math.BigDecimal;
 
 /**
  * Servicio migrado de GestionReservasService.java
@@ -140,6 +143,7 @@ public class ReservaService {
             equipoRepository.save(equipo);
         }
 
+        inicializarRelacionesReserva(reservaGuardada);
         return reservaGuardada;
     }
 
@@ -153,6 +157,8 @@ public class ReservaService {
         // Verificar que la reserva exista
         Reserva reservaExistente = reservaRepository.findById(idReserva)
             .orElseThrow(() -> new Exception("La reserva que intenta modificar no existe"));
+
+        EstadoReserva estadoAnterior = reservaExistente.getEstado();
 
         // Verificar estado
         if (reservaExistente.getEstado() == EstadoReserva.FINALIZADA ||
@@ -205,7 +211,16 @@ public class ReservaService {
             }
         }
 
-        return reservaRepository.save(reservaExistente);
+        // Recalcular importes aplicando políticas vigentes
+        politicaPrecioService.aplicarPoliticasAReserva(reservaExistente);
+
+        Reserva reservaActualizada = reservaRepository.save(reservaExistente);
+
+        // Registrar modificación en historial (aunque no cambie el estado)
+        registrarCambioEstado(reservaActualizada, estadoAnterior, "Reserva modificada");
+
+        inicializarRelacionesReserva(reservaActualizada);
+        return reservaActualizada;
     }
 
     /**
@@ -231,42 +246,65 @@ public class ReservaService {
         // Registrar cambio en historial
         registrarCambioEstado(reservaActualizada, estadoAnterior, "Reserva cancelada");
 
+        inicializarRelacionesReserva(reservaActualizada);
         return reservaActualizada;
     }
 
     /**
      * Migrado de GestionReservasService.consultarReserva()
      */
+    @Transactional(readOnly = true)
     public Reserva consultarReserva(Long idReserva) throws Exception {
-        return reservaRepository.findById(idReserva)
+        Reserva reserva = reservaRepository.findById(idReserva)
             .orElseThrow(() -> new Exception("La reserva no existe"));
+        inicializarRelacionesReserva(reserva);
+        return reserva;
     }
 
     /**
      * Migrado de GestionReservasService.listarTodasLasReservas()
      */
+    @Transactional(readOnly = true)
     public List<Reserva> listarTodasLasReservas() {
-        return reservaRepository.findAllByOrderByFechaCreacionDesc();
+        List<Reserva> reservas = reservaRepository.findAllByOrderByFechaCreacionDesc();
+        reservas.forEach(this::inicializarRelacionesReserva);
+        return reservas;
+    }
+
+    /**
+     * Retorna las reservas listas para mostrar en listados del frontend
+     */
+    @Transactional(readOnly = true)
+    public List<ReservaListResponse> obtenerReservasParaListado() {
+        return listarTodasLasReservas().stream()
+            .map(this::mapearAReservaListResponse)
+            .collect(Collectors.toList());
     }
 
     /**
      * Migrado de GestionReservasService.buscarReservasPorCliente()
      */
+    @Transactional(readOnly = true)
     public List<Reserva> buscarReservasPorCliente(Long idCliente) throws Exception {
         Cliente cliente = clienteRepository.findById(idCliente)
             .orElseThrow(() -> new Exception("El cliente especificado no existe"));
 
-        return reservaRepository.findByClienteOrderByFechaCreacionDesc(cliente);
+        List<Reserva> reservas = reservaRepository.findByClienteOrderByFechaCreacionDesc(cliente);
+        reservas.forEach(this::inicializarRelacionesReserva);
+        return reservas;
     }
 
     /**
      * Migrado de GestionReservasService.buscarReservasPorDestino()
      */
+    @Transactional(readOnly = true)
     public List<Reserva> buscarReservasPorDestino(Long idDestino) throws Exception {
         DestinoTuristico destino = destinoRepository.findById(idDestino)
             .orElseThrow(() -> new Exception("El destino turístico especificado no existe"));
 
-        return reservaRepository.findByDestinoOrderByFechaInicio(destino);
+        List<Reserva> reservas = reservaRepository.findByDestinoOrderByFechaInicio(destino);
+        reservas.forEach(this::inicializarRelacionesReserva);
+        return reservas;
     }
 
     /**
@@ -343,16 +381,138 @@ public class ReservaService {
         // Registrar cambio en historial
         registrarCambioEstado(reservaActualizada, estadoAnterior, "Reserva confirmada");
 
+        inicializarRelacionesReserva(reservaActualizada);
         return reservaActualizada;
     }
 
     /**
      * Obtiene el historial de cambios de una reserva
      */
+    @Transactional(readOnly = true)
     public List<ReservaHistorial> obtenerHistorialReserva(Long idReserva) throws Exception {
         if (!reservaRepository.existsById(idReserva)) {
             throw new Exception("La reserva no existe");
         }
         return reservaHistorialRepository.findByReserva_IdReservaOrderByFechaCambioDesc(idReserva);
+    }
+
+    /**
+     * Inicializa las relaciones lazy necesarias antes de serializar la reserva
+     */
+    private void inicializarRelacionesReserva(Reserva reserva) {
+        if (reserva == null) {
+            return;
+        }
+
+        Cliente cliente = reserva.getCliente();
+        if (cliente != null) {
+            // fuerza inicialización de datos básicos
+            cliente.getNombre();
+            DestinoTuristico destinoPreferido = cliente.getDestinoPreferido();
+            if (destinoPreferido != null) {
+                destinoPreferido.getNombre();
+                destinoPreferido.getDepartamento();
+            }
+        }
+
+        DestinoTuristico destino = reserva.getDestino();
+        if (destino != null) {
+            destino.getNombre();
+            destino.getDepartamento();
+        }
+
+        if (reserva.getDetalles() != null) {
+            reserva.getDetalles().forEach(detalle -> {
+                EquipoDeportivo equipo = detalle.getEquipo();
+                if (equipo != null) {
+                    equipo.getNombre();
+                    TipoEquipo tipo = equipo.getTipo();
+                    if (tipo != null) {
+                        tipo.getNombre();
+                    }
+                    DestinoTuristico destinoEquipo = equipo.getDestino();
+                    if (destinoEquipo != null) {
+                        destinoEquipo.getNombre();
+                    }
+                }
+            });
+        }
+    }
+
+    private ReservaListResponse mapearAReservaListResponse(Reserva reserva) {
+        ReservaListResponse dto = new ReservaListResponse();
+        dto.setIdReserva(reserva.getIdReserva());
+        dto.setFechaCreacion(reserva.getFechaCreacion());
+        dto.setFechaInicio(reserva.getFechaInicio());
+        dto.setFechaFin(reserva.getFechaFin());
+        dto.setEstado(reserva.getEstado());
+        dto.setSubtotal(defectoCero(reserva.getSubtotal()));
+        dto.setDescuentos(defectoCero(reserva.getDescuentos()));
+        dto.setRecargos(defectoCero(reserva.getRecargos()));
+        dto.setImpuestos(defectoCero(reserva.getImpuestos()));
+        dto.setTotal(defectoCero(reserva.getTotal()));
+
+        Cliente cliente = reserva.getCliente();
+        if (cliente != null) {
+            ReservaListResponse.ClienteResumen clienteDto = new ReservaListResponse.ClienteResumen();
+            clienteDto.setIdCliente(cliente.getIdCliente());
+            clienteDto.setNombre(cliente.getNombre());
+            clienteDto.setApellido(cliente.getApellido());
+            clienteDto.setDocumento(cliente.getDocumento());
+            clienteDto.setEmail(cliente.getEmail());
+            clienteDto.setTelefono(cliente.getTelefono());
+
+            DestinoTuristico destinoPreferido = cliente.getDestinoPreferido();
+            if (destinoPreferido != null) {
+                clienteDto.setDestinoPreferido(crearDestinoResumen(destinoPreferido));
+            }
+
+            dto.setCliente(clienteDto);
+        }
+
+        DestinoTuristico destino = reserva.getDestino();
+        if (destino != null) {
+            dto.setDestino(crearDestinoResumen(destino));
+        }
+
+        if (reserva.getDetalles() != null && !reserva.getDetalles().isEmpty()) {
+            List<ReservaListResponse.DetalleReservaResumen> detalles = reserva.getDetalles().stream()
+                .map(detalle -> {
+                    ReservaListResponse.DetalleReservaResumen detalleDto = new ReservaListResponse.DetalleReservaResumen();
+                    detalleDto.setIdDetalle(detalle.getIdDetalle());
+                    detalleDto.setPrecioUnitario(defectoCero(detalle.getPrecioUnitario()));
+
+                    EquipoDeportivo equipo = detalle.getEquipo();
+                    if (equipo != null) {
+                        ReservaListResponse.EquipoResumen equipoDto = new ReservaListResponse.EquipoResumen();
+                        equipoDto.setIdEquipo(equipo.getIdEquipo());
+                        equipoDto.setNombre(equipo.getNombre());
+                        equipoDto.setMarca(equipo.getMarca());
+                        if (equipo.getTipo() != null) {
+                            equipoDto.setTipo(equipo.getTipo().getNombre());
+                        }
+                        detalleDto.setEquipo(equipoDto);
+                    }
+
+                    return detalleDto;
+                })
+                .collect(Collectors.toList());
+            dto.setDetalles(detalles);
+        }
+
+        return dto;
+    }
+
+    private ReservaListResponse.DestinoResumen crearDestinoResumen(DestinoTuristico destino) {
+        ReservaListResponse.DestinoResumen destinoDto = new ReservaListResponse.DestinoResumen();
+        destinoDto.setIdDestino(destino.getIdDestino());
+        destinoDto.setNombre(destino.getNombre());
+        destinoDto.setDepartamento(destino.getDepartamento());
+        destinoDto.setCiudad(destino.getCiudad());
+        return destinoDto;
+    }
+
+    private BigDecimal defectoCero(BigDecimal valor) {
+        return valor != null ? valor : BigDecimal.ZERO;
     }
 }

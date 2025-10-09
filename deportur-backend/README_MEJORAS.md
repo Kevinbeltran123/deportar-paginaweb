@@ -27,7 +27,9 @@ Se han implementado **exitosamente** todas las mejoras solicitadas en el backend
 - ✅ Columna `imagen_url` en `equipo_deportivo`
 - ✅ Columnas `numero_reservas`, `destino_preferido_id`, `nivel_fidelizacion` en `cliente`
 - ✅ Columnas `subtotal`, `descuentos`, `impuestos`, `total` en `reserva`
+- ✅ Columna `recargos` en `reserva`
 - ✅ Tabla `politica_precio` creada
+- ✅ Columnas `min_dias`, `max_dias`, `nivel_fidelizacion` en `politica_precio`
 - ✅ Tabla `reserva_historial` creada
 - ✅ Columna `contador_uso` en `equipo_deportivo`
 
@@ -154,12 +156,12 @@ GET /api/reservas/{id}/historial
 
 1. **Subtotal** = Suma de precios de equipos
 2. **Descuentos**:
-   - Por duración: 5% (≥7 días), 10% (≥14 días)
-   - Por nivel de cliente: 5-15%
-   - Por temporada: según políticas configuradas
-3. **Recargos**: Según fechas pico configuradas
+   - Por duración: configurables desde `politica_precio` mediante `min_dias` y `max_dias` (fallback 5% ≥7 días, 10% ≥14 días si no hay políticas)
+   - Por nivel de cliente: configurables por `nivel_fidelizacion` (fallback 5-15% BRONCE/PLATA/ORO)
+   - Por temporada: según políticas activas
+3. **Recargos**: Calculados por políticas `RECARGO_FECHA_PICO`
 4. **Impuestos**: Según políticas configuradas
-5. **Total** = Subtotal - Descuentos + Impuestos
+5. **Total** = Subtotal - Descuentos + Recargos + Impuestos
 
 ### 📈 Métricas de Cliente
 **Se actualizan automáticamente**:

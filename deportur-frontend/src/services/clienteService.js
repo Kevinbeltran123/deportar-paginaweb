@@ -117,3 +117,18 @@ export const eliminarCliente = async (id) => {
     throw error;
   }
 };
+
+/**
+ * Obtiene estadísticas extendidas de un cliente (fidelización, reservas, destino preferido)
+ * @param {number} id - ID del cliente
+ * @returns {Promise<Object>} Estadísticas del cliente
+ */
+export const obtenerEstadisticasCliente = async (id) => {
+  try {
+    const response = await api.get(`/clientes/${id}/estadisticas`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error al obtener estadísticas del cliente ${id}:`, error);
+    throw error;
+  }
+};

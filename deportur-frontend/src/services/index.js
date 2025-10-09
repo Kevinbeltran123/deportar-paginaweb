@@ -15,3 +15,4 @@ export * from './reservaService';
 export * from './equipoService';
 export * from './destinoService';
 export * from './tipoEquipoService';
+export * from './politicaService';

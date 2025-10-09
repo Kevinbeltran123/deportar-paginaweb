@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
-import { crearReserva } from '../../services';
-import { Button, Input } from '../ui';
+import { crearReserva, verificarDisponibilidadEquipos } from '../../services';
+import { Button, Input, Spinner, Badge } from '../ui';
 import { BuscarCliente } from '../clientes';
 import { SelectorDestino } from '../destinos';
 import { SelectorEquipos } from './SelectorEquipos';
@@ -23,6 +23,10 @@ export const FormularioReserva = ({ onSuccess, onCancel }) => {
   const [fechaFin, setFechaFin] = useState('');
   const [equipos, setEquipos] = useState([]);
 
+  const [resumenDisponibilidad, setResumenDisponibilidad] = useState(null);
+  const [disponibilidadLoading, setDisponibilidadLoading] = useState(false);
+  const [disponibilidadError, setDisponibilidadError] = useState(null);
+
   const calcularDias = () => {
     if (!fechaInicio || !fechaFin) return 0;
     const inicio = new Date(fechaInicio);
@@ -33,10 +37,61 @@ export const FormularioReserva = ({ onSuccess, onCancel }) => {
 
   const calcularTotal = () => {
     const dias = calcularDias();
-    return equipos.reduce((total, item) => {
-      return total + (item.cantidad * item.precioPorDia * dias);
-    }, 0);
+    return equipos.reduce((total, item) => total + item.cantidad * item.precioPorDia * dias, 0);
   };
+
+  useEffect(() => {
+    if (!destino?.idDestino || !fechaInicio || !fechaFin) {
+      setResumenDisponibilidad(null);
+      setDisponibilidadError(null);
+      return;
+    }
+
+    const inicio = new Date(fechaInicio);
+    const fin = new Date(fechaFin);
+
+    if (Number.isNaN(inicio.getTime()) || Number.isNaN(fin.getTime()) || fin < inicio) {
+      setResumenDisponibilidad(null);
+      setDisponibilidadError('Las fechas deben ser válidas para verificar disponibilidad.');
+      return;
+    }
+
+    let cancelado = false;
+
+    const verificar = async () => {
+      setDisponibilidadLoading(true);
+      setDisponibilidadError(null);
+      try {
+        const info = await verificarDisponibilidadEquipos({
+          destinoId: destino.idDestino,
+          fechaInicio,
+          fechaFin
+        });
+        if (!cancelado) {
+          setResumenDisponibilidad(info);
+        }
+      } catch (err) {
+        if (!cancelado) {
+          setResumenDisponibilidad(null);
+          setDisponibilidadError(
+            err.response?.data?.message ||
+              err.message ||
+              'No fue posible verificar la disponibilidad.'
+          );
+        }
+      } finally {
+        if (!cancelado) {
+          setDisponibilidadLoading(false);
+        }
+      }
+    };
+
+    verificar();
+
+    return () => {
+      cancelado = true;
+    };
+  }, [destino?.idDestino, fechaInicio, fechaFin]);
 
   const validarPaso = () => {
     switch (paso) {
@@ -180,11 +235,42 @@ export const FormularioReserva = ({ onSuccess, onCancel }) => {
             />
           </div>
           {fechaInicio && fechaFin && (
-            <div className="p-3 bg-blue-50 rounded-lg">
-              <p className="text-sm text-blue-700">
-                <Calendar className="inline h-4 w-4 mr-1" />
-                Duración: {calcularDias()} día(s)
-              </p>
+            <div className="space-y-3">
+              <div className="p-3 bg-blue-50 rounded-lg">
+                <p className="text-sm text-blue-700">
+                  <Calendar className="inline h-4 w-4 mr-1" />
+                  Duración: {calcularDias()} día(s)
+                </p>
+              </div>
+              <div className="rounded-lg border border-blue-100 bg-blue-50/60 p-4">
+                <h4 className="text-sm font-semibold text-blue-900 mb-2">Disponibilidad de Equipos</h4>
+                {disponibilidadLoading && (
+                  <div className="flex items-center gap-2 text-blue-700 text-sm">
+                    <Spinner size="sm" />
+                    Verificando disponibilidad...
+                  </div>
+                )}
+                {!disponibilidadLoading && disponibilidadError && (
+                  <p className="text-sm text-red-600">{disponibilidadError}</p>
+                )}
+                {!disponibilidadLoading && resumenDisponibilidad && (
+                  <div className="space-y-2 text-sm text-blue-900">
+                    <div className="flex items-center gap-2">
+                      <Badge
+                        variant={resumenDisponibilidad.disponible ? 'success' : 'danger'}
+                        size="sm"
+                      >
+                        {resumenDisponibilidad.disponible ? 'Disponible' : 'Sin disponibilidad'}
+                      </Badge>
+                      <span>{resumenDisponibilidad.mensaje}</span>
+                    </div>
+                    <p className="text-xs text-blue-700">
+                      Equipos disponibles para estas fechas:{' '}
+                      {resumenDisponibilidad.equiposDisponibles ?? 0}
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
           )}
         </div>
@@ -196,6 +282,8 @@ export const FormularioReserva = ({ onSuccess, onCancel }) => {
           <h3 className="text-lg font-semibold">Seleccionar Equipos</h3>
           <SelectorEquipos
             destinoId={destino?.idDestino}
+            fechaInicio={fechaInicio}
+            fechaFin={fechaFin}
             equiposSeleccionados={equipos}
             onEquiposChange={setEquipos}
           />
@@ -233,6 +321,10 @@ export const FormularioReserva = ({ onSuccess, onCancel }) => {
                 <p className="text-lg font-bold">Total</p>
                 <p className="text-2xl font-bold text-blue-600">${calcularTotal().toFixed(2)}</p>
               </div>
+              <p className="text-xs text-blue-700 mt-2">
+                Los descuentos, recargos e impuestos se aplicarán automáticamente al confirmar la reserva
+                según las políticas vigentes del destino y del cliente.
+              </p>
             </div>
           </div>
         </div>

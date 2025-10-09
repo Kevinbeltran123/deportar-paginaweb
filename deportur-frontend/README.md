@@ -86,9 +86,9 @@ useEffect(() => {
 ```
 
 ### Servicios disponibles:
-- **clienteService** - CRUD de clientes + búsqueda
-- **equipoService** - CRUD de equipos + disponibilidad
-- **reservaService** - CRUD de reservas + confirmar/cancelar
+- **clienteService** - CRUD de clientes, búsqueda y estadísticas (`/clientes/{id}/estadisticas`)
+- **equipoService** - CRUD de equipos, disponibilidad por fechas y verificación (`/equipos/verificar-disponibilidad`)
+- **reservaService** - CRUD de reservas, confirmar/cancelar y historial (`/reservas/{id}/historial`)
 - **destinoService** - CRUD de destinos + búsqueda
 - **tipoEquipoService** - CRUD de tipos de equipo
 
@@ -96,8 +96,9 @@ useEffect(() => {
 
 - Sistema de autenticación con Google
 - Gestión completa de entidades (CRUD)
-- Sistema de reservas con estados automáticos
-- Validación de disponibilidad de equipos
+- Sistema de reservas con estados automáticos y desglose financiero (subtotal, descuentos, recargos, impuestos)
+- Validación de disponibilidad de equipos con resumen previo a la confirmación
+- Historial detallado de reservas y métricas de fidelización por cliente
 - Búsqueda y filtrado de datos
 - UI responsiva con Tailwind CSS
 

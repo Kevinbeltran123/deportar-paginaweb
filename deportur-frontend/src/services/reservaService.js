@@ -151,3 +151,18 @@ export const confirmarReserva = async (id) => {
 
 // Alias para eliminarReserva
 export const eliminarReserva = cancelarReserva;
+
+/**
+ * Obtiene el historial completo de una reserva
+ * @param {number} id - ID de la reserva
+ * @returns {Promise<Array>} Cambios registrados
+ */
+export const obtenerHistorialReserva = async (id) => {
+  try {
+    const response = await api.get(`/reservas/${id}/historial`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error al obtener historial de reserva ${id}:`, error);
+    throw error;
+  }
+};

@@ -138,7 +138,10 @@ export const ListaReservas = () => {
     {
       key: 'total',
       label: 'Total',
-      render: (r) => `$${r.valorTotal?.toFixed(2) || '0.00'}`
+      render: (r) => {
+        const total = r.total ?? r.valorTotal ?? 0;
+        return `$${total.toFixed(2)}`;
+      }
     },
     {
       key: 'estado',

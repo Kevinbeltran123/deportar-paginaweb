@@ -45,11 +45,12 @@ curl http://localhost:8080/api/dashboard/metricas
 
 ### 2. Precios Dinámicos
 **Se aplica automáticamente en cada reserva:**
-- ✅ Descuento por duración (5-10%)
-- ✅ Descuento por nivel de cliente (5-15%)
+- ✅ Descuento por duración (configurable con `min_dias`/`max_dias`; fallback 5-10%)
+- ✅ Descuento por nivel de cliente (configurable por `nivel_fidelizacion`; fallback 5-15%)
 - ✅ Descuentos por temporada (configurable)
 - ✅ Recargos por fecha pico (configurable)
 - ✅ Impuestos (configurable)
+- ✅ Total final: subtotal - descuentos + recargos + impuestos
 
 ### 3. Gestión de Políticas de Precio
 **Endpoint:** `POST /api/politicas-precio`

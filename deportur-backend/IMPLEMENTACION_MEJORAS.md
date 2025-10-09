@@ -267,7 +267,7 @@ mvn spring-boot:run
 - Descuentos por nivel de cliente
 - Recargos por fecha pico
 - Impuestos configurables
-- Cálculo automático: total = subtotal - descuentos + impuestos
+- Cálculo automático: total = subtotal - descuentos + recargos + impuestos
 
 ### Auditoría de Reservas ✅
 - Historial completo de cambios de estado

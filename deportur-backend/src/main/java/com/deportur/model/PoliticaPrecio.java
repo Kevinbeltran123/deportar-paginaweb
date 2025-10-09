@@ -1,5 +1,6 @@
 package com.deportur.model;
 
+import com.deportur.model.enums.NivelFidelizacion;
 import com.deportur.model.enums.TipoPolitica;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -44,6 +45,29 @@ public class PoliticaPrecio {
     @Column(name = "fecha_fin")
     private LocalDate fechaFin;
 
+    @Column(name = "min_dias")
+    private Integer minDias;
+
+    @Column(name = "max_dias")
+    private Integer maxDias;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "nivel_fidelizacion", length = 20)
+    private NivelFidelizacion nivelFidelizacion;
+
+    // Relaciones opcionales para políticas específicas
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "destino_id")
+    private DestinoTuristico destino;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tipo_equipo_id")
+    private TipoEquipo tipoEquipo;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "equipo_id")
+    private EquipoDeportivo equipo;
+
     @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
     private Boolean activo = true;
 
@@ -60,7 +84,8 @@ public class PoliticaPrecio {
     }
 
     public PoliticaPrecio(String nombre, String descripcion, TipoPolitica tipoPolitica,
-                          BigDecimal porcentaje, LocalDate fechaInicio, LocalDate fechaFin, Boolean activo) {
+                          BigDecimal porcentaje, LocalDate fechaInicio, LocalDate fechaFin, Boolean activo,
+                          Integer minDias, Integer maxDias, NivelFidelizacion nivelFidelizacion) {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.tipoPolitica = tipoPolitica;
@@ -68,6 +93,28 @@ public class PoliticaPrecio {
         this.fechaInicio = fechaInicio;
         this.fechaFin = fechaFin;
         this.activo = activo;
+        this.minDias = minDias;
+        this.maxDias = maxDias;
+        this.nivelFidelizacion = nivelFidelizacion;
+    }
+
+    public PoliticaPrecio(String nombre, String descripcion, TipoPolitica tipoPolitica,
+                          BigDecimal porcentaje, LocalDate fechaInicio, LocalDate fechaFin, Boolean activo,
+                          Integer minDias, Integer maxDias, NivelFidelizacion nivelFidelizacion,
+                          DestinoTuristico destino, TipoEquipo tipoEquipo, EquipoDeportivo equipo) {
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.tipoPolitica = tipoPolitica;
+        this.porcentaje = porcentaje;
+        this.fechaInicio = fechaInicio;
+        this.fechaFin = fechaFin;
+        this.activo = activo;
+        this.minDias = minDias;
+        this.maxDias = maxDias;
+        this.nivelFidelizacion = nivelFidelizacion;
+        this.destino = destino;
+        this.tipoEquipo = tipoEquipo;
+        this.equipo = equipo;
     }
 
     // Getters y Setters
@@ -127,6 +174,30 @@ public class PoliticaPrecio {
         this.fechaFin = fechaFin;
     }
 
+    public Integer getMinDias() {
+        return minDias;
+    }
+
+    public void setMinDias(Integer minDias) {
+        this.minDias = minDias;
+    }
+
+    public Integer getMaxDias() {
+        return maxDias;
+    }
+
+    public void setMaxDias(Integer maxDias) {
+        this.maxDias = maxDias;
+    }
+
+    public NivelFidelizacion getNivelFidelizacion() {
+        return nivelFidelizacion;
+    }
+
+    public void setNivelFidelizacion(NivelFidelizacion nivelFidelizacion) {
+        this.nivelFidelizacion = nivelFidelizacion;
+    }
+
     public Boolean getActivo() {
         return activo;
     }
@@ -149,6 +220,30 @@ public class PoliticaPrecio {
 
     public void setFechaActualizacion(LocalDateTime fechaActualizacion) {
         this.fechaActualizacion = fechaActualizacion;
+    }
+
+    public DestinoTuristico getDestino() {
+        return destino;
+    }
+
+    public void setDestino(DestinoTuristico destino) {
+        this.destino = destino;
+    }
+
+    public TipoEquipo getTipoEquipo() {
+        return tipoEquipo;
+    }
+
+    public void setTipoEquipo(TipoEquipo tipoEquipo) {
+        this.tipoEquipo = tipoEquipo;
+    }
+
+    public EquipoDeportivo getEquipo() {
+        return equipo;
+    }
+
+    public void setEquipo(EquipoDeportivo equipo) {
+        this.equipo = equipo;
     }
 
     /**

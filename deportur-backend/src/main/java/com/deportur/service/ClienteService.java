@@ -121,6 +121,7 @@ public class ClienteService {
     /**
      * Migrado de GestionReservasService.buscarClientePorId()
      */
+    @Transactional(readOnly = true)
     public Cliente buscarClientePorId(Long idCliente) throws Exception {
         return clienteRepository.findById(idCliente)
             .orElseThrow(() -> new Exception("El cliente no existe"));
@@ -129,6 +130,7 @@ public class ClienteService {
     /**
      * Migrado de GestionReservasService.buscarClientePorDocumento()
      */
+    @Transactional(readOnly = true)
     public Cliente buscarClientePorDocumento(String documento) throws Exception {
         return clienteRepository.findByDocumento(documento)
             .orElseThrow(() -> new Exception("No se encontró un cliente con ese documento"));
@@ -137,6 +139,7 @@ public class ClienteService {
     /**
      * Migrado de GestionReservasService.listarTodosLosClientes()
      */
+    @Transactional(readOnly = true)
     public List<Cliente> listarTodosLosClientes() {
         return clienteRepository.findAll();
     }
@@ -144,6 +147,7 @@ public class ClienteService {
     /**
      * Migrado de GestionReservasService.buscarClientesPorNombreOApellido()
      */
+    @Transactional(readOnly = true)
     public List<Cliente> buscarClientesPorNombreOApellido(String criterio) {
         return clienteRepository.findByNombreContainingIgnoreCaseOrApellidoContainingIgnoreCase(criterio, criterio);
     }
@@ -177,6 +181,7 @@ public class ClienteService {
     /**
      * Obtiene estadísticas completas de un cliente
      */
+    @Transactional(readOnly = true)
     public Map<String, Object> obtenerEstadisticasCliente(Long idCliente) throws Exception {
         Cliente cliente = buscarClientePorId(idCliente);
         List<Reserva> reservas = reservaRepository.findByClienteOrderByFechaCreacionDesc(cliente);

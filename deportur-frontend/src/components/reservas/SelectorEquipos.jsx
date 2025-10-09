@@ -1,34 +1,68 @@
 import { useState, useEffect } from 'react';
-import { listarEquipos } from '../../services';
-import { Package, Plus, Trash2 } from 'lucide-react';
+import { listarEquipos, obtenerEquiposDisponibles } from '../../services';
+import { Package, Plus, Trash2, AlertTriangle } from 'lucide-react';
 import { Button, Badge } from '../ui';
 
 /**
  * Selector de equipos para reservas con cantidad
  */
-export const SelectorEquipos = ({ destinoId, onEquiposChange, equiposSeleccionados = [] }) => {
+export const SelectorEquipos = ({
+  destinoId,
+  fechaInicio,
+  fechaFin,
+  onEquiposChange,
+  equiposSeleccionados = []
+}) => {
   const [equiposDisponibles, setEquiposDisponibles] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [mensaje, setMensaje] = useState('');
+  const [usoDisponibilidad, setUsoDisponibilidad] = useState(false);
 
   useEffect(() => {
     if (destinoId) {
       cargarEquipos();
+    } else {
+      setEquiposDisponibles([]);
+      setMensaje('Selecciona un destino para mostrar los equipos.');
     }
-  }, [destinoId]);
+  }, [destinoId, fechaInicio, fechaFin]);
 
   const cargarEquipos = async () => {
     setIsLoading(true);
+    setMensaje('');
     try {
-      const data = await listarEquipos();
-      // Filtrar equipos del destino seleccionado y que estén disponibles
-      const equiposFiltrados = data.filter(
-        e => e.destino?.idDestino === destinoId &&
-             e.disponible &&
-             e.estado !== 'FUERA_DE_SERVICIO'
-      );
-      setEquiposDisponibles(equiposFiltrados);
+      const puedeVerificar = destinoId && fechaInicio && fechaFin;
+
+      if (puedeVerificar) {
+        const disponibles = await obtenerEquiposDisponibles({ destinoId, fechaInicio, fechaFin });
+        setEquiposDisponibles(disponibles);
+        setUsoDisponibilidad(true);
+        setMensaje(
+          disponibles.length === 0
+            ? 'No hay equipos disponibles para el rango seleccionado.'
+            : ''
+        );
+      } else {
+        const data = await listarEquipos();
+        const equiposFiltrados = data.filter(
+          e =>
+            e.destino?.idDestino === destinoId &&
+            e.disponible &&
+            e.estado !== 'FUERA_DE_SERVICIO'
+        );
+        setEquiposDisponibles(equiposFiltrados);
+        setUsoDisponibilidad(false);
+        if (!fechaInicio || !fechaFin) {
+          setMensaje('Selecciona fechas para validar disponibilidad con mayor precisión.');
+        } else if (equiposFiltrados.length === 0) {
+          setMensaje('No se encontraron equipos disponibles para este destino.');
+        } else {
+          setMensaje('');
+        }
+      }
     } catch (error) {
       console.error('Error al cargar equipos:', error);
+      setMensaje('No fue posible obtener la lista de equipos disponibles.');
     } finally {
       setIsLoading(false);
     }
@@ -73,6 +107,12 @@ export const SelectorEquipos = ({ destinoId, onEquiposChange, equiposSeleccionad
 
   return (
     <div className="space-y-4">
+      {mensaje && (
+        <div className="flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs text-amber-800">
+          <AlertTriangle className="h-4 w-4 mt-0.5" />
+          <span>{mensaje}</span>
+        </div>
+      )}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
           Equipos Disponibles

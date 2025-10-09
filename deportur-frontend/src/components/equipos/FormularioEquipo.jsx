@@ -25,7 +25,8 @@ export const FormularioEquipo = ({ equipoId = null, onSuccess, onCancel }) => {
     precioAlquiler: '',
     fechaAdquisicion: '',
     estado: 'NUEVO',
-    disponible: true
+    disponible: true,
+    imagenUrl: ''
   });
 
   const [tipoSeleccionado, setTipoSeleccionado] = useState(null);
@@ -48,7 +49,8 @@ export const FormularioEquipo = ({ equipoId = null, onSuccess, onCancel }) => {
         precioAlquiler: equipo.precioAlquiler || '',
         fechaAdquisicion: equipo.fechaAdquisicion || '',
         estado: equipo.estado || 'NUEVO',
-        disponible: equipo.disponible ?? true
+        disponible: equipo.disponible ?? true,
+        imagenUrl: equipo.imagenUrl || ''
       });
       setTipoSeleccionado(equipo.tipo);
       setDestinoSeleccionado(equipo.destino);
@@ -101,7 +103,8 @@ export const FormularioEquipo = ({ equipoId = null, onSuccess, onCancel }) => {
       estado: formData.estado,
       disponible: formData.disponible,
       idTipo: tipoSeleccionado.idTipo,
-      idDestino: destinoSeleccionado.idDestino
+      idDestino: destinoSeleccionado.idDestino,
+      imagenUrl: formData.imagenUrl?.trim() || null
     };
 
     try {
@@ -191,6 +194,26 @@ export const FormularioEquipo = ({ equipoId = null, onSuccess, onCancel }) => {
               placeholder="0.00"
             />
           </div>
+
+          <Input
+            label="Imagen (URL opcional)"
+            name="imagenUrl"
+            value={formData.imagenUrl}
+            onChange={handleChange}
+            disabled={isSaving}
+            placeholder="https://..."
+          />
+          {formData.imagenUrl && (
+            <div className="rounded-lg border border-gray-200 bg-white p-3">
+              <p className="text-xs font-medium text-gray-500 mb-2">Vista previa</p>
+              <img
+                src={formData.imagenUrl}
+                alt="Vista previa del equipo"
+                className="max-h-40 w-full rounded-md object-cover border border-gray-100"
+                onError={() => setFormData(prev => ({ ...prev, imagenUrl: '' }))}
+              />
+            </div>
+          )}
         </div>
 
         {/* Equipment Type Section */}

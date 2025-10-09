@@ -7,6 +7,7 @@ import {
   Package,
   Users,
   Layers,
+  Percent,
 } from 'lucide-react'
 import { useAuth } from '../hooks/useAuth'
 
@@ -52,6 +53,13 @@ export const Dashboard = () => {
       to: '/reservas',
       icon: CalendarDays,
       accent: 'bg-indigo-100 text-indigo-600',
+    },
+    {
+      title: 'Políticas de Precio',
+      description: 'Configura descuentos, recargos e impuestos del sistema.',
+      to: '/politicas-precio',
+      icon: Percent,
+      accent: 'bg-pink-100 text-pink-600',
     },
   ]
 

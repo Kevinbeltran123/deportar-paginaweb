@@ -52,6 +52,9 @@ public class Reserva {
     private BigDecimal descuentos = BigDecimal.ZERO;
 
     @Column(precision = 10, scale = 2, columnDefinition = "DECIMAL(10,2) DEFAULT 0")
+    private BigDecimal recargos = BigDecimal.ZERO;
+
+    @Column(precision = 10, scale = 2, columnDefinition = "DECIMAL(10,2) DEFAULT 0")
     private BigDecimal impuestos = BigDecimal.ZERO;
 
     @Column(precision = 10, scale = 2)
@@ -175,6 +178,14 @@ public class Reserva {
         this.impuestos = impuestos;
     }
 
+    public BigDecimal getRecargos() {
+        return recargos;
+    }
+
+    public void setRecargos(BigDecimal recargos) {
+        this.recargos = recargos;
+    }
+
     public BigDecimal getTotal() {
         return total;
     }
@@ -206,7 +217,7 @@ public class Reserva {
     }
 
     /**
-     * Calcula el total final: subtotal - descuentos + impuestos
+     * Calcula el total final: subtotal - descuentos + recargos + impuestos
      * Este método será utilizado por PoliticaPrecioService para aplicar políticas
      */
     public BigDecimal calcularTotal() {
@@ -216,21 +227,25 @@ public class Reserva {
         if (descuentos == null) {
             this.descuentos = BigDecimal.ZERO;
         }
+        if (recargos == null) {
+            this.recargos = BigDecimal.ZERO;
+        }
         if (impuestos == null) {
             this.impuestos = BigDecimal.ZERO;
         }
-        this.total = subtotal.subtract(descuentos).add(impuestos);
+        this.total = subtotal.subtract(descuentos).add(recargos).add(impuestos);
         return this.total;
     }
 
     /**
      * Actualiza todos los campos de cálculo de precio
      */
-    public void actualizarCalculos(BigDecimal subtotal, BigDecimal descuentos, BigDecimal impuestos) {
+    public void actualizarCalculos(BigDecimal subtotal, BigDecimal descuentos, BigDecimal recargos, BigDecimal impuestos) {
         this.subtotal = subtotal;
         this.descuentos = descuentos;
+        this.recargos = recargos;
         this.impuestos = impuestos;
-        this.total = subtotal.subtract(descuentos).add(impuestos);
+        this.total = subtotal.subtract(descuentos).add(recargos).add(impuestos);
     }
 
     @Override

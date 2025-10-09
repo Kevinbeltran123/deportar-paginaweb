@@ -35,13 +35,15 @@ COMMENT ON COLUMN cliente.nivel_fidelizacion IS 'Nivel de fidelización del clie
 ALTER TABLE reserva
 ADD COLUMN IF NOT EXISTS subtotal DECIMAL(10,2),
 ADD COLUMN IF NOT EXISTS descuentos DECIMAL(10,2) DEFAULT 0,
+ADD COLUMN IF NOT EXISTS recargos DECIMAL(10,2) DEFAULT 0,
 ADD COLUMN IF NOT EXISTS impuestos DECIMAL(10,2) DEFAULT 0,
 ADD COLUMN IF NOT EXISTS total DECIMAL(10,2);
 
 COMMENT ON COLUMN reserva.subtotal IS 'Suma de precios de equipos antes de descuentos e impuestos';
 COMMENT ON COLUMN reserva.descuentos IS 'Total de descuentos aplicados (por temporada, duración, cliente, etc.)';
+COMMENT ON COLUMN reserva.recargos IS 'Total de recargos aplicados (por ejemplo, fechas pico)';
 COMMENT ON COLUMN reserva.impuestos IS 'Total de impuestos aplicados';
-COMMENT ON COLUMN reserva.total IS 'Total final: subtotal - descuentos + impuestos';
+COMMENT ON COLUMN reserva.total IS 'Total final: subtotal - descuentos + recargos + impuestos';
 
 -- 4. CREAR TABLA DE POLÍTICAS DE PRECIO
 CREATE TABLE IF NOT EXISTS politica_precio (
@@ -52,6 +54,9 @@ CREATE TABLE IF NOT EXISTS politica_precio (
     porcentaje DECIMAL(5,2) NOT NULL,
     fecha_inicio DATE,
     fecha_fin DATE,
+    min_dias INT,
+    max_dias INT,
+    nivel_fidelizacion VARCHAR(20),
     activo BOOLEAN DEFAULT TRUE,
     fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -63,6 +68,17 @@ CREATE TABLE IF NOT EXISTS politica_precio (
     CHECK (porcentaje >= 0 AND porcentaje <= 100)
 );
 
+ALTER TABLE politica_precio
+    ADD CONSTRAINT chk_min_max_dias CHECK (
+        (min_dias IS NULL OR min_dias > 0) AND
+        (max_dias IS NULL OR max_dias > 0) AND
+        (min_dias IS NULL OR max_dias IS NULL OR min_dias <= max_dias)
+    );
+
+ALTER TABLE politica_precio
+    ADD CONSTRAINT chk_nivel_fidelizacion_politica
+    CHECK (nivel_fidelizacion IS NULL OR nivel_fidelizacion IN ('BRONCE', 'PLATA', 'ORO'));
+
 -- Índices para mejorar performance
 CREATE INDEX IF NOT EXISTS idx_politica_precio_tipo ON politica_precio(tipo_politica);
 CREATE INDEX IF NOT EXISTS idx_politica_precio_activo ON politica_precio(activo);
@@ -73,6 +89,9 @@ COMMENT ON COLUMN politica_precio.tipo_politica IS 'Tipo de política: DESCUENTO
 COMMENT ON COLUMN politica_precio.porcentaje IS 'Porcentaje a aplicar (0-100)';
 COMMENT ON COLUMN politica_precio.fecha_inicio IS 'Fecha de inicio de vigencia (NULL si aplica siempre)';
 COMMENT ON COLUMN politica_precio.fecha_fin IS 'Fecha de fin de vigencia (NULL si no expira)';
+COMMENT ON COLUMN politica_precio.min_dias IS 'Días mínimos de reserva para aplicar la política (solo DESCUENTO_DURACION)';
+COMMENT ON COLUMN politica_precio.max_dias IS 'Días máximos de reserva para aplicar la política (solo DESCUENTO_DURACION)';
+COMMENT ON COLUMN politica_precio.nivel_fidelizacion IS 'Nivel de fidelización objetivo (solo DESCUENTO_CLIENTE)';
 
 -- 5. CREAR TABLA DE HISTORIAL DE RESERVAS (AUDITORÍA)
 CREATE TABLE IF NOT EXISTS reserva_historial (

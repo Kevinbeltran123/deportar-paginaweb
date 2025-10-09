@@ -287,14 +287,26 @@ ${mensajeError}`);
                   onClick={() => setEquipoSeleccionado(equipo)}
                   className={`relative flex flex-col overflow-hidden rounded-lg border bg-white shadow-sm transition hover:shadow-md cursor-pointer ${seleccionado ? 'border-blue-500 ring-2 ring-blue-200' : 'border-gray-200'}`}
                 >
-                  {/* Image placeholder */}
+                  {/* Image */}
                   <div className="relative h-40 bg-gradient-to-br from-gray-100 to-gray-200">
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="text-center">
-                        <ImageOff className="mx-auto h-8 w-8 text-gray-400 mb-1" />
-                        <span className="text-xs font-medium text-gray-500">IMAGEN NO DISPONIBLE</span>
+                    {equipo.imagenUrl ? (
+                      <img
+                        src={equipo.imagenUrl}
+                        alt={equipo.nombre}
+                        className="h-full w-full object-cover"
+                        onError={(e) => {
+                          e.target.src = '';
+                          e.target.closest('.relative').classList.add('bg-gray-100');
+                        }}
+                      />
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="text-center">
+                          <ImageOff className="mx-auto h-8 w-8 text-gray-400 mb-1" />
+                          <span className="text-xs font-medium text-gray-500">IMAGEN NO DISPONIBLE</span>
+                        </div>
                       </div>
-                    </div>
+                    )}
                     {/* ID Badge - top left */}
                     <div className="absolute top-2 left-2 bg-white/90 backdrop-blur-sm px-2 py-1 rounded text-[10px] font-semibold text-gray-600">
                       ID #{equipo.idEquipo}
@@ -325,6 +337,23 @@ ${mensajeError}`);
                       <p className="line-clamp-1">
                         <span className="font-medium text-gray-700">Destino:</span> {equipo.destino?.nombre || 'N/A'}
                       </p>
+                    </div>
+
+                    {/* Counters */}
+                    <div className="flex items-center gap-2 mb-3">
+                      <Badge variant="secondary" size="sm">
+                        Uso: {equipo.contadorUso ?? 0}
+                      </Badge>
+                      {!equipo.disponible && (
+                        <Badge variant="warning" size="sm">
+                          No disponible
+                        </Badge>
+                      )}
+                      {equipo.contadorUso > 0 && equipo.contadorUso % 10 === 0 && (
+                        <Badge variant="danger" size="sm">
+                          Mantenimiento sugerido
+                        </Badge>
+                      )}
                     </div>
 
                     {/* Price */}
