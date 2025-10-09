@@ -1,9 +1,12 @@
 package com.deportur.controller;
 
 import com.deportur.dto.request.CrearEquipoRequest;
+import com.deportur.dto.response.DisponibilidadResponse;
+import com.deportur.model.DestinoTuristico;
 import com.deportur.model.EquipoDeportivo;
 import com.deportur.service.EquipoService;
 import com.deportur.service.DestinoService;
+import com.deportur.service.DisponibilidadService;
 import com.deportur.service.TipoEquipoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/equipos")
@@ -28,6 +32,9 @@ public class EquipoController {
     @Autowired
     private DestinoService destinoService;
 
+    @Autowired
+    private DisponibilidadService disponibilidadService;
+
     @PostMapping
     public ResponseEntity<?> registrarEquipo(@Valid @RequestBody CrearEquipoRequest request) {
         try {
@@ -40,6 +47,7 @@ public class EquipoController {
             equipo.setFechaAdquisicion(request.getFechaAdquisicion());
             equipo.setDestino(destinoService.buscarDestinoPorId(request.getIdDestino()));
             equipo.setDisponible(request.getDisponible());
+            equipo.setImagenUrl(request.getImagenUrl());
 
             EquipoDeportivo nuevoEquipo = equipoService.registrarEquipo(equipo);
             return ResponseEntity.status(HttpStatus.CREATED).body(nuevoEquipo);
@@ -103,6 +111,30 @@ public class EquipoController {
         }
     }
 
+    @GetMapping("/verificar-disponibilidad")
+    public ResponseEntity<?> verificarDisponibilidad(
+            @RequestParam Long destino,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate inicio,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fin) {
+        try {
+            DestinoTuristico dest = destinoService.buscarDestinoPorId(destino);
+            List<EquipoDeportivo> equipos = disponibilidadService.obtenerEquiposDisponibles(destino, inicio, fin);
+
+            DisponibilidadResponse response = new DisponibilidadResponse(
+                destino,
+                dest.getNombre(),
+                !equipos.isEmpty(),
+                equipos.size(),
+                equipos.stream().map(EquipoDeportivo::getIdEquipo).collect(Collectors.toList()),
+                equipos.isEmpty() ? "No hay equipos disponibles en las fechas seleccionadas" : equipos.size() + " equipos disponibles"
+            );
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<?> actualizarEquipo(@PathVariable Long id,
                                               @Valid @RequestBody CrearEquipoRequest request) {
@@ -116,6 +148,7 @@ public class EquipoController {
             equipo.setFechaAdquisicion(request.getFechaAdquisicion());
             equipo.setDestino(destinoService.buscarDestinoPorId(request.getIdDestino()));
             equipo.setDisponible(request.getDisponible());
+            equipo.setImagenUrl(request.getImagenUrl());
 
             EquipoDeportivo equipoActualizado = equipoService.actualizarEquipo(id, equipo);
             return ResponseEntity.ok(equipoActualizado);

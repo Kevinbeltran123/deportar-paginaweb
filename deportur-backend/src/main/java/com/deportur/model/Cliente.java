@@ -1,5 +1,6 @@
 package com.deportur.model;
 
+import com.deportur.model.enums.NivelFidelizacion;
 import com.deportur.model.enums.TipoDocumento;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -49,6 +50,17 @@ public class Cliente {
     @Column(length = 200)
     private String direccion;
 
+    @Column(name = "numero_reservas", columnDefinition = "INTEGER DEFAULT 0")
+    private Integer numeroReservas = 0;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "destino_preferido_id")
+    private DestinoTuristico destinoPreferido;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "nivel_fidelizacion", length = 20, columnDefinition = "VARCHAR(20) DEFAULT 'BRONCE'")
+    private NivelFidelizacion nivelFidelizacion = NivelFidelizacion.BRONCE;
+
     // Constructores
     public Cliente() {
     }
@@ -63,6 +75,8 @@ public class Cliente {
         this.telefono = telefono;
         this.email = email;
         this.direccion = direccion;
+        this.numeroReservas = 0;
+        this.nivelFidelizacion = NivelFidelizacion.BRONCE;
     }
 
     // Getters y Setters
@@ -130,8 +144,40 @@ public class Cliente {
         this.direccion = direccion;
     }
 
+    public Integer getNumeroReservas() {
+        return numeroReservas;
+    }
+
+    public void setNumeroReservas(Integer numeroReservas) {
+        this.numeroReservas = numeroReservas;
+    }
+
+    public DestinoTuristico getDestinoPreferido() {
+        return destinoPreferido;
+    }
+
+    public void setDestinoPreferido(DestinoTuristico destinoPreferido) {
+        this.destinoPreferido = destinoPreferido;
+    }
+
+    public NivelFidelizacion getNivelFidelizacion() {
+        return nivelFidelizacion;
+    }
+
+    public void setNivelFidelizacion(NivelFidelizacion nivelFidelizacion) {
+        this.nivelFidelizacion = nivelFidelizacion;
+    }
+
+    /**
+     * Incrementa el contador de reservas y actualiza el nivel de fidelización
+     */
+    public void incrementarReservas() {
+        this.numeroReservas++;
+        this.nivelFidelizacion = NivelFidelizacion.calcularNivel(this.numeroReservas);
+    }
+
     @Override
     public String toString() {
-        return nombre + " " + apellido + " - " + documento;
+        return nombre + " " + apellido + " - " + documento + " (" + nivelFidelizacion + ")";
     }
 }

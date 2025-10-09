@@ -45,6 +45,18 @@ public class Reserva {
     @Column(nullable = false, length = 20)
     private EstadoReserva estado;
 
+    @Column(precision = 10, scale = 2)
+    private BigDecimal subtotal;
+
+    @Column(precision = 10, scale = 2, columnDefinition = "DECIMAL(10,2) DEFAULT 0")
+    private BigDecimal descuentos = BigDecimal.ZERO;
+
+    @Column(precision = 10, scale = 2, columnDefinition = "DECIMAL(10,2) DEFAULT 0")
+    private BigDecimal impuestos = BigDecimal.ZERO;
+
+    @Column(precision = 10, scale = 2)
+    private BigDecimal total;
+
     @JsonManagedReference
     @OneToMany(mappedBy = "reserva", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<DetalleReserva> detalles = new ArrayList<>();
@@ -139,6 +151,38 @@ public class Reserva {
         this.detalles = detalles;
     }
 
+    public BigDecimal getSubtotal() {
+        return subtotal;
+    }
+
+    public void setSubtotal(BigDecimal subtotal) {
+        this.subtotal = subtotal;
+    }
+
+    public BigDecimal getDescuentos() {
+        return descuentos;
+    }
+
+    public void setDescuentos(BigDecimal descuentos) {
+        this.descuentos = descuentos;
+    }
+
+    public BigDecimal getImpuestos() {
+        return impuestos;
+    }
+
+    public void setImpuestos(BigDecimal impuestos) {
+        this.impuestos = impuestos;
+    }
+
+    public BigDecimal getTotal() {
+        return total;
+    }
+
+    public void setTotal(BigDecimal total) {
+        this.total = total;
+    }
+
     // Métodos de negocio migrados del código Java
     public void agregarDetalle(DetalleReserva detalle) {
         this.detalles.add(detalle);
@@ -150,12 +194,43 @@ public class Reserva {
         detalle.setReserva(null);
     }
 
-    public BigDecimal calcularTotal() {
-        BigDecimal total = BigDecimal.ZERO;
+    /**
+     * Calcula el subtotal sumando los precios de todos los equipos
+     */
+    public BigDecimal calcularSubtotal() {
+        BigDecimal suma = BigDecimal.ZERO;
         for (DetalleReserva detalle : detalles) {
-            total = total.add(detalle.getPrecioUnitario());
+            suma = suma.add(detalle.getPrecioUnitario());
         }
-        return total;
+        return suma;
+    }
+
+    /**
+     * Calcula el total final: subtotal - descuentos + impuestos
+     * Este método será utilizado por PoliticaPrecioService para aplicar políticas
+     */
+    public BigDecimal calcularTotal() {
+        if (subtotal == null) {
+            this.subtotal = calcularSubtotal();
+        }
+        if (descuentos == null) {
+            this.descuentos = BigDecimal.ZERO;
+        }
+        if (impuestos == null) {
+            this.impuestos = BigDecimal.ZERO;
+        }
+        this.total = subtotal.subtract(descuentos).add(impuestos);
+        return this.total;
+    }
+
+    /**
+     * Actualiza todos los campos de cálculo de precio
+     */
+    public void actualizarCalculos(BigDecimal subtotal, BigDecimal descuentos, BigDecimal impuestos) {
+        this.subtotal = subtotal;
+        this.descuentos = descuentos;
+        this.impuestos = impuestos;
+        this.total = subtotal.subtract(descuentos).add(impuestos);
     }
 
     @Override

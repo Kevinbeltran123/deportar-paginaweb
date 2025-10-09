@@ -55,6 +55,13 @@ public class EquipoDeportivo {
     @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
     private Boolean disponible = true;
 
+    @Size(max = 500, message = "La URL de la imagen no puede exceder 500 caracteres")
+    @Column(name = "imagen_url", length = 500)
+    private String imagenUrl;
+
+    @Column(name = "contador_uso", columnDefinition = "INTEGER DEFAULT 0")
+    private Integer contadorUso = 0;
+
     // Constructores
     public EquipoDeportivo() {
     }
@@ -71,6 +78,7 @@ public class EquipoDeportivo {
         this.fechaAdquisicion = fechaAdquisicion;
         this.destino = destino;
         this.disponible = disponible;
+        this.contadorUso = 0;
     }
 
     // Getters y Setters
@@ -144,6 +152,37 @@ public class EquipoDeportivo {
 
     public void setDisponible(Boolean disponible) {
         this.disponible = disponible;
+    }
+
+    public String getImagenUrl() {
+        return imagenUrl;
+    }
+
+    public void setImagenUrl(String imagenUrl) {
+        this.imagenUrl = imagenUrl;
+    }
+
+    public Integer getContadorUso() {
+        return contadorUso;
+    }
+
+    public void setContadorUso(Integer contadorUso) {
+        this.contadorUso = contadorUso;
+    }
+
+    /**
+     * Incrementa el contador de uso del equipo
+     */
+    public void incrementarUso() {
+        this.contadorUso++;
+    }
+
+    /**
+     * Verifica si el equipo necesita mantenimiento preventivo
+     * (Por ejemplo, cada 10 usos)
+     */
+    public boolean necesitaMantenimiento() {
+        return this.contadorUso > 0 && this.contadorUso % 10 == 0;
     }
 
     @Override

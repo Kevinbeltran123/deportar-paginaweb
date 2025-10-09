@@ -32,9 +32,33 @@ public class ReservaService {
     @Autowired
     private DestinoTuristicoRepository destinoRepository;
 
+    @Autowired
+    private ReservaHistorialRepository reservaHistorialRepository;
+
+    @Autowired
+    private DisponibilidadService disponibilidadService;
+
+    @Autowired
+    private PoliticaPrecioService politicaPrecioService;
+
+    /**
+     * Registra un cambio de estado en el historial
+     */
+    private void registrarCambioEstado(Reserva reserva, EstadoReserva estadoAnterior, String observaciones) {
+        ReservaHistorial historial = new ReservaHistorial(
+            reserva,
+            estadoAnterior,
+            reserva.getEstado(),
+            "SYSTEM",
+            observaciones
+        );
+        reservaHistorialRepository.save(historial);
+    }
+
     /**
      * Migrado de GestionReservasService.crearReserva()
      * Incluye todas las validaciones del sistema original
+     * REFACTORIZADO para usar DisponibilidadService y PoliticaPrecioService
      */
     @Transactional
     public Reserva crearReserva(Long idCliente, LocalDate fechaInicio, LocalDate fechaFin,
@@ -96,8 +120,27 @@ public class ReservaService {
             reserva.agregarDetalle(detalle);
         }
 
+        // Aplicar políticas de precio
+        politicaPrecioService.aplicarPoliticasAReserva(reserva);
+
         // Guardar reserva (cascade guardará los detalles)
-        return reservaRepository.save(reserva);
+        Reserva reservaGuardada = reservaRepository.save(reserva);
+
+        // Registrar creación en historial
+        registrarCambioEstado(reservaGuardada, null, "Reserva creada");
+
+        // Actualizar métricas del cliente
+        cliente.incrementarReservas();
+        clienteRepository.save(cliente);
+
+        // Incrementar contador de uso de equipos
+        for (DetalleReserva detalle : reservaGuardada.getDetalles()) {
+            EquipoDeportivo equipo = detalle.getEquipo();
+            equipo.incrementarUso();
+            equipoRepository.save(equipo);
+        }
+
+        return reservaGuardada;
     }
 
     /**
@@ -181,8 +224,14 @@ public class ReservaService {
             throw new Exception("La reserva ya está cancelada");
         }
 
+        EstadoReserva estadoAnterior = reserva.getEstado();
         reserva.setEstado(EstadoReserva.CANCELADA);
-        return reservaRepository.save(reserva);
+        Reserva reservaActualizada = reservaRepository.save(reserva);
+
+        // Registrar cambio en historial
+        registrarCambioEstado(reservaActualizada, estadoAnterior, "Reserva cancelada");
+
+        return reservaActualizada;
     }
 
     /**
@@ -287,7 +336,23 @@ public class ReservaService {
             throw new Exception("Solo se pueden confirmar reservas en estado PENDIENTE");
         }
 
+        EstadoReserva estadoAnterior = reserva.getEstado();
         reserva.setEstado(EstadoReserva.CONFIRMADA);
-        return reservaRepository.save(reserva);
+        Reserva reservaActualizada = reservaRepository.save(reserva);
+
+        // Registrar cambio en historial
+        registrarCambioEstado(reservaActualizada, estadoAnterior, "Reserva confirmada");
+
+        return reservaActualizada;
+    }
+
+    /**
+     * Obtiene el historial de cambios de una reserva
+     */
+    public List<ReservaHistorial> obtenerHistorialReserva(Long idReserva) throws Exception {
+        if (!reservaRepository.existsById(idReserva)) {
+            throw new Exception("La reserva no existe");
+        }
+        return reservaHistorialRepository.findByReserva_IdReservaOrderByFechaCambioDesc(idReserva);
     }
 }

@@ -106,4 +106,14 @@ public class ClienteController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @GetMapping("/{id}/estadisticas")
+    public ResponseEntity<?> obtenerEstadisticas(@PathVariable Long id) {
+        try {
+            java.util.Map<String, Object> estadisticas = clienteService.obtenerEstadisticasCliente(id);
+            return ResponseEntity.ok(estadisticas);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

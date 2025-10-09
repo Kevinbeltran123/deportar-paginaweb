@@ -111,4 +111,14 @@ public class ReservaController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @GetMapping("/{id}/historial")
+    public ResponseEntity<?> obtenerHistorial(@PathVariable Long id) {
+        try {
+            java.util.List<com.deportur.model.ReservaHistorial> historial = reservaService.obtenerHistorialReserva(id);
+            return ResponseEntity.ok(historial);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

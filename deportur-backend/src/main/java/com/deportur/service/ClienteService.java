@@ -1,13 +1,17 @@
 package com.deportur.service;
 
 import com.deportur.model.Cliente;
+import com.deportur.model.DestinoTuristico;
 import com.deportur.model.Reserva;
 import com.deportur.repository.ClienteRepository;
 import com.deportur.repository.ReservaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Servicio migrado de GestionReservasService.java (parte de clientes)
@@ -142,5 +146,48 @@ public class ClienteService {
      */
     public List<Cliente> buscarClientesPorNombreOApellido(String criterio) {
         return clienteRepository.findByNombreContainingIgnoreCaseOrApellidoContainingIgnoreCase(criterio, criterio);
+    }
+
+    /**
+     * Actualiza el destino preferido del cliente basado en sus reservas
+     */
+    @Transactional
+    public void actualizarDestinoPreferido(Long idCliente) throws Exception {
+        Cliente cliente = buscarClientePorId(idCliente);
+        List<Reserva> reservas = reservaRepository.findByClienteOrderByFechaCreacionDesc(cliente);
+
+        if (reservas == null || reservas.isEmpty()) {
+            return;
+        }
+
+        // Contar frecuencia de destinos
+        Map<DestinoTuristico, Long> frecuenciaDestinos = reservas.stream()
+            .collect(Collectors.groupingBy(Reserva::getDestino, Collectors.counting()));
+
+        // Encontrar el destino más frecuente
+        DestinoTuristico destinoPreferido = frecuenciaDestinos.entrySet().stream()
+            .max(Map.Entry.comparingByValue())
+            .map(Map.Entry::getKey)
+            .orElse(null);
+
+        cliente.setDestinoPreferido(destinoPreferido);
+        clienteRepository.save(cliente);
+    }
+
+    /**
+     * Obtiene estadísticas completas de un cliente
+     */
+    public Map<String, Object> obtenerEstadisticasCliente(Long idCliente) throws Exception {
+        Cliente cliente = buscarClientePorId(idCliente);
+        List<Reserva> reservas = reservaRepository.findByClienteOrderByFechaCreacionDesc(cliente);
+
+        Map<String, Object> estadisticas = new HashMap<>();
+        estadisticas.put("cliente", cliente);
+        estadisticas.put("numeroReservas", cliente.getNumeroReservas());
+        estadisticas.put("nivelFidelizacion", cliente.getNivelFidelizacion());
+        estadisticas.put("destinoPreferido", cliente.getDestinoPreferido());
+        estadisticas.put("reservasRecientes", reservas.stream().limit(5).collect(Collectors.toList()));
+
+        return estadisticas;
     }
 }

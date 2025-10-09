@@ -33,6 +33,8 @@ public class CrearEquipoRequest {
 
     private Boolean disponible = true;
 
+    private String imagenUrl;
+
     // Getters y Setters
     public String getNombre() {
         return nombre;
@@ -96,5 +98,13 @@ public class CrearEquipoRequest {
 
     public void setDisponible(Boolean disponible) {
         this.disponible = disponible;
+    }
+
+    public String getImagenUrl() {
+        return imagenUrl;
+    }
+
+    public void setImagenUrl(String imagenUrl) {
+        this.imagenUrl = imagenUrl;
     }
 }
