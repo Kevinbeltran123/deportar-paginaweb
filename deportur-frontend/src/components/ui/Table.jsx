@@ -41,6 +41,10 @@ export const Table = ({ columns, data, actions, emptyMessage = 'No hay datos dis
                 isSelected = selectedRow.idCliente === row.idCliente;
               } else if (row.idEquipo) {
                 isSelected = selectedRow.idEquipo === row.idEquipo;
+              } else if (row.idDestino) {
+                isSelected = selectedRow.idDestino === row.idDestino;
+              } else if (row.idReserva) {
+                isSelected = selectedRow.idReserva === row.idReserva;
               }
             }
 
@@ -59,12 +63,12 @@ export const Table = ({ columns, data, actions, emptyMessage = 'No hay datos dis
                 } ${onRowClick ? 'cursor-pointer' : ''}`}
               >
                 {columns.map((column) => (
-                  <td key={column.key} className="px-6 py-4 text-sm text-gray-900">
+                  <td key={column.key} className="px-6 py-5 text-sm text-gray-900">
                     {column.render ? column.render(row) : row[column.key]}
                   </td>
                 ))}
                 {actions && (
-                  <td className="px-6 py-4 text-sm font-medium space-x-2">
+                  <td className="px-6 py-5 text-sm font-medium space-x-2">
                     {actions(row)}
                   </td>
                 )}

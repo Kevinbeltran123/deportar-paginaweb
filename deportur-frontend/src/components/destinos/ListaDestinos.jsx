@@ -99,6 +99,22 @@ export const ListaDestinos = () => {
     cargarDestinos();
   };
 
+  const handleAbrirModalEditar = () => {
+    if (!destinoSeleccionado) {
+      alert('Selecciona un destino para modificar.');
+      return;
+    }
+    setModalEditar(true);
+  };
+
+  const handleEliminarSeleccionado = () => {
+    if (!destinoSeleccionado) {
+      alert('Selecciona un destino para eliminar.');
+      return;
+    }
+    handleEliminar(destinoSeleccionado);
+  };
+
   if (!isAuthenticated) {
     return (
       <div className="p-6 bg-yellow-50 rounded-lg">
@@ -142,10 +158,7 @@ export const ListaDestinos = () => {
       key: 'nombre',
       label: 'Destino',
       render: (destino) => (
-        <div className="flex items-center gap-2">
-          <MapPin className="h-4 w-4 text-purple-600" />
-          <span className="font-medium">{destino.nombre}</span>
-        </div>
+        <span className="font-medium">{destino.nombre}</span>
       )
     },
     {
@@ -156,9 +169,7 @@ export const ListaDestinos = () => {
     {
       key: 'tipo',
       label: 'Tipo',
-      render: (destino) => destino.tipoDestino ? (
-        <Badge variant="default">{getTipoLabel(destino.tipoDestino)}</Badge>
-      ) : '-'
+      render: (destino) => destino.tipoDestino ? getTipoLabel(destino.tipoDestino) : '-'
     },
     {
       key: 'descripcion',
@@ -179,101 +190,127 @@ export const ListaDestinos = () => {
   ];
 
   return (
-    <div className="space-y-6">
-      <div className="bg-white p-6 rounded-lg shadow">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold text-gray-900">Destinos Turísticos</h2>
-          <div className="flex gap-2">
-            <Button variant="outline" size="md" onClick={cargarDestinos}>
-              <RefreshCw className="h-4 w-4 mr-2" />
-              Recargar
-            </Button>
-            <Button variant="primary" size="md" onClick={() => setModalCrear(true)}>
-              <Plus className="h-4 w-4 mr-2" />
-              Nuevo Destino
-            </Button>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="lg:col-span-2">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-              <input
-                type="text"
-                placeholder="Buscar por nombre, ciudad o departamento..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
+    <div className="w-full">
+      {/* Full-Width Header Section */}
+      <div className="w-full bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 shadow-xl">
+        <div className="w-full px-6 py-6">
+          <div className="flex flex-wrap items-center justify-between gap-6">
+            <div className="space-y-1">
+              <p className="text-xs uppercase tracking-[0.4em] font-semibold text-blue-100">
+                Gestión de inventario
+              </p>
+              <h1 className="text-4xl md:text-5xl font-bold text-white tracking-tight">
+                Destinos Turísticos
+              </h1>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              <Button
+                className="bg-green-600 text-white font-semibold hover:bg-green-700 shadow-md px-6 py-2.5 text-base"
+                onClick={() => setModalCrear(true)}
+              >
+                <Plus className="mr-2 h-5 w-5" />Agregar
+              </Button>
+              <Button
+                className="bg-blue-600 text-white font-semibold hover:bg-blue-700 shadow-md px-6 py-2.5 text-base"
+                onClick={handleAbrirModalEditar}
+              >
+                <Edit className="mr-2 h-5 w-5" />Modificar
+              </Button>
+              <Button
+                className="bg-red-600 text-white font-semibold hover:bg-red-700 shadow-md px-6 py-2.5 text-base"
+                onClick={handleEliminarSeleccionado}
+              >
+                <Trash2 className="mr-2 h-5 w-5" />Eliminar
+              </Button>
+              <Button
+                className="bg-gray-600 text-white font-semibold hover:bg-gray-700 shadow-md px-6 py-2.5 text-base"
+                onClick={cargarDestinos}
+              >
+                <RefreshCw className="mr-2 h-5 w-5" />Refrescar
+              </Button>
             </div>
           </div>
-
-          <select
-            value={filtroTipo}
-            onChange={(e) => setFiltroTipo(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="">Todos los tipos</option>
-            <option value="PLAYA">Playa</option>
-            <option value="MONTAÑA">Montaña</option>
-            <option value="CIUDAD">Ciudad</option>
-            <option value="RURAL">Rural</option>
-            <option value="AVENTURA">Aventura</option>
-            <option value="CULTURAL">Cultural</option>
-            <option value="ECOLOGICO">Ecológico</option>
-          </select>
-
-          <select
-            value={filtroActivo}
-            onChange={(e) => setFiltroActivo(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="">Todos los estados</option>
-            <option value="true">Activos</option>
-            <option value="false">Inactivos</option>
-          </select>
-        </div>
-
-        <div className="mt-4 text-sm text-gray-600">
-          Mostrando {destinosFiltrados.length} de {destinos.length} destinos
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow">
-        <Table
-          columns={columns}
-          data={destinosFiltrados}
-          emptyMessage="No se encontraron destinos"
-          actions={(destino) => (
-            <>
-              <button
-                onClick={() => {
-                  setDestinoSeleccionado(destino);
-                  setModalDetalle(true);
-                }}
-                className="text-blue-600 hover:text-blue-900"
-              >
-                <Eye className="h-4 w-4" />
-              </button>
-              <button
-                onClick={() => {
-                  setDestinoSeleccionado(destino);
-                  setModalEditar(true);
-                }}
-                className="text-green-600 hover:text-green-900"
-              >
-                <Edit className="h-4 w-4" />
-              </button>
-              <button
-                onClick={() => handleEliminar(destino)}
-                className="text-red-600 hover:text-red-900"
-              >
-                <Trash2 className="h-4 w-4" />
-              </button>
-            </>
-          )}
-        />
+      {/* Content Section - Full Width */}
+      <div className="w-full px-6 py-6 space-y-6">
+        {/* Search and Filters Panel */}
+        <div className="rounded-2xl bg-white/95 p-6 shadow">
+          <div className="mb-4 flex items-center gap-2 text-blue-700">
+            <Search className="h-5 w-5" />
+            <h3 className="text-base font-semibold tracking-tight">Búsqueda y Filtros</h3>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="lg:col-span-2">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                <input
+                  type="text"
+                  placeholder="Buscar por nombre, ciudad o departamento..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+                />
+              </div>
+            </div>
+
+            <select
+              value={filtroTipo}
+              onChange={(e) => setFiltroTipo(e.target.value)}
+              className="px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm appearance-none bg-white cursor-pointer"
+              style={{
+                backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
+                backgroundPosition: 'right 0.5rem center',
+                backgroundRepeat: 'no-repeat',
+                backgroundSize: '1.5em 1.5em',
+                paddingRight: '2.5rem'
+              }}
+            >
+              <option value="">Todos los tipos</option>
+              <option value="PLAYA">Playa</option>
+              <option value="MONTAÑA">Montaña</option>
+              <option value="CIUDAD">Ciudad</option>
+              <option value="RURAL">Rural</option>
+              <option value="AVENTURA">Aventura</option>
+              <option value="CULTURAL">Cultural</option>
+              <option value="ECOLOGICO">Ecológico</option>
+            </select>
+
+            <select
+              value={filtroActivo}
+              onChange={(e) => setFiltroActivo(e.target.value)}
+              className="px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm appearance-none bg-white cursor-pointer"
+              style={{
+                backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
+                backgroundPosition: 'right 0.5rem center',
+                backgroundRepeat: 'no-repeat',
+                backgroundSize: '1.5em 1.5em',
+                paddingRight: '2.5rem'
+              }}
+            >
+              <option value="">Todos los estados</option>
+              <option value="true">Activos</option>
+              <option value="false">Inactivos</option>
+            </select>
+          </div>
+
+          <div className="mt-4 text-xs text-slate-500">
+            Mostrando {destinosFiltrados.length} de {destinos.length} destinos
+          </div>
+        </div>
+
+        {/* Professional Table */}
+        <div className="bg-white rounded-lg shadow overflow-hidden">
+          <Table
+            columns={columns}
+            data={destinosFiltrados}
+            emptyMessage="No se encontraron destinos"
+            onRowClick={(destino) => setDestinoSeleccionado(destino)}
+            selectedRow={destinoSeleccionado}
+          />
+        </div>
       </div>
 
       <Modal isOpen={modalCrear} onClose={() => setModalCrear(false)} title="Nuevo Destino" size="lg">

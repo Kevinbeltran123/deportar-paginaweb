@@ -230,29 +230,6 @@ export const ListaTiposEquipo = () => {
             emptyMessage="No se encontraron tipos de equipo"
             onRowClick={(tipo) => setTipoSeleccionado(tipo)}
             selectedRow={tipoSeleccionado}
-            actions={(tipo) => (
-              <>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setTipoSeleccionado(tipo);
-                    setModalEditar(true);
-                  }}
-                  className="text-green-600 hover:text-green-900 transition-colors"
-                >
-                  <Edit className="h-4 w-4" />
-                </button>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleEliminar(tipo);
-                  }}
-                  className="text-red-600 hover:text-red-900 transition-colors"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </button>
-              </>
-            )}
           />
         </div>
       </div>

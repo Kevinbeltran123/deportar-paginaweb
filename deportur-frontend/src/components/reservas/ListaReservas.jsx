@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { listarReservas, eliminarReserva, confirmarReserva } from '../../services';
 import { Table, Button, Modal, Spinner, Badge } from '../ui';
-import { Plus, Edit, Trash2, Eye, RefreshCw, Calendar, CheckCircle } from 'lucide-react';
+import { Plus, Edit, Trash2, Eye, RefreshCw, Calendar, CheckCircle, Search } from 'lucide-react';
 import { FormularioReserva } from './FormularioReserva';
 import { DetalleReserva } from './DetalleReserva';
 
@@ -81,6 +81,18 @@ export const ListaReservas = () => {
     }
   };
 
+  const handleConfirmarSeleccionada = () => {
+    if (!reservaSeleccionada) {
+      alert('Selecciona una reserva para confirmar.');
+      return;
+    }
+    if (reservaSeleccionada.estado !== 'PENDIENTE') {
+      alert('Solo se pueden confirmar reservas en estado PENDIENTE.');
+      return;
+    }
+    handleConfirmar(reservaSeleccionada);
+  };
+
   if (!isAuthenticated) {
     return <div className="p-6 bg-yellow-50 rounded-lg"><p>Debes iniciar sesión.</p></div>;
   }
@@ -136,78 +148,89 @@ export const ListaReservas = () => {
   ];
 
   return (
-    <div className="space-y-6">
-      <div className="bg-white p-6 rounded-lg shadow">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold text-gray-900">Reservas</h2>
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={cargarReservas}>
-              <RefreshCw className="h-4 w-4 mr-2" />
-              Recargar
-            </Button>
-            <Button variant="primary" onClick={() => setModalCrear(true)}>
-              <Plus className="h-4 w-4 mr-2" />
-              Nueva Reserva
-            </Button>
+    <div className="w-full">
+      {/* Full-Width Header Section */}
+      <div className="w-full bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 shadow-xl">
+        <div className="w-full px-6 py-6">
+          <div className="flex flex-wrap items-center justify-between gap-6">
+            <div className="space-y-1">
+              <p className="text-xs uppercase tracking-[0.4em] font-semibold text-blue-100">
+                Gestión de reservas
+              </p>
+              <h1 className="text-4xl md:text-5xl font-bold text-white tracking-tight">
+                Reservas
+              </h1>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              <Button
+                className="bg-green-600 text-white font-semibold hover:bg-green-700 shadow-md px-6 py-2.5 text-base"
+                onClick={() => setModalCrear(true)}
+              >
+                <Plus className="mr-2 h-5 w-5" />Agregar
+              </Button>
+              <Button
+                className="bg-blue-600 text-white font-semibold hover:bg-blue-700 shadow-md px-6 py-2.5 text-base"
+                onClick={handleConfirmarSeleccionada}
+              >
+                <CheckCircle className="mr-2 h-5 w-5" />Confirmar
+              </Button>
+              <Button
+                className="bg-gray-600 text-white font-semibold hover:bg-gray-700 shadow-md px-6 py-2.5 text-base"
+                onClick={cargarReservas}
+              >
+                <RefreshCw className="mr-2 h-5 w-5" />Refrescar
+              </Button>
+            </div>
           </div>
-        </div>
-
-        <div className="flex gap-4">
-          <select
-            value={filtroEstado}
-            onChange={(e) => setFiltroEstado(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="">Todos los estados</option>
-            <option value="PENDIENTE">Pendiente</option>
-            <option value="CONFIRMADA">Confirmada</option>
-            <option value="EN_PROGRESO">En Progreso</option>
-            <option value="FINALIZADA">Finalizada</option>
-            <option value="CANCELADA">Cancelada</option>
-          </select>
-        </div>
-
-        <div className="mt-4 text-sm text-gray-600">
-          Mostrando {reservasFiltradas.length} de {reservas.length} reservas
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow">
-        <Table
-          columns={columns}
-          data={reservasFiltradas}
-          emptyMessage="No hay reservas"
-          actions={(r) => (
-            <>
-              <button
-                onClick={() => {
-                  setReservaSeleccionada(r);
-                  setModalDetalle(true);
-                }}
-                className="text-blue-600 hover:text-blue-900"
-                title="Ver detalle"
-              >
-                <Eye className="h-4 w-4" />
-              </button>
-              {r.estado === 'PENDIENTE' && (
-                <button
-                  onClick={() => handleConfirmar(r)}
-                  className="text-green-600 hover:text-green-900"
-                  title="Confirmar reserva"
-                >
-                  <CheckCircle className="h-4 w-4" />
-                </button>
-              )}
-              <button
-                onClick={() => handleEliminar(r)}
-                className="text-red-600 hover:text-red-900"
-                title="Eliminar reserva"
-              >
-                <Trash2 className="h-4 w-4" />
-              </button>
-            </>
-          )}
-        />
+      {/* Content Section - Full Width */}
+      <div className="w-full px-6 py-6 space-y-6">
+        {/* Search and Filters Panel */}
+        <div className="rounded-2xl bg-white/95 p-6 shadow">
+          <div className="mb-4 flex items-center gap-2 text-blue-700">
+            <Search className="h-5 w-5" />
+            <h3 className="text-base font-semibold tracking-tight">Filtros</h3>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <select
+              value={filtroEstado}
+              onChange={(e) => setFiltroEstado(e.target.value)}
+              className="px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm appearance-none bg-white cursor-pointer"
+              style={{
+                backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
+                backgroundPosition: 'right 0.5rem center',
+                backgroundRepeat: 'no-repeat',
+                backgroundSize: '1.5em 1.5em',
+                paddingRight: '2.5rem'
+              }}
+            >
+              <option value="">Todos los estados</option>
+              <option value="PENDIENTE">Pendiente</option>
+              <option value="CONFIRMADA">Confirmada</option>
+              <option value="EN_PROGRESO">En Progreso</option>
+              <option value="FINALIZADA">Finalizada</option>
+              <option value="CANCELADA">Cancelada</option>
+            </select>
+          </div>
+
+          <div className="mt-4 text-xs text-slate-500">
+            Mostrando {reservasFiltradas.length} de {reservas.length} reservas
+          </div>
+        </div>
+
+        {/* Professional Table */}
+        <div className="bg-white rounded-lg shadow overflow-hidden">
+          <Table
+            columns={columns}
+            data={reservasFiltradas}
+            emptyMessage="No hay reservas"
+            onRowClick={(reserva) => setReservaSeleccionada(reserva)}
+            selectedRow={reservaSeleccionada}
+          />
+        </div>
       </div>
 
       <Modal isOpen={modalCrear} onClose={() => setModalCrear(false)} title="Nueva Reserva" size="xl">
