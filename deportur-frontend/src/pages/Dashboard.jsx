@@ -97,69 +97,77 @@ export const Dashboard = () => {
         </div>
       </header>
 
-      <main className="flex flex-1 flex-col bg-[#F3F6FB] px-6 py-12 sm:px-10 lg:px-16 xl:px-20">
-        <div className="flex flex-1 flex-col gap-12">
-          <section className="w-full rounded-[2.4rem] bg-white px-8 py-14 shadow-[0_28px_60px_-30px_rgba(30,64,175,0.35)] sm:px-12 lg:px-18 lg:py-18">
-            <div className="flex flex-col items-center gap-12 text-center lg:flex-row lg:items-center lg:justify-between lg:text-left">
-              <div className="space-y-6">
-                <span className="text-xs font-semibold uppercase tracking-[0.45em] text-blue-500">
-                  Panel principal
-                </span>
-                <h1 className="text-4xl font-semibold text-slate-900 sm:text-5xl">
-                  Hola, {user?.name?.split(' ')[0] ?? 'Usuario'} 👋
-                </h1>
-                <p className="mx-auto max-w-3xl text-lg leading-relaxed text-slate-600 lg:mx-0">
-                  Bienvenido al panel administrativo de DeporTur. Gestiona inventario, clientes, destinos y reservas
-                  desde un espacio centralizado diseñado para operadores turísticos profesionales.
+      <main className="flex flex-1 flex-col bg-[#F3F6FB] px-6 py-10 sm:px-10 lg:px-16 xl:px-20">
+        <div className="flex flex-1 flex-col gap-8">
+          {/* Compact Welcome Panel */}
+          <section className="w-full rounded-3xl bg-gradient-to-br from-white to-blue-50/30 px-8 py-8 shadow-lg shadow-blue-100/50 sm:px-10 lg:px-12">
+            <div className="flex flex-col items-center gap-3 text-center">
+              <h1 className="text-3xl sm:text-4xl font-bold uppercase tracking-[0.2em] text-blue-600">
+                Panel Principal
+              </h1>
+              <p className="text-base font-bold text-slate-700">
+                Hola, {user?.name?.split(' ')[0] ?? 'Usuario'}
               </p>
-              </div>
+              <p className="max-w-3xl text-sm leading-relaxed text-slate-600">
+                Bienvenido al panel administrativo de DeporTur. Gestiona inventario, clientes, destinos y reservas
+                desde un espacio centralizado diseñado para operadores turísticos profesionales.
+              </p>
+            </div>
+          </section>
 
-              <div className="flex items-center gap-5 rounded-[2rem] bg-blue-50 px-8 py-6 text-blue-700 shadow-inner">
-                {user?.picture ? (
-                  <img
-                    src={user.picture}
-                    alt={user.name}
-                    className="h-16 w-16 rounded-full border border-blue-100 object-cover"
-                  />
-                ) : (
-                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-blue-100 text-blue-600">
-                    <span className="text-2xl font-semibold">DT</span>
-                  </div>
-                )}
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.4em] text-blue-600">DeporTur Suite</p>
-                  <p className="text-sm text-blue-500">Gestión integral para operadores turísticos</p>
+          {/* Layout: 75% Reports + 25% Module Cards */}
+          <div className="flex flex-col lg:flex-row gap-8 w-full">
+            {/* Reports & Analytics Placeholder - 75% */}
+            <section className="w-full lg:w-3/4 rounded-3xl border-2 border-dashed border-blue-200/60 bg-blue-50/30 px-8 py-12">
+              <div className="flex flex-col items-center justify-center gap-4 text-center h-full">
+                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-100/50">
+                  <svg className="h-8 w-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-lg font-semibold text-slate-700">Reportes y Análisis</h3>
+                  <p className="text-sm text-slate-500 max-w-md">
+                    Próximamente: estadísticas de uso, análisis de ingresos, métricas de rendimiento y reportes personalizados
+                  </p>
+                </div>
+                <div className="mt-2">
+                  <span className="inline-flex items-center gap-2 rounded-full bg-blue-100 px-4 py-1.5 text-xs font-semibold text-blue-700">
+                    <span className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-pulse" />
+                    En desarrollo
+                  </span>
                 </div>
               </div>
-            </div>
-          </section>
+            </section>
 
-          <section className="w-full">
-            <div className="grid w-full grid-cols-1 gap-10 md:grid-cols-2 xl:grid-cols-3 xl:grid-rows-2 xl:auto-rows-[minmax(260px,1fr)]">
-              {navigationCards.map(({ title, description, to, icon: Icon, accent }) => (
-                <Link
-                  key={title}
-                  to={to}
-                  className="group relative flex h-full flex-col justify-between overflow-hidden rounded-[2rem] bg-white px-10 py-12 shadow-[0_26px_55px_-30px_rgba(30,64,175,0.3)] transition-transform duration-200 hover:-translate-y-1 hover:shadow-[0_38px_75px_-25px_rgba(30,64,175,0.42)]"
-                >
-                  <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-200 via-transparent to-blue-100 opacity-0 transition-opacity group-hover:opacity-100" />
-                  <div className="flex items-center gap-4">
-                  <span className={`flex h-14 w-14 items-center justify-center rounded-2xl ${accent}`}>
-                    <Icon className="h-6 w-6" />
-                    </span>
-                    <div>
-                      <h2 className="text-xl font-semibold text-slate-900">{title}</h2>
-                      <p className="mt-2 text-sm text-slate-500">{description}</p>
+            {/* Module Cards Section - 25% */}
+            <section className="w-full lg:w-1/4">
+              <div className="grid grid-cols-1 gap-6">
+                {navigationCards.map(({ title, description, to, icon: Icon, accent }) => (
+                  <Link
+                    key={title}
+                    to={to}
+                    className="group relative flex flex-col items-center justify-center overflow-hidden rounded-2xl bg-white px-6 py-8 shadow-[0_26px_55px_-30px_rgba(30,64,175,0.3)] transition-transform duration-200 hover:-translate-y-1 hover:shadow-[0_38px_75px_-25px_rgba(30,64,175,0.42)]"
+                  >
+                    <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-200 via-transparent to-blue-100 opacity-0 transition-opacity group-hover:opacity-100" />
+                    <div className="flex flex-col items-center gap-3 text-center">
+                      <span className={`flex h-12 w-12 items-center justify-center rounded-2xl ${accent}`}>
+                        <Icon className="h-5 w-5" />
+                      </span>
+                      <div>
+                        <h2 className="text-base font-semibold text-slate-900">{title}</h2>
+                        <p className="mt-1 text-xs text-slate-500">{description}</p>
+                      </div>
                     </div>
-                  </div>
-                  <span className="mt-10 inline-flex items-center gap-2 text-sm font-semibold text-blue-600">
-                    Entrar al módulo
-                    <ArrowUpRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1 group-hover:-translate-y-1" />
-                  </span>
-                </Link>
-              ))}
-            </div>
-          </section>
+                    <span className="mt-4 inline-flex items-center gap-2 text-xs font-semibold text-blue-600">
+                      Entrar al módulo
+                      <ArrowUpRight className="h-3 w-3 transition-transform duration-200 group-hover:translate-x-1 group-hover:-translate-y-1" />
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            </section>
+          </div>
         </div>
       </main>
       <footer className="bg-gradient-to-br from-[#1E40AF] via-[#2563EB] to-[#3B82F6] text-white shadow-inner">

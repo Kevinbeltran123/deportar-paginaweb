@@ -156,16 +156,22 @@ export const ListaTiposEquipo = () => {
   return (
     <div className="w-full">
       {/* Full-Width Header Section */}
-      <div className="w-full bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 shadow-xl">
-        <div className="w-full px-6 py-6">
+      <div className="w-full bg-gradient-to-br from-[#3B82F6] via-[#2563EB] to-[#1E40AF] shadow-md">
+        <div className="w-full px-8 py-7 sm:px-10 lg:px-16">
           <div className="flex flex-wrap items-center justify-between gap-6">
-            <div className="space-y-1">
-              <p className="text-xs uppercase tracking-[0.4em] font-semibold text-blue-100">
-                Gestión de inventario
-              </p>
-              <h1 className="text-4xl md:text-5xl font-bold text-white tracking-tight">
-                Tipos de Equipo
-              </h1>
+            <div className="flex items-center gap-3">
+              <div className="flex gap-1">
+                <span className="h-2.5 w-2.5 rounded-full bg-white" />
+                <span className="h-2.5 w-2.5 rounded-full bg-blue-200" />
+              </div>
+              <div className="text-left">
+                <p className="text-xl font-semibold leading-tight text-white">
+                  DeporTur
+                </p>
+                <p className="text-[11px] uppercase tracking-[0.4em] text-blue-100">
+                  Tipos de Equipo
+                </p>
+              </div>
             </div>
             <div className="flex flex-wrap gap-3">
               <Button
